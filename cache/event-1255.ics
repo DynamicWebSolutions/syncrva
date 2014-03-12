@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140310T211921CET-9532HVVJjw@192.241.173.169
+DTSTAMP:20140310T201921Z
+CATEGORIES:event
+DESCRIPTION:We are privileged to have Cisco&rsquo\;s Martin Nystrom present
+  a keynote address on the latest security trends involving the Internet of
+  Things (IoT).
+DTSTART:20140326T010000
+DTEND:20140326T040000
+LOCATION:
+SUMMARY:Internet of Things (IoT) and mHealth
+END:VEVENT
+END:VCALENDAR

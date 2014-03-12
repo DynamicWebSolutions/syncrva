@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140311T230020CET-6415J2FSt5@192.241.173.169
+DTSTAMP:20140311T220020Z
+CATEGORIES:event
+DESCRIPTION:Java EE 7 is the latest Enterprise version.&nbsp\;WildFly 8 is 
+ the latest version of the open-source app server (formely known as JBOSS C
+ ommunity).&nbsp\;The talk will include a demo of exposing REST API service
+ s or possibly&nbsp\;at the implementation level\, a more architectural vie
+ w of REST and best practices for API design. &nbsp\;We will fine-tune this
+  abstract as we get closer to the event.\nSpeaker Bio:&nbsp\;Romain Lherit
+ ier\,&nbsp\;Application Development and Operations Manager at Genworth Fin
+ ancial\nFood Sponsor:&nbsp\;TBD
+DTSTART:20140618T053000
+DTEND:20140618T070000
+LOCATION:
+SUMMARY:Java EE 7 and WildFly 8
+END:VEVENT
+END:VCALENDAR

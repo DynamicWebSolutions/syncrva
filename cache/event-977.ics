@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140312T045915CET-8188P7dUi8@192.241.173.169
+DTSTAMP:20140312T035915Z
+CATEGORIES:event
+DESCRIPTION:KnockoutJS allows you to build UIs in HTML without having to to
+ uch the DOM from your javascript code. Learn how to use the MVVM pattern w
+ ith KnockoutJS to produce cleaner\, more testable code.
+DTSTART:20131203T063000
+DTEND:20131203T083000
+LOCATION:
+SUMMARY:KnockoutJS
+END:VEVENT
+END:VCALENDAR

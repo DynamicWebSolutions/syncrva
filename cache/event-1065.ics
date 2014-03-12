@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140308T013849CET-58184Vl0sP@192.241.173.169
+DTSTAMP:20140308T003849Z
+CATEGORIES:event
+DESCRIPTION:Speaker:&nbsp\;Andy Pemberton\, Senior Manager\, APIs at&nbsp\;
+ Capital One&nbsp\;| Founder\, Accel Interactive\nFood Sponsor:&nbsp\;TekSy
+ stems
+DTSTART:20140521T053000
+DTEND:20140521T070000
+LOCATION:
+SUMMARY:Oracle&#8217\;s JAX-RS reference implementation
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140131T001455CET-5929OMsOnF@192.241.173.169
+DTSTAMP:20140131T231455Z
+CATEGORIES:event
+DESCRIPTION:Join us 10/8/13 at Legend Brewing for the next edition of Linke
+ dInLive RVA! 5-7:30pm.&nbsp\;LinkedIn Live Richmond aims to help LinkedIn 
+ members in metro Richmond\, and the mid-Atlantic region\, deepen the conne
+ ctions they have on the site\, and to build new connections in the real wo
+ rld that can expand their LinkedIn network and their opportunities.
+DTSTART:20131008T170000
+DTEND:20131008T193000
+LOCATION:
+SUMMARY:LinkedInLive #RVA &#8211\; Pay It Forward
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140303T090153CET-0655X1UujN@192.241.173.169
+DTSTAMP:20140303T080153Z
+CATEGORIES:event
+DESCRIPTION:For this luncheon event\, we hear from Ben Tomhave\, Research D
+ irector with Gartner for Technical Professionals on the Gartner Five Year 
+ Security and Risk Scenario
+DTSTART:20131113T113000
+DTEND:20131113T013000
+LOCATION:
+SUMMARY:Security and Risk Scenario
+END:VEVENT
+END:VCALENDAR

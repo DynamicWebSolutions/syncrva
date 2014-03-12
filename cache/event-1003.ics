@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140310T053347CET-1039e9W8bZ@192.241.173.169
+DTSTAMP:20140310T043347Z
+CATEGORIES:event
+DESCRIPTION:On Feb 4th\,&nbsp\;Nasrullo will be explaining how you can use 
+ the powerful framework AngularJS to make webapps quickly. It will be targe
+ ted towards people who haven't used AngularJS much before\, introducing co
+ ntrollers\, bindings\, services\, and directives. Come and learn what thes
+ e mean and how it helps when building complex webapps.
+DTSTART:20140204T063000
+DTEND:20140204T083000
+LOCATION:
+SUMMARY:RVAJS &#8211\; Angular
+END:VEVENT
+END:VCALENDAR

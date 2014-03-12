@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140310T063657CET-2800IS1iSV@192.241.173.169
+DTSTAMP:20140310T053657Z
+CATEGORIES:event
+DESCRIPTION:Women ETC.\, the Virginia Women in Technology Conference\, is t
+ he premier statewide event for women who work with technology. The confere
+ nce is organized by RichTech's Women in Technology Forum in support of its
+  mission to further empower women - from the classroom to the boardroom.
+DTSTART:20131003T090000
+DTEND:20131003T040000
+LOCATION:
+SUMMARY:WomenETC
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140309T234047CET-5309clRsIE@192.241.173.169
+DTSTAMP:20140309T224047Z
+CATEGORIES:event
+DESCRIPTION:804RVA Tech Meetup is a monthly demonstration of 3 technology c
+ ompanies that were made in RVA and hand selected by our hosts.
+DTSTART:20140319T180000
+DTEND:20140319T200000
+LOCATION:
+SUMMARY:March 19\, 2014 &#8211\; 804RVA Tech Meetup: Switch Mob\, Trinkin\,
+  SOM\, &#038\; Bonfire Funds
+END:VEVENT
+END:VCALENDAR

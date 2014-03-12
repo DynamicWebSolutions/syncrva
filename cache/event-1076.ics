@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140312T063117CET-8742LuJuGG@192.241.173.169
+DTSTAMP:20140312T053117Z
+CATEGORIES:event
+DESCRIPTION:At the heart of Tilted RVA: Entrepreneurs and small business ow
+ ners/employees talking to each other about the real challenges -- and solu
+ tions -- to effective growth and day-to-day operations.\n\nAs a small busi
+ ness owner – or an employee in a small business – you know the value o
+ f innovation\, transformation and being part of a thriving creative commun
+ ity. You also understand that there are harder\, more serious and more ess
+ ential elements to launching and building a great business.\n\nLet’s lea
+ ve the long speeches\, drab PowerPoints and passive networking behind. Joi
+ n us on March 1 for Tilted RVA\, the unconference for Richmond's small bus
+ inesses and entrepreneurs. Tilted RVA challenges the conference status quo
+  with a hands-on environment where small business owners learn\, share and
+  connect – all served up with a large side of awesome\, provided by the 
+ knowledge and experience you and 199 of your entrepreneurial/small busines
+ s peers will bring into the room.
+DTSTART:20140301T083000
+DTEND:20140301T033000
+LOCATION:
+SUMMARY:TiltedRVA Small Business Unconference
+END:VEVENT
+END:VCALENDAR

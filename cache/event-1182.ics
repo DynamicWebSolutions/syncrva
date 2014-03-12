@@ -1,0 +1,43 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140306T193319CET-6283oUi4jV@192.241.173.169
+DTSTAMP:20140306T183319Z
+CATEGORIES:event
+DESCRIPTION:804RVA Tech Meetup is a monthly demonstration of 3 technology c
+ ompanies that were made in RVA and hand selected by our hosts. &nbsp\;Get 
+ a sneak peek of just released technologies and listen to the successes and
+  failures from a seasoned company or two. &nbsp\;We'll have beer on hand\,
+  so come join us for some casual conversations and lightweight presentatio
+ ns (each presentation and Q&amp\;A is only 10 minutes long-- we promise no
+ t to bore you!)\nThis month's meetup features the following RVA technology
+  companies:\nSwitchmob.com - it's like kickstarter for lowering your cable
+  bill. &nbsp\;Tom Oristian is a developer and entrepreneur living in Richm
+ ond with a wife\, 2 kids\, and a dog. He has lived in a lot of places\, bu
+ t never in a place where people care as much about their city as they do h
+ ere.&nbsp\;\nTrinkin.com is a go-to resource for craft beer enthusiasts\, 
+ foodies and anyone interested in supporting local businesses. With over 60
+  restaurant\, brewery and retailer partners in RVA\, questions like\, 'wha
+ t's on tap?' or 'what's going on this weekend?' are answered with our up-t
+ o-date listings. The Trinkin team is made up of four partners: Ben Humphre
+ y\, Christina Hilliard\, Andy Frank and Dave Al-Attiyah. They are each fro
+ m varying backgrounds but are all passionate about drinking and Richmond.&
+ nbsp\;\nBonfire Funds helps causes raise money with custom t-shirts. &nbsp
+ \;Founder\, Brian Marks\, is a VCU alum that wishes VCU in 1995 looked lik
+ e VCU in 2014!'\nThe Suspicious Order Monitoring Cloud Service allows real
+ -time monitoring of detection statistics for customers to quickly identify
+  variations in ordering behavior across controlled substances.\nJonathan K
+ uhn is the current president and founder of Richmond Analaytics\, LLC. The
+  mission of Richmond Analytics is to empower people with the knowledge and
+  creativity to make the most of their data.&nbsp\;\nIf you are building a 
+ new technology you would like to debut to the RVA community\, flag down To
+ dd Nuckols\, Arnold Kim or Larkin Garbee at one of the meetups to find out
+  how you can submit an application!\n&nbsp\;
+DTSTART:20140319T060000
+DTEND:20140319T080000
+LOCATION:
+SUMMARY:March 19\, 2014 &#8211\; 804RVA Tech Meetup: Switch Mob\, Trinkin\,
+  SOM\, &#038\; Bonfire Funds
+END:VEVENT
+END:VCALENDAR

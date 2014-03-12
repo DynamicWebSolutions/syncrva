@@ -1,0 +1,19 @@
+BEGIN:VCALENDAR
+PRODID:-//192.241.173.169//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:20140224T074947CET-5746dX1Fn9@192.241.173.169
+DTSTAMP:20140224T064947Z
+CATEGORIES:event
+DESCRIPTION:The VA PUG was created to encourage communication and learning 
+ among the Progress Users in Virginia.&nbsp\; The VA PUG strives to bring e
+ xperts from Progress Software directly to its members\; allowing them to l
+ earn from the best.&nbsp\; Our semi annual meetings are a great opportunit
+ y for Progress users to network with thier peers as well as\, stay up-to-d
+ ate on the latest Progress news and developments.
+DTSTART:20131022T120000
+DTEND:20131022T170000
+LOCATION:
+SUMMARY:Fall 2013 VA PUG Meeting
+END:VEVENT
+END:VCALENDAR
