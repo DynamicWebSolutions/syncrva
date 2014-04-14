@@ -132,11 +132,11 @@ function templ_payment_option_radio_fun()
 	  <input <?php echo $jsfunction;?>  type="radio" value="<?php echo $paymentInfo['key'];?>" id="<?php echo $paymentInfo['key'];?>_id" name="paymentmethod" <?php echo $chked;?> />  <?php _e($paymentInfo['name'],'templatic');?></label></li>
 	 
 	  <?php
-					if(file_exists(TEMPLATEPATH.'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php'))
+					if(file_exists(get_template_directory().'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php'))
 					{
 					?>
 	  <?php
-						$array_pay_options[] =TEMPLATEPATH.'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php';
+						$array_pay_options[] =get_template_directory().'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php';
 						?>
 	  <?php
 					} 
@@ -205,7 +205,7 @@ function templ_nopayment_redirect()
 	{
 	}else
 	{
-		wp_redirect(apply_filters('templ_nopayment_redirect_url',site_url('/?ptype=submition&backandedit=1&emsg=nopaymethod')));	
+		wp_redirect(apply_filters('templ_nopayment_redirect_url',home_url('/?ptype=submition&backandedit=1&emsg=nopaymethod')));	
 		exit;
 	}
 }
@@ -245,13 +245,13 @@ function get_discount_amount($coupon,$amount)
 	{
 		$couponinfo = templ_get_coupon_info($coupon);
 		
-		if($couponinfo['dis_per']=='per')
+		if($couponinfo->dis_per=='per')
 		{
-			$discount_amt = ($amount*$couponinfo['dis_amt'])/100;
+			$discount_amt = ($amount*$couponinfo->dis_amt)/100;
 		}else
-		if($couponinfo['dis_per']=='amt')
+		if($couponinfo->dis_per=='amt')
 		{
-			$discount_amt = $couponinfo['dis_amt'];
+			$discount_amt = $couponinfo->dis_amt;
 		}
 		return apply_filters('templ_discount_amount_filter',$discount_amt);		
 	}
@@ -263,14 +263,14 @@ function get_coupon_amount($coupon,$amount)
 	if($coupon!='' && $amount>0)
 	{
 		$couponinfo = templ_get_coupon_info($coupon);
-		
-		if($couponinfo['dis_per']=='per')
+
+		if($couponinfo->dis_per=='per')
 		{
-			$discount_amt = ($amount*$couponinfo['dis_amt'])/100;
+			$discount_amt = ($amount*$couponinfo->dis_amt)/100;
 		}else
-		if($couponinfo['dis_per']=='amt')
+		if($couponinfo->dis_per=='amt')
 		{
-			$discount_amt = $couponinfo['dis_amt'];
+			$discount_amt = $couponinfo->dis_amt;
 		}
 		return apply_filters('templ_discount_amount_filter',$discount_amt);		
 	}
@@ -281,12 +281,12 @@ function templ_get_coupon_info($coupon)
 {
 	if($coupon!='')
 	{
-		$couponinfo = get_option('discount_coupons');
+		$couponinfo = json_decode(get_option('discount_coupons'));
 		if($couponinfo)
 		{
 			foreach($couponinfo as $key=>$value)
 			{
-				if($value['couponcode'] == $coupon)
+				if($value->couponcode == $coupon)
 				{
 					return $value;
 				}
@@ -412,24 +412,36 @@ function get_post_custom_fields_templ($post_types,$category_id='',$show_on_page 
 	}if($is_search != ''){
 		$post_query .= " and is_search = '1'";
 	}
-	if($category_id != '0' ){
-		if(!strstr($category_id,',')){
-		$post_query .= " and (field_category LIKE '%,".$category_id.",%' or field_category LIKE '%,".$category_id."' or field_category LIKE '%".$category_id.",%' or field_category = '".$category_id."' or field_category = '0')";
+	if(!is_wp_admin())
+	{
+		if($category_id != '0' && $category_id !='admin'){
+			if(!strstr($category_id,',')){
+			$post_query .= " and (field_category LIKE '%,".$category_id.",%' or field_category LIKE '%,".$category_id."' or field_category LIKE '%".$category_id.",%' or field_category = '".$category_id."' or field_category = '0')";
+			}else{
+			$post_query .= " and ( field_category Like '0' or  field_category = '' ";
+			$count = explode(",",$category_id);
+			for($k=0;$k<(count($count)-1);$k++)
+			{
+				if($k != count($count) )
+				$post_query .= "   or field_category Like '%".$count[$k]."%'";
+				else
+				$post_query .= " field_category Like '0'";
+			}
+			$post_query .= " ) ";
+			}
+			$post_query .=  " order by sort_order asc,cid asc";
 		}else{
-		$post_query .= " and ( field_category Like '0' ";
-		$count = explode(",",$category_id);
-		for($k=0;$k<(count($count)-1);$k++)
-		{
-			if($k != count($count) )
-			$post_query .= "   or field_category Like '%".$count[$k]."%'";
-			else
-			$post_query .= " field_category Like '0'";
-		}
-		$post_query .= " ) ";
-		}
-	} 
-	$post_query .=  " order by sort_order asc,cid asc";
-	
+			if($is_search == '' && get_option('ptthemes_category_dislay') == 'select'){
+			$post_query .=  "AND field_category = '0' order by sort_order asc,cid asc";
+			}else{
+			$post_query .=  " order by sort_order asc,cid asc";
+			}
+		}	
+	}
+	else
+	{
+		$post_query .=  " order by sort_order asc,cid asc";
+	}
 	$post_meta_info = $wpdb->get_results($post_query);
 	$return_arr = array();
 	if($post_meta_info){

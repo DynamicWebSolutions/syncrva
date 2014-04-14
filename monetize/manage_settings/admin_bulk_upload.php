@@ -1,4 +1,4 @@
-<script>
+<script type='text/javascript'>
 function check_frm()
 {
 	if(document.getElementById('bulk_upload_csv').value == '')
@@ -82,11 +82,11 @@ if(isset($_POST['submit_csv']))
 						}
 						if($customKeyarray[0]=='')
 						{
-							$url = site_url('/wp-admin/admin.php');
+							$url = home_url('/wp-admin/admin.php');
 							echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 							<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="wrong" name="emsg">
 							</form>
-							<script>document.frm_bulk_upload.submit();</script>';exit;	
+							<script type="text/javascript">document.frm_bulk_upload.submit();</script>';exit;	
 						}
 					}else
 					{ 
@@ -99,8 +99,10 @@ if(isset($_POST['submit_csv']))
 						$catids_arr = array();
 						//$post_cat = trim(iconv('', 'utf-8',$buffer[4]));
 						$post_cat = $buffer[4];						
-						//$post_desc = addslashes(iconv('', 'utf-8',$buffer[7]));
-						$post_desc = $buffer[7];	
+						$post_desc = addslashes(iconv('', 'utf-8',$buffer[7]));
+						//$post_desc = $buffer[7];
+						//echo $post_desc."<br/> hiiii";
+						//exit;
 						//$post_excerpt = addslashes(iconv('', 'utf-8',$buffer[8]));	
 						$post_excerpt = $buffer[8];		
 										
@@ -302,7 +304,7 @@ if(isset($_POST['submit_csv']))
 									$img_name_arr = explode('.',$img_name);
 									$post_img = array();
 									$post_img['post_title'] = $_image_name_arr;
-									$post_img['post_status'] = 'attachment';
+									$post_img['post_status'] = 'inherit';
 									$post_img['post_parent'] = $last_postid;
 									$post_img['post_type'] = 'attachment';
 									$post_img['post_mime_type'] = 'image/jpeg';
@@ -390,6 +392,10 @@ if(isset($_POST['submit_csv']))
 								}
 								
 								}
+								else
+								{
+									update_post_meta($last_postid, $customKeyarray[$c], addslashes($buffer[$c]));
+								}
 								
 							}
 						}
@@ -397,38 +403,38 @@ if(isset($_POST['submit_csv']))
 				$rowcount++;
 				}
 				@unlink($csv_target_path);
-				$url = site_url().'/wp-admin/admin.php';
+				$url = home_url().'/wp-admin/admin.php';
 				echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 				<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="success" name="upload_msg"><input type="hidden" value="'.$rowcount.'" name="rowcount">
 				</form>
-				<script>document.frm_bulk_upload.submit();</script>
+				<script type="text/javascript">document.frm_bulk_upload.submit();</script>
 				';exit;
 			}
 			else
 			{
-				$url = site_url().'/wp-admin/admin.php';
+				$url = home_url().'/wp-admin/admin.php';
 				echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 				<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="tmpfile" name="emsg">
 				</form>
-				<script>document.frm_bulk_upload.submit();</script>
+				<script type="text/javascript">document.frm_bulk_upload.submit();</script>
 				';exit;
 			}
 		}else
 		{
-			$url = site_url().'/wp-admin/admin.php';
+			$url = home_url().'/wp-admin/admin.php';
 			echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 			<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="csvonly" name="emsg">
 			</form>
-			<script>document.frm_bulk_upload.submit();</script>
+			<script type="text/javascript">document.frm_bulk_upload.submit();</script>
 			';exit;
 		}
 	}else
 	{
-		$url = site_url().'/wp-admin/admin.php';
+		$url = home_url().'/wp-admin/admin.php';
 		echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 		<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="invalid_file" name="emsg">
 		</form>
-		<script>document.frm_bulk_upload.submit();</script>
+		<script type="text/javascript">document.frm_bulk_upload.submit();</script>
 		';exit;
 	}
 }
@@ -471,39 +477,51 @@ if(isset($_POST['submit_city']) && $_POST['submit_city']!=""){
 						
 						if($customKeyarray[0]=='')
 						{
-							$url = site_url('/wp-admin/admin.php');
+							$url = home_url('/wp-admin/admin.php');
 							echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_city_upload" name="frm_city_upload">
 							<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="wrong" name="emsg1">
 							</form>
-							<script>document.frm_city_upload.submit();</script>';exit;	
+							<script type="text/javascript">document.frm_city_upload.submit();</script>';exit;	
 						}
 					}else{
 				
 					
 								$city_id = trim($buffer[0]);
 								$country_id = trim($buffer[1]);
+								$zone_id = trim($buffer[3]);
 								$cityname = trim($buffer[4]);
 								$lat = trim($buffer[5]);
 								$lng = addslashes($buffer[6]);
 								$scall_factor = trim($buffer[7]);
 								$sortorder = addslashes($buffer[8]);					
-								$is_zoom_home = addslashes($buffer[9]);						
-								$is_default = addslashes($buffer[10]);	
+								$is_zoom_home = addslashes($buffer[9]);	
+								$category_id = 	trim($buffer[10]);	
+								$category_id = explode("-",$category_id);
+								$sep = ",";
+								$cat_id = "";
+								for($k=0;$k<count($category_id);$k++)
+								{
+									if($k == (count($category_id) -1))
+										$sep = "";
+									$cat_id .= $category_id[$k].$sep;
+								}			
+								$is_default = addslashes($buffer[11]);
+								$geo_address = addslashes($buffer[12]);	
 								$multicity_table = $wpdb->prefix."multicity";
 								
 								if($city_id !=""){
-								$wpdb->query("INSERT INTO $multicity_table (`city_id`,`country_id`,`ptype`, `cityname`, `lat`, `lng`, `scall_factor`, `sortorder`, `is_zoom_home`, `categories`, `is_default`, `geo_address`) VALUES ('', '".$city_id."','', '".$cityname."', '".$lat."', '".$lng."', '".$scall_factor."', '".$sortorder."', '".$is_zoom_home."','' ,'".$is_default."','');");
+									$wpdb->query("INSERT INTO $multicity_table (`city_id`,`country_id`,`ptype`,`zones_id`, `cityname`, `lat`, `lng`, `scall_factor`, `sortorder`, `is_zoom_home`, `categories`, `is_default`, `geo_address`) VALUES ('', '".$country_id."','','".$zone_id."', '".$cityname."', '".$lat."', '".$lng."', '".$scall_factor."', '".$sortorder."', '".$is_zoom_home."','".$cat_id."' ,'".$is_default."','".$geo_address."');");
 								}
 						
 						}
 						$rowcount1 ++;	
 					}
 				@unlink($csv_target_path);
-				$url = site_url().'/wp-admin/admin.php';
+				$url = home_url().'/wp-admin/admin.php';
 				echo '<form action="'.$url.'#option_bulk_upload" method="get" id="frm_bulk_upload" name="frm_bulk_upload">
 				<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="bulkupload" name="mod"><input type="hidden" value="success" name="uploadcity_msg"><input type="hidden" value="'.$rowcount1.'" name="rowcount1">
 				</form>
-				<script>document.frm_bulk_upload.submit();</script>
+				<script type="text/javascript">document.frm_bulk_upload.submit();</script>
 				';
 				exit;
 				
@@ -513,20 +531,28 @@ if(isset($_POST['submit_city']) && $_POST['submit_city']!=""){
 	}
 }
 
-
+/* 
 // BOF Upload Function
-
-define('ABSPATH', dirname(__FILE__) . '/');
-$wp_upload_dir = wp_upload_dir();
-$basedir = $wp_upload_dir['basedir'];
-$baseurl = $wp_upload_dir['baseurl'];
-$folderpath = $basedir."/bulk/";
-if(!file_exists($folderpath)){
-full_copy( TEMPLATEPATH."/images/bulk/", $folderpath );
+global $upload_folder_path;
+global $blog_id;
+if(get_option('upload_path') && !strstr(get_option('upload_path'),'wp-content/uploads'))
+{
+	$upload_folder_path = "wp-content/blogs.dir/$blog_id/files/";
+}else
+{
+	$upload_folder_path = "wp-content/uploads/";
 }
+global $blog_id;
+if($blog_id){ $thumb_url = "&amp;bid=$blog_id";}
+$folderpath = $upload_folder_path . "bulk/";
+$strpost = strpos(get_template_directory(),'wp-content');
+$dirinfo = wp_upload_dir();
+$target =$dirinfo['basedir']."/bulk"; 
+full_copy( get_template_directory()."/images/bulk/", $target );
+ 
 function full_copy( $source, $target ) 
 {
-	$imagepatharr = explode('/',str_replace(TEMPLATEPATH,'',$target));
+	$imagepatharr = explode('/',str_replace(get_template_directory(),'',$target));
 	for($i=0;$i<count($imagepatharr);$i++)
 	{
 	  if($imagepatharr[$i])
@@ -558,7 +584,7 @@ function full_copy( $source, $target )
 	}
 }
 // EOF Upload Function
-
+ */
 ?>
 <?php
 if(isset($_REQUEST['dropcities']) && $_REQUEST['dropcities'] != ""){
@@ -639,7 +665,7 @@ if($_REQUEST['ver-data'] == 1){
 		}
 		}}
 
-		echo "<script>location.href='".site_url()."/wp-admin/edit.php?post_type=".CUSTOM_POST_TYPE1.";</script>";
+		echo "<script type='text/javascript'>location.href='".home_url()."/wp-admin/edit.php?post_type=".CUSTOM_POST_TYPE1.";</script>";
 		}	
 }
 ?>
@@ -650,12 +676,12 @@ $sample_csv = apply_filters('templ_bulk_sample_csv_link_filter', get_template_di
 <div class="updated settings-error">
    <p style="padding:7px 0px;"><?php 
    $count_message  ="<form name='changecustomptype' id='changecustomptype' method='GET' action=''>";
-   $count_message .= "If you are using older version of Geoplace (3.0 to 3.3.1) then please <a href='". site_url()."/wp-admin/admin.php?page=manage_settings&ver-data=1&mod=bulkupload#option_bulk_upload'>Click here</a> to move your <b>post</b> in to <b>places</b>. OR <a href='#' onclick='document.changecustomptype.submit()' class='dismiss'>Dismiss</a>";
+   $count_message .= "If you are using older version of Geoplace (3.0 to 3.3.1) then please <a href='". home_url()."/wp-admin/admin.php?page=manage_settings&ver-data=1&mod=bulkupload#option_bulk_upload'>Click here</a> to move your <b>post</b> in to <b>places</b>. OR <a href='#' onclick='document.changecustomptype.submit()' class='dismiss'>Dismiss</a>";
    $count_message .="<input type='hidden' name='ver-data' value='1'/></form>";
    
    echo $count_message; ?></p> 
   </div>
-<form action="<?php echo site_url('/wp-admin/admin.php')?>?page=manage_settings&mod=bulkupload#option_bulk_upload" method="post" name="bukl_upload_frm" enctype="multipart/form-data">
+<form action="<?php echo home_url('/wp-admin/admin.php')?>?page=manage_settings&mod=bulkupload#option_bulk_upload" method="post" name="bukl_upload_frm" enctype="multipart/form-data">
 
 <input type="hidden" name="ptype" id="ptype" value="post"/>
   <p><?php
@@ -689,7 +715,7 @@ $sample_csv = apply_filters('templ_bulk_sample_csv_link_filter', get_template_di
 
 <p style="background: #f4f4f4; padding:10px; margin-bottom:20px;"><b><?php _e('Import','templatic');?></b></p>
 <div class="option option-select"  >
-<p style="font-size:13px;"><b><?php _e('Import place, events and blog posts','templatic');?></p>	
+<p style="font-size:13px;"><b><?php _e('Import place, events and blog posts','templatic');?></b></p>	
     <h3 style="width:163px;"><?php _e('Select post type','templatic');?> : </h3>
     <div class="section">
 		<div class="element" style="padding:8px 0px;">
@@ -707,7 +733,7 @@ $sample_csv = apply_filters('templ_bulk_sample_csv_link_filter', get_template_di
     </div> 
 	<div class="section">
 		<div class="element">
-		<p><?php _e('You can download');?> <a href="<?php echo site_url()?>/?ptype=csvdl"><?php _e('sample CSV file');?></a></p>
+		<p><?php _e('You can download','templatic');?> <a href="<?php echo home_url()?>/?ptype=csvdl" target="_blank"><?php _e('sample CSV file');?></a></p>
      
    		</div>
 		  
@@ -720,8 +746,8 @@ $sample_csv = apply_filters('templ_bulk_sample_csv_link_filter', get_template_di
 </form>
 
 
-<form action="<?php echo site_url('/wp-admin/admin.php')?>?page=manage_settings&mod=bulkupload#option_bulk_upload" method="post" name="frm_city_upload" enctype="multipart/form-data">
-<p style="font-size:13px;"><b><?php _e('Import city data from GeoPlaces (older versions)','templatic');?></p>	
+<form action="<?php echo home_url('/wp-admin/admin.php')?>?page=manage_settings&mod=bulkupload#option_bulk_upload" method="post" name="frm_city_upload" enctype="multipart/form-data">
+<p style="font-size:13px;"><b><?php _e('Import city data from GeoPlaces (older versions)','templatic');?></b></p>	
 <?php
 if($_REQUEST['uploadcity_msg']=='success'){
 $rowcount1 = $_REQUEST['rowcount1'];
@@ -746,7 +772,7 @@ else
  </div>
  <br />
  <?php }?>
-<p><?php _e('If you want to import cities from GeoPlaces3 to GeoPlaces4 with same City ID then',''); ?><a href="<?php echo site_url()."/wp-admin/admin.php?page=manage_settings&mod=bulkupload&dropcities=true#option_bulk_upload".""; ?>"> Click Here </a><?php _e('to drop the table.','templatic'); ?></p>
+<p><?php _e('If you want to import cities from GeoPlaces3 to GeoPlaces4 with same City ID then',''); ?><a href="<?php echo home_url()."/wp-admin/admin.php?page=manage_settings&mod=bulkupload&dropcities=true#option_bulk_upload".""; ?>"> Click Here </a><?php _e('to drop the table.','templatic'); ?></p>
 <div class="option option-select"  >
 	<h3 style="width:163px; clear:both;"><?php _e('Select CSV file to upload','templatic');?> : </h3>
 
@@ -766,9 +792,9 @@ else
     <h3 style="width:163px;"><?php _e('Select post type','templatic');?> : </h3>
     <div class="section">
 		<div class="element" style="padding:8px 0px;">
-			<input type="radio" value="post" name="post_type_export" checked="checked" onclick="update_posttype(this.value)"/> Post &nbsp;&nbsp;
-			<input type="radio" value="<?php echo CUSTOM_POST_TYPE1; ?>" name="post_type_export" onclick="update_posttype(this.value)"/> <?php echo CUSTOM_MENU_TITLE; ?> &nbsp;&nbsp;
-			<input type="radio" value="<?php echo CUSTOM_POST_TYPE2; ?>" name="post_type_export" onclick="update_posttype(this.value)"/> <?php echo CUSTOM_MENU_TITLE2; ?>
+			<label for="post" ><input type="radio" id="post" value="post" name="post_type_export" <?php if(get_option('post_type_export') == 'post' ) { ?>checked="checked" <?php } ?> onclick="update_posttype(this.value)"/> Post &nbsp;&nbsp;</label>
+			<label for="place" ><input type="radio"  id="<?php echo CUSTOM_POST_TYPE1; ?>" <?php if(get_option('post_type_export') == CUSTOM_POST_TYPE1 ) { ?>checked="checked" <?php } ?> value="<?php echo CUSTOM_POST_TYPE1; ?>" name="post_type_export" onclick="update_posttype(this.value)"/> <?php echo CUSTOM_MENU_TITLE; ?> &nbsp;&nbsp;</label>
+			<label for="event" ><input type="radio"  id="<?php echo CUSTOM_POST_TYPE2; ?>" <?php if(get_option('post_type_export') == CUSTOM_POST_TYPE2 ) { ?>checked="checked" <?php } ?> value="<?php echo CUSTOM_POST_TYPE2; ?>" name="post_type_export" onclick="update_posttype(this.value)"/> <?php echo CUSTOM_MENU_TITLE2; ?></label>
    		</div>
 	</div>
 	<h3 style="width:163px; clear:both;"></h3>

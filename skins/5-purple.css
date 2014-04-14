@@ -107,7 +107,7 @@ span.near { background:url(5-purple/nearbg.png) no-repeat left top; }
 .header_right span.searchfor small, .header_right span.near small { color:#e9cf80; }
 
 /* content ------------------------ */
-.fav { color:#8b8b8b; background:url(5-purple/i_fav.png) no-repeat left 0;}
+
 
 /* grid view ------------ */
 .grid .post { background:none; }
@@ -263,7 +263,9 @@ h5.form_title { border-bottom:1px solid #ddd; }
 .main_img { border:1px solid #ccc; background:#fff; }
 .date { color:#858585;  }
 .by { color:#858585; border-bottom:1px solid #e3e3e3; }
-.category { color:#858585; background:url(../images/i_category.png) no-repeat left 0px; }
+.category { color:#858585; background-image:url(../images/i_category.png);
+	background-repeat: no-repeat;
+	background-position:left 0px; }
 
 .tags { color:#858585;  background:url(../images/i_tags.png) no-repeat left 2px; }
 .post_left a { color:#000; }

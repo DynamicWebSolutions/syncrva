@@ -4,11 +4,9 @@ if($_POST && !$userInfo)
 	if (  $_SESSION['place_info']['user_email'] == '' )	{
 		$_SESSION['userinset_error'] = array();
 		$_SESSION['userinset_error'][] = 'Email for Contact Details is Empty. Please enter Email, your all informations will sent to your Email.';
-		wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&usererror=1');
+		wp_redirect($site_url.'/?ptype=post_listing&backandedit=1&usererror=1');
 		exit;
-		//echo "<div class=error_msg>".__('Email for Contact Details is Empty. Please enter Email, your all informations will sent to your Email.')."</div>";	
-		//echo '<h6><b><a href="'.site_url().'/?pytpe=post_listing&backandedit=1">Return to Add place</a></b></h6>';
-		//exit;
+
 	}
 	
 	require( 'wp-load.php' );
@@ -60,7 +58,7 @@ if($_POST && !$userInfo)
 	}	
 	if ( $errors->get_error_code() )
 	{
-		wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&usererror=1');
+		wp_redirect(home_url().'/?ptype=post_listing&backandedit=1&usererror=1');
 		exit;
 	}
 		
@@ -68,9 +66,8 @@ if($_POST && !$userInfo)
 	$user_id = wp_create_user( $user_login, $user_pass, $user_email );
 	
 	if ( !$user_id ) {
-		//$errors->add('registerfail', sprintf(__('<strong>ERROR</strong>: Couldn&#8217;t register you... please contact the <a href="mailto:%s">webmaster</a> !'), get_option('admin_email')));
 		$_SESSION['userinset_error'][] = sprintf(__('<strong>ERROR</strong>: Couldn&#8217;t register you... please contact the <a href="mailto:%s">webmaster</a> !'), get_option('admin_email'));
-		wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&usererror=1');
+		wp_redirect(home_url().'/?ptype=post_listing&backandedit=1&usererror=1');
 		exit;
 	}
 	
@@ -103,28 +100,32 @@ if($_POST && !$userInfo)
 		$fromEmail = get_site_emailId();
 		$fromEmailName = get_site_emailName();
 		$store_name = get_option('blogname');
-		$client_message = '[SUBJECT-STR]'.__('Registration Email','templatic').'[SUBJECT-END]<p>'.__('Dear','templatic').' [#$user_name#],</p>
+		$subject = __('Registration Email','templatic');
+		$client_message = '<p>'.__('Dear','templatic').' [#$user_name#],</p>
 		<p>'.__('Your login information:','templatic').'</p>
 		<p>'.__('Username:','templatic').' [#$user_login#]</p>
 		<p>'.__('Password:','templatic').' [#$user_password#]</p>
 		<p>'.__('You can login from','templatic').' [#$store_login_url#] '.__('or the URL is','templatic').' : [#$store_login_url_link#].</p>
 		<p>'.__('We hope you enjoy. Thanks!','templatic').'</p>
 		<p>[#$store_name#]</p>';
-		$filecontent_arr1 = explode('[SUBJECT-STR]',$client_message);
-		$filecontent_arr2 = explode('[SUBJECT-END]',$filecontent_arr1[1]);
-		$subject = $filecontent_arr2[0];
+	
+		$subject = $subject;
 		if($subject == '')
 		{
 			$subject = __("Registration Email","templatic");
 		}
-		$client_message = $filecontent_arr2[1];
-		$store_login = '<a href="'.site_url().'/?ptype=login">Click Login</a>';
-		$store_login_link = site_url().'/?ptype=login';
+		$client_message = $client_message;
+		$store_login = '<a href="'.home_url().$op.'ptype=login">'.__('Click Login','templatic').'</a>';
+		$store_login_link = home_url().$op.'ptype=login';
 		/////////////customer email//////////////
 		$search_array = array('[#$user_name#]','[#$user_login#]','[#$user_password#]','[#$store_name#]','[#$store_login_url#]','[#$store_login_url_link#]');
 		$replace_array = array($_POST['user_fname'],$user_login,$user_pass,$store_name,$store_login,$store_login_link);
 		$client_message = str_replace($search_array,$replace_array,$client_message);	
 		sendEmail($fromEmail,$fromEmailName,$user_email,$userName,$subject,$client_message,$extra='');///To clidne email
+		$admin_subject = __('New User Registration','templatic');
+		$admin_user_registration_message = __('New User : ','templatic');
+		$admin_user_registration_message .= $userName.__('has been registered to your site','templatic').$store_name;
+		sendEmail($fromEmail,$fromEmailName,$fromEmail,$fromEmailName,$admin_subject,$admin_user_registration_message,$extra='');
 		//////REGISTRATION EMAIL END////////
 	}
 	$current_user_id = $user_id;

@@ -165,6 +165,7 @@ jQuery(document).ready(function() {
     jQuery('.currentmenu,.currentmenu div').click(function(){
 		jQuery(this).parent().find('.children').slideToggle('slow', function() {});
 		jQuery(this).parent().find('.menu-header').slideToggle('slow', function() {});
+		jQuery(this).parent().find('.menu-menu-container').slideToggle('slow', function() {});
 	});
 
 	if(jQuery('#main_navi .menu-header ul li.current-menu-item a').html() == null) {
@@ -175,5 +176,6 @@ jQuery(document).ready(function() {
 
     jQuery('.currentmenu2,.currentmenu2 span').click(function(){
 		jQuery(this).parent().find('.menu-header').slideToggle('slow', function() {});
+		jQuery(this).parent().find('.menu-menu-container').slideToggle('slow', function() {});
 	});
 });

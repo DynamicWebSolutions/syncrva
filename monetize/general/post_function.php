@@ -11,15 +11,11 @@ function display_wpcategories_options($taxonomy,$cid)
 		$wpcat_id = NULL;
 		if($taxonomy == '1')
 		{
-			$wpcategories = (array)$wpdb->get_results("
-        SELECT * FROM {$table_prefix}terms, {$table_prefix}term_taxonomy
-        WHERE {$table_prefix}terms.term_id = {$table_prefix}term_taxonomy.term_id
-                AND ({$table_prefix}term_taxonomy.taxonomy ='".CUSTOM_CATEGORY_TYPE1."' OR {$table_prefix}term_taxonomy.taxonomy ='".CUSTOM_CATEGORY_TYPE2."') ORDER BY {$table_prefix}terms.name");
+			$wpcategories = (array)$wpdb->get_results("SELECT * FROM {$table_prefix}terms, {$table_prefix}term_taxonomy
+			WHERE {$table_prefix}terms.term_id = {$table_prefix}term_taxonomy.term_id AND ({$table_prefix}term_taxonomy.taxonomy ='".CUSTOM_CATEGORY_TYPE1."' OR {$table_prefix}term_taxonomy.taxonomy ='".CUSTOM_CATEGORY_TYPE2."') ORDER BY {$table_prefix}terms.name");
 		}else{
-		$wpcategories = (array)$wpdb->get_results("
-        SELECT * FROM {$table_prefix}terms, {$table_prefix}term_taxonomy
-        WHERE {$table_prefix}terms.term_id = {$table_prefix}term_taxonomy.term_id
-                AND {$table_prefix}term_taxonomy.taxonomy ='".$taxonomy."' ORDER BY {$table_prefix}terms.name");
+			$wpcategories = (array)$wpdb->get_results("SELECT * FROM {$table_prefix}terms, {$table_prefix}term_taxonomy
+			WHERE {$table_prefix}terms.term_id = {$table_prefix}term_taxonomy.term_id AND {$table_prefix}term_taxonomy.taxonomy ='".$taxonomy."' ORDER BY {$table_prefix}terms.name");
 		}
 		$wpcategories = array_values($wpcategories);
 		$wpcat2 = NULL;
@@ -70,26 +66,21 @@ function get_wp_post_categores($taxonomy)
 /* Function to fetch category name BOF */
 function get_categoty_name($cat_id)
 {
-
 	global $wpdb;
 	$cat_name ="";
-		$table_prefix = $wpdb->prefix;
-		$wpcat_id = NULL; 
+	$table_prefix = $wpdb->prefix;
+	$wpcat_id = NULL; 
 	$pos = explode(',',$cat_id);
 	$cat_id1 = implode('&',$pos);
 	$pos_of = strpos($cat_id1,'&');
 	if($pos_of == false){
-		$wpcategories = $wpdb->get_row("
-        SELECT * FROM {$table_prefix}terms
-        WHERE {$table_prefix}terms.term_id = '".$cat_id."'");
+		$wpcategories = $wpdb->get_row("SELECT * FROM {$table_prefix}terms WHERE {$table_prefix}terms.term_id = '".$cat_id."'");
 		_e($wpcategories->name,'templatic');
 	}else{
 		$cid = explode('&',$cat_id1);
 		$total_cid = count($cid);
 		for($c=0;$c<=$total_cid;$c++){
-			$wpcategories = $wpdb->get_row("
-        SELECT * FROM {$table_prefix}terms
-        WHERE {$table_prefix}terms.term_id = '".$cid[$c]."'");
+			$wpcategories = $wpdb->get_row("SELECT * FROM {$table_prefix}terms WHERE {$table_prefix}terms.term_id = '".$cid[$c]."'");
 			if($wpcategories->name !=""){
 			$cat_name .= $wpcategories->name.", "; }
 		}
@@ -134,7 +125,7 @@ function get_property_default_status()
 {
 	if(get_option('ptthemes_listing_new_status'))
 	{
-		return get_option('ptthemes_listing_new_status');
+		return strtolower(get_option('ptthemes_listing_new_status'));
 	}else
 	{
 		return 'publish';
@@ -193,6 +184,7 @@ function get_ssl_normal_url($url,$pid='')
 function get_property_price_info($pro_type='',$price='')
 { 
 	global $price_db_table_name,$wpdb;
+	$subsql = '';
 	if($pro_type !="")
 	{
 		$subsql = " and pid=\"$pro_type\"";	
@@ -225,7 +217,7 @@ function get_property_price_info($pro_type='',$price='')
 		$info['cat'] =$priceinfoObj->price_post_cat;
 		$info['is_featured'] = $priceinfoObj->is_featured;
 		
-		$info['title_desc'] =$priceinfoObj->title_desc;
+		$info['title_desc'] =@$priceinfoObj->title_desc;
 		$info['is_recurring'] =$priceinfoObj->is_recurring;
 		if($priceinfoObj->is_recurring == '1') {
 			$info['billing_num'] =$priceinfoObj->billing_num;
@@ -262,7 +254,7 @@ function get_price_info($title='',$catid = '',$ptype)
 					for($k=0;$k<(count($count)-1);$k++)
 					{
 						if($k != count($count) )
-						$pricesql .= "   or price_post_cat Like '%".$count[$k]."%'";
+						$pricesql .= "   or price_post_cat Like '%".$count[$k]."%' or price_post_cat Like '%all%'";
 						else
 						$pricesql .= " price_post_cat Like '0'";
 					}
@@ -271,7 +263,7 @@ function get_price_info($title='',$catid = '',$ptype)
 					$pricesql .= "and status=1";
 			} 
 		}else{
-			$pricesql = "select * from $price_db_table_name where (price_post_type='".$ptype."' or price_post_type='both') and (price_post_cat RLIKE '".$catid.'f5'."' or is_show=1) and status=1  ";
+			$pricesql = "select * from $price_db_table_name where (price_post_type='".$ptype."' or price_post_type='both') and (price_post_cat RLIKE '".$catid.'f5'."' or price_post_cat Like '%all%' or is_show=1) and status=1  ";
 		}
 	} else {
 		
@@ -285,13 +277,24 @@ function get_price_info($title='',$catid = '',$ptype)
 		foreach($priceinfo as $priceinfoObj)
 		{	
 			$pricecat= stristr($priceinfoObj->price_post_cat,$catid1);
-	
+			if(function_exists('icl_register_string')){
+				icl_register_string('templatic',$priceinfoObj->price_title,$priceinfoObj->price_title);
+				icl_register_string('templatic',$priceinfoObj->price_desc,$priceinfoObj->price_desc);
+			}
+			
+			if(function_exists('icl_t')){
+				$package_title = icl_t('templatic',$priceinfoObj->price_title,$priceinfoObj->price_title);
+				$package_desc = icl_t('templatic',$priceinfoObj->price_desc,$priceinfoObj->price_desc);
+			}else{
+				$package_title = __($priceinfoObj->price_title,'templatic'); 
+				$package_desc = __($priceinfoObj->price_desc,'templatic'); 
+			}
 		?>
          <div class="package">
 		 <label><input type="radio" value="<?php echo $priceinfoObj->pid;?>" <?php if($title==$priceinfoObj->pid){ echo 'checked="checked"';}?> name="price_select" id="price_select<?php echo $counter ?>" onClick="show_featuredprice(this.value);"/>
-		 <h3><?php _e($priceinfoObj->price_title,'templatic');?></h3>
-		 <p><?php _e($priceinfoObj->price_desc,'templatic');?></p>
-		 <p class="cost"><span><?php _e('Cost :','templatic'); ?> <?php _e(display_amount_with_currency($priceinfoObj->package_cost),'templatic'); ?></span> <span><?php _e('Validity :','templatic'); ?> <?php _e($priceinfoObj->validity,'templatic'); if($priceinfoObj->validity_per == 'D'){ _e(' Days','templatic'); }else if($priceinfoObj->validity_per == 'M'){ _e(' Months','templatic'); }else{   _e(' Years','templatic'); }?><?php if($priceinfoObj->billing_cycle != "") { ?></span>  <span><?php _e('Billing cycle :','templatic'); ?> <?php _e($priceinfoObj->billing_cycle,'templatic'); if($priceinfoObj->billing_per == 'D'){ _e(' Days','templatic'); }else if($priceinfoObj->billing_per == 'M'){ _e('Months','templatic'); }else{   _e('Years','templatic'); } } ?></span></p> </label>
+		 <h3><?php echo $package_title;?></h3>
+		 <p><?php echo $package_desc;?></p>
+		 <p class="cost"><span><?php _e('Cost :','templatic'); ?> <?php _e(display_amount_with_currency($priceinfoObj->package_cost),'templatic'); ?></span> <span><?php _e('Validity :','templatic'); ?> <?php _e($priceinfoObj->validity,'templatic'); if($priceinfoObj->validity_per == 'D'){ _e(' Days','templatic'); }else if($priceinfoObj->validity_per == 'M'){ _e(' Months','templatic'); }else{   _e(' Years','templatic'); }?><?php if($priceinfoObj->billing_cycle != "" && $priceinfoObj->is_recurring) { ?></span>  <span><?php _e('Billing cycle :','templatic'); ?> <?php _e($priceinfoObj->billing_cycle,'templatic'); if($priceinfoObj->billing_per == 'D'){ _e(' Days','templatic'); }else if($priceinfoObj->billing_per == 'M'){ _e('Months','templatic'); }else{   _e('Years','templatic'); } } ?></span></p> </label>
 		 </div>
         <?php $counter++;
 		}
@@ -299,11 +302,24 @@ function get_price_info($title='',$catid = '',$ptype)
 }
 
 function display_custom_post_field($custom_metaboxes,$session_variable,$geo_latitude='',$geo_longitude='',$geo_address=''){
+	global $wpdb; 
 	foreach($custom_metaboxes as $key=>$val) {
-		$name = $val['name'];
-		$site_title = $val['site_title'];
+		//string translate of wpml activale
+		$context = get_option('blogname');
+		if(function_exists('icl_register_string')){			
+			
+			$site_title = $val['site_title'];
+			icl_register_string($context,$site_title.'site_title',$site_title);
+			$site_title = icl_t($context,$site_title.'site_title',$site_title);
+			$admin_desc = $val['desc'];
+			icl_register_string($context,$admin_desc.'admin_desc',$admin_desc);
+			$admin_desc = icl_t($context,$admin_desc.'admin_desc',$admin_desc);
+		}else{
+			$site_title = $val['site_title'];
+			$admin_desc = $val['desc'];
+		}	
+		$name = $val['name'];		
 		$type = $val['type'];
-		$admin_desc = $val['desc'];
 		$option_values = $val['option_values'];
 		$default_value = $val['default'];
 		$style_class = $val['style_class'];
@@ -319,18 +335,35 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 			$is_required = '';
 			$is_required_msg = '';
 		}
+		$value = '';
 		/* Is required CHECK EOF */
-		if($_REQUEST['pid'])
-		{
-			$post_info = get_post_info($_REQUEST['pid']);
+		if(@$_REQUEST['pid'])
+		{ 
+			$post_info = get_post($_REQUEST['pid']);
 			if($name == 'property_name') {
-				$value = $post_info['post_title'];
+				$value = $post_info->post_title;
 			} else if($name == 'proprty_desc' || $name == 'event_desc') {
-				$value = $post_info['post_content'];
+				$value = $post_info->post_content;
+			} else if($name == 'excerpt') {
+				$value = $post_info->post_excerpt;
+			}else if($name == 'kw_tags'){
+				if($session_variable =='event_info'){
+					$ktag = 'eventtags';
+				}else{
+					$ktag = 'placetags';
+				}
+				
+				$value1 = get_the_terms($post_info->ID,$ktag);
+				for($v=0; $v < count($value1); $v++){
+					if($value1[$v]->name)
+					$value .= $value1[$v]->name.",";
+				}
 			}else {
 				$value = get_post_meta($_REQUEST['pid'], $name,true);
 			}
 			
+		}else{
+			$value = $default_value;
 		}
 		if($_SESSION[$session_variable] && $_REQUEST['backandedit'])
 		{
@@ -353,7 +386,7 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 		}elseif($type=='geo_map'){
 		?>     
 		 <label><?php _e($site_title,'templatic'); echo $is_required; ?></label>      
-		<input name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php echo stripslashes($value);?>" type="text" class="textfield <?php echo $style_class;?>" <?php echo 	$extra_parameter;?> />
+		<input name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php if($value){ echo $value; } ?>" type="text" class="textfield <?php echo $style_class;?>" <?php echo 	$extra_parameter;?> />
 		
 		<?php
 		}elseif($type=='checkbox'){
@@ -376,10 +409,16 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 					$seled='';
 					if($default_value == $option_values_arr[$i]){ $seled='checked="checked"';}							
 					if (trim($value) == trim($option_values_arr[$i])){ $seled='checked="checked"';}	
+					if(function_exists('icl_t')){
+						$context = get_option('blogname');;
+						$dis_name = icl_t($context,$option_values_arr[$i],$option_values_arr[$i]);
+					}else{
+						$dis_name = $option_values_arr[$i];
+					}
 					echo '
 					<div class="form_cat">
 						<label class="r_lbl">
-							<input name="'.$key.'"  id="'.$key.'_'.$chkcounter.'" type="radio" value="'.$option_values_arr[$i].'" '.$seled.'  '.$extra_parameter.' /> '.$option_values_arr[$i].'
+							<input name="'.$key.'"  id="'.$key.'_'.$chkcounter.'" type="radio" value="'.$option_values_arr[$i].'" '.$seled.'  '.$extra_parameter.' /> '.$dis_name.'
 						</label>
 					</div>';							
 				}
@@ -387,10 +426,18 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 			}
 	   
 		}elseif($type=='date'){
-		?>     
+		?>    
+		<script type="text/javascript">
+			jQuery.noConflict();
+			jQuery(function() {
+				jQuery( "#<?php echo $name;?>" ).datepicker( {
+					firstDay: firstDay,
+				} );
+			});
+		</script>		
 		<label><?php  _e($site_title,'templatic'); echo $is_required; ?></label>
 		<input type="text" name="<?php echo $name;?>" id="<?php echo $name;?>" class="textfield <?php echo $style_class;?>" value="<?php echo esc_attr(stripslashes($value)); ?>" size="25" <?php echo 	$extra_parameter;?> />
-		&nbsp;<img src="<?php echo bloginfo('template_directory');?>/images/cal.gif" alt="Calendar" onclick="displayCalendar(document.propertyform.<?php echo $name;?>,'yyyy-mm-dd',this)" style="cursor: pointer; margin-left:5px;" />
+		
 		<?php
 		}
 		elseif($type=='multicheckbox')
@@ -398,6 +445,10 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 		 <label><?php _e($site_title,'templatic'); echo $is_required; ?></label>
 		<?php
 			$options = $val['option_values'];
+			if(!isset($_REQUEST['pid']) && !$_REQUEST['backandedit'])
+			{
+				$default_value = explode(",",$val['default']);
+			}
 			if($options)
 			{  $chkcounter = 0;
 				echo '<div class="form_cat_right">';
@@ -406,7 +457,11 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 				{
 					$chkcounter++;
 					$seled='';
-					$default_value = $value;
+					if(isset($_REQUEST['pid']) || $_REQUEST['backandedit'])
+					  {
+						$default_value = $value;
+					  }
+
 					if($default_value !=''){
 					if(in_array($option_values_arr[$i],$default_value)){ 
 					$seled='checked="checked"';} }	
@@ -426,34 +481,55 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 		if (preg_match("/Android/", $agent) =='') { $mce = "mce"; }else{ $mce = 'textarea';}
 		?>
 		<label><?php  _e($site_title,'templatic'); echo $is_required; ?></label>
-		<textarea name="<?php echo $name;?>" id="<?php echo $name;?>" PLACEHOLDER="<?php echo  $val['default']; ?>" class="<?php echo $mce;?>" <?php echo $extra_parameter;?> ><?php if($value != '') { echo stripslashes($value); }else{ echo  stripslashes($val['default']); } ?></textarea>       
+		<?php
+					// default settings
+					$settings =   array(
+						'wpautop' => false, // use wpautop?
+						'media_buttons' => true, // show insert/upload button(s)
+						'textarea_name' => $name, // set the textarea name to something different, square brackets [] can be used here
+						'textarea_rows' => '10', // rows="..."
+						'tabindex' => '',
+						'editor_css' => '', // intended for extra styles for both visual and HTML editors buttons, needs to include the <style> tags, can use "scoped".
+						'editor_class' => '', // add extra class(es) to the editor textarea
+						'teeny' => false, // output the minimal editor config used in Press This
+						'dfw' => false, // replace the default fullscreen with DFW (supported on the front-end in WordPress 3.4)
+						'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
+						'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+					);				
+					if(isset($value) && $value != '') 
+					{  $content=$value; }
+					else{$content= $val['default']; } 				
+					wp_editor( stripslashes($content), $name, $settings);
+				?>
+		      
 		<?php
 		}elseif($type=='textarea'){ 
+		if(isset($_REQUEST['pid']) || @$_REQUEST['backandedit'] )
+		  {
+			$default_value = $value;
+		  }
 		?>
 		<label><?php _e($site_title,'templatic'); echo $is_required; ?></label>
-		<textarea name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php if($style_class != '') { echo $style_class;}?> textarea" <?php echo $extra_parameter;?>><?php echo stripslashes($value);?></textarea>       
+		<textarea name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php if($style_class != '') { echo $style_class;}?> textarea" <?php echo $extra_parameter;?>><?php echo stripslashes($default_value);?></textarea>       
 		<?php
 		}elseif($type=='select'){
-		$option_default = $val['is_default'];
 		?>
-		 <label><?php  _e($site_title,'templatic'); echo $is_required; ?></label>
-		<select name="<?php echo $name;?>" id="<?php echo $name;?>" class="textfield textfield_x <?php echo $style_class;?>" <?php echo $extra_parameter;?>>
-		<option value="<?php echo $option_default; ?>" <?php if($value==$option_default){ echo 'selected="selected"';} else if($default_value==$option_values_arr[$i]){ echo 'selected="selected"';}else if($value==''){ echo 'selected="selected"'; }?>><?php echo $default_value; ?></option>
-		<?php if($option_values){
-		
-		$option_values_arr = explode(',',$option_values);
-		
-		for($i=0;$i<count($option_values_arr);$i++)
-		{
-		?>
-		<option value="<?php echo $option_values_arr[$i]; ?>" <?php if($value==$option_values_arr[$i]){ echo 'selected="selected"';} else if($default_value==$option_values_arr[$i]){ echo 'selected="selected"';}?>><?php echo $option_values_arr[$i]; ?></option>
-		<?php	
-		}
-		?>
-		<?php }?>
-	   
-		</select>
-		
+		    <label style="padding-top:10px;"><?php _e($site_title,'templatic'); echo $is_required; ?></label>
+            <select name="<?php echo $name;?>" id="<?php echo $name;?>" class="textfield textfield_x <?php echo $style_class;?>" <?php echo $extra_parameter;?>>
+            <option value="">Please Select</option>
+            <?php if($option_values){
+            $option_values_arr = explode(',',$option_values);
+            for($i=0;$i<count($option_values_arr);$i++)
+            {
+            ?>
+            <option value="<?php echo $option_values_arr[$i]; ?>" <?php if($value==$option_values_arr[$i]){ echo 'selected="selected"';} else if($default_value==$option_values_arr[$i]){ echo 'selected="selected"';}?>><?php echo $option_values_arr[$i]; ?></option>
+            <?php	
+            }
+            ?>
+            <?php }?>
+           
+            </select>
+
 		<?php
 		}else if($type=='upload'){?>
 		 <label><?php  _e($site_title,'templatic'); echo $is_required; ?></label>
@@ -466,7 +542,7 @@ function display_custom_post_field($custom_metaboxes,$session_variable,$geo_lati
 	  </div>
 	  <?php if($type=='geo_map') { ?>
 	  <div class="form_row clearfix"> 
-	 <?php include_once(TEMPLATEPATH . "/library/map/location_add_map.php");?>
+	 <?php include_once(get_template_directory() . "/library/map/location_add_map.php");?>
 	 <span class="message_note"><?php echo GET_MAP_MSG;?></span></div> <?php } ?>
 	<?php
 		if($type=='image_uploader') { ?>
@@ -536,9 +612,17 @@ function search_custom_post_field($custom_metaboxes){
 	   
 		}elseif($type=='date'){
 		?>     
+		<script type="text/javascript">
+			jQuery.noConflict();
+			jQuery(function() {
+				jQuery( "#<?php echo $name;?>" ).datepicker( {
+					firstDay: firstDay,
+				} );
+			});
+		</script>
 		<label><?php echo $site_title.$is_required; ?></label>
 		<input type="text" name="<?php echo $name;?>" id="<?php echo $name;?>" class="textfield <?php echo $style_class;?>" value="<?php echo esc_attr(stripslashes($value)); ?>" size="25" <?php echo 	$extra_parameter;?> />
-		&nbsp;<img src="<?php echo bloginfo('template_directory');?>/images/cal.gif" alt="Calendar" onclick="displayCalendar(document.searchform.<?php echo $name;?>,'yyyy-mm-dd',this)" style="cursor: pointer; margin-left:5px;" />
+		
 		<?php
 		}
 		elseif($type=='multicheckbox')	{ ?>
@@ -577,6 +661,7 @@ function search_custom_post_field($custom_metaboxes){
 		?>
 		 <label><?php echo $site_title.$is_required; ?></label>
 		<select name="<?php echo $name;?>" id="<?php echo $name;?>" class="textfield textfield_x <?php echo $style_class;?>" <?php echo $extra_parameter;?>>
+		<option value=""> Select <?php echo $site_title; ?> </option>
 		<?php if($option_values){
 		
 		$option_values_arr = explode(',',$option_values);

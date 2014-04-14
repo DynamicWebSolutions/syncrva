@@ -13,10 +13,22 @@ global $payable_amount,$post_title,$last_postid,$trans_id,$is_recurring,$package
 <input type="hidden" value="<?php echo $payable_amount;?>" name="a3"/>
 <input type="hidden" value="<?php echo $billing_per;?>" name="t3"/>
 <input type="hidden" value="<?php echo $billing_num;?>" name="p3"/>
-<input type="hidden" value="<?php echo $billing_cycle;?>" name="srt"/>
+<?php 
+if($billing_cycle > 1){
+	/*
+	* Issue: If billing cycle value is passed as 1 then "The link you have used to enter the PayPal system is invalid. Please review the link and try again."
+	* error comes when trying to pay.
+	* To solve this, remove srt variable if billing cycle is 1.
+	* http://stackoverflow.com/questions/7063755/paypal-subscription-error-the-link-you-have-used-to-enter-the-paypal-system-is
+	*/
+?>
+	<input type="hidden" value="<?php echo $billing_cycle;?>" name="srt"/>
+<?php
+}
+?>
 <input type="hidden" value="1" name="src"/>
-<input type="hidden" value="<?php echo $returnUrl;?>&amp;pid=<?php echo $last_postid;?>&amp;trans_id=<?php echo $trans_id; ?>" name="return"/>
-<input type="hidden" value="<?php echo $cancel_return;?>&amp;pid=<?php echo $last_postid;?>&amp;trans_id=<?php echo $trans_id; ?>" name="cancel_return"/>
+<input type="hidden" value="<?php echo $returnUrl;?>&pid=<?php echo $last_postid;?>&trans_id=<?php echo $trans_id; ?>" name="return"/>
+<input type="hidden" value="<?php echo $cancel_return;?>&pid=<?php echo $last_postid;?>&trans_id=<?php echo $trans_id; ?>" name="cancel_return"/>
 <input type="hidden" value="<?php echo $notify_url;?>" name="notify_url"/>
 <input type="hidden" value="subscr_cancel" name="txn_type"/>
 <input type="hidden" value="_xclick-subscriptions" name="cmd"/>
@@ -40,6 +52,6 @@ global $payable_amount,$post_title,$last_postid,$trans_id,$is_recurring,$package
        	<center><h1 class="head2"><?php echo PAYPAL_MSG;?></h1></center>
     </div>
 </div>
-<script>
+<script type="text/javascript">
 	setTimeout("document.frm_payment_method.submit()",50); 
 </script> 

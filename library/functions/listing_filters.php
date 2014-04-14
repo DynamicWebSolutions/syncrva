@@ -1,12 +1,21 @@
-<?php 
+<?php global $wpdb;
 add_action('init', 'callback_on_init');
 function callback_on_init()
 {
-    if (is_author() || (isset($_REQUEST['s']) && $_REQUEST['s'] != '')) {
+    if (is_author() || (isset($_REQUEST['s']) && $_REQUEST['s'] != '') || @$_REQUEST['list'] =='favourite') {
         add_action('pre_get_posts', 'custom_post_author_archive');
     }
     add_action('pre_get_posts', 'search_filter');
     /* filter for different pages & feature in frontend */
+}
+/*
+Name : search_post_status
+Description : search page not show the post have draft status
+*/
+function search_post_status($where){
+	global $wpdb;
+	$where .= " AND $wpdb->posts.post_status != 'draft'";
+	return $where; 
 }
 /*
 Name : search_filter
@@ -18,8 +27,9 @@ function search_filter($local_wp_query) {
 	/* apply filters only when user searching/sorting or in author page */
 	if((isset($_REQUEST['sn']) && $_REQUEST['sn'] != "") || (isset($_REQUEST['s']) && $_REQUEST['s'] != "") || isset($_REQUEST['sort']) || isset($_REQUEST['etype']) || isset($_REQUEST['list']) || is_author()) { 
 		if(!strstr($_SERVER['REQUEST_URI'],'/wp-admin/') && is_search() ){ 
+			add_action('posts_where','search_post_status');
 			if($_REQUEST['as'] !='' || $_REQUEST['adv_search'] !=''){
-			add_filter('posts_where', 'searching_filter_where');
+				add_filter('posts_where', 'searching_filter_where');
 			}
 			if($_REQUEST['s']=='cal_event'){
 				add_filter('posts_where', 'search_cal_event_where');
@@ -37,7 +47,9 @@ function search_filter($local_wp_query) {
 				add_filter('posts_orderby', 'author_filter_orderby');
 			}else
 			{
-				add_filter('posts_where', 'author_filter_where');
+
+					add_filter('posts_where', 'author_filter_where');
+			
 				remove_filter('posts_orderby', 'author_filter_orderby');
 				remove_filter('posts_where', 'searching_filter_where');	
 			}
@@ -50,7 +62,22 @@ function search_filter($local_wp_query) {
 	} else {
 		if(is_tax() || is_home()){
 			 /* apply filters only when it's taxonomy page */
-			add_filter('posts_where', 'searching_filter_where');			
+			 global $wpdb,$wp_query;
+			$current_term = $wp_query->get_queried_object();
+
+			if($current_term->taxonomy == CUSTOM_CATEGORY_TYPE2 || is_home() && (get_option('show_on_front')!='page' && get_option('page_for_posts')==0))
+			{ 
+				add_filter('posts_where', 'searching_filter_where');	
+				add_filter('posts_where', 'event_where');					
+			}
+			
+			if($current_term->taxonomy == CUSTOM_CATEGORY_TYPE1 || $current_term->taxonomy == CUSTOM_TAG_TYPE1)
+			{
+				add_filter('posts_where', 'searching_filter_where');	
+			}
+			if($current_term->taxonomy == CUSTOM_TAG_TYPE2){
+				add_filter('posts_where', 'event_where');		
+			}			
 			add_filter('posts_orderby', 'feature_listing_orderby');
 		}
 		
@@ -64,8 +91,10 @@ Desc : Filter to set the posttype on author page and when searching
 function custom_post_author_archive( &$query )
 {
    // if ( $query->is_author )
-	if($_REQUEST['t'] !='' && is_search()){
+	if(@$_REQUEST['t'] !='' && is_search()){
     $query->set('post_type', array('place', 'event','attachment'));
+	}else if(@$_REQUEST['list'] =='favourite'){
+	 $query->set('post_type', array('place', 'event','attachment'));
 	}else{
 	$query->set('post_type', array('post','place', 'event','attachment'));
 	}
@@ -75,8 +104,8 @@ function custom_post_author_archive( &$query )
 		add_filter('posts_orderby', 'archive_filter_orderby');
 	}
     remove_action( 'pre_get_posts', 'custom_post_author_archive' ); // run once!
+	
 }
-
 /*
 Name :ratings_sorting
 Desc : Return ordering as per rating of the post
@@ -114,23 +143,23 @@ Desc : feature listing order by in archive pages
 function archive_filter_orderby($orderby) {
 	global $wpdb,$wp_query;
 	$current_term = $wp_query->get_queried_object();
-	if(!isset($_REQUEST['sort']) && $_REQUEST['sort'] == ""){
+	if(!isset($_REQUEST['sort']) && @$_REQUEST['sort'] == ""){
 	if($current_term->taxonomy == CUSTOM_CATEGORY_TYPE2)
 	{ 
 		if(get_option('ptthemes_listing_order') == ALPHA_ORDER_TEXT ){ 
-		$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.post_title ASC";	
+		$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.post_title ASC";	
 		}else if(get_option('ptthemes_listing_order') == RANDOM_ORDER_TEXT) {  
-		$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,rand()";
+		$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,rand()";
 		}else{ 
-		$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,$wpdb->posts.ID DESC";	
+		$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,$wpdb->posts.ID DESC";	
 		}
 	}else{
 		if(get_option('ptthemes_listing_order') == ALPHA_ORDER_TEXT){
-			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.post_title asc";	
+			$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.post_title asc";	
 		 }else if(get_option('ptthemes_listing_order') == RANDOM_ORDER_TEXT) { 
-			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,rand()";
+			$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,rand()";
 		 }else{  
-			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.ID DESC";	
+			$orderby = "(select distinct $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.ID DESC";	
 		 }
 	}
 	}
@@ -145,7 +174,32 @@ function event_where($where)
 {
 	global $wpdb,$wp_query;
 	$current_term = $wp_query->get_queried_object();
-	if(is_archive())
+	if(is_tax()){
+		if($current_term->taxonomy == CUSTOM_TAG_TYPE2){
+			if($_SESSION['multi_city'])
+			{
+				$multi_city_id = $_SESSION['multi_city'];
+				$where .= " AND  ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='post_city_id' and ($wpdb->postmeta.meta_value like \"%,$multi_city_id,%\" or $wpdb->postmeta.meta_value like \"$multi_city_id,%\" or $wpdb->postmeta.meta_value like \"%,$multi_city_id\" or $wpdb->postmeta.meta_value like \"$multi_city_id\" or $wpdb->postmeta.meta_value='' or $wpdb->postmeta.meta_value='0'))) ";
+			}
+			if($_REQUEST['etype']=='upcoming'){
+				$today = date('Y-m-d');
+				$where .= " AND ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='end_date' and date_format($wpdb->postmeta.meta_value,'%Y-%m-%d %H:%i')>='".$today."')) ";
+			}elseif($_REQUEST['etype']=='past'){
+				$today = date('Y-m-d');
+				$where .= " AND ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='end_date' and date_format($wpdb->postmeta.meta_value,'%Y-%m-%d %H:%i')<='".$today."')) ";
+			}
+		}
+		if($current_term->taxonomy == CUSTOM_CATEGORY_TYPE2){	
+			if($_REQUEST['etype']=='upcoming'){
+				$today = date('Y-m-d');
+				$where .= " AND ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='end_date' and date_format($wpdb->postmeta.meta_value,'%Y-%m-%d %H:%i')>='".$today."')) ";
+				
+			}elseif($_REQUEST['etype']=='past'){
+				$today = date('Y-m-d');
+				$where .= " AND ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='end_date' and date_format($wpdb->postmeta.meta_value,'%Y-%m-%d %H:%i')<='".$today."')) ";
+			}
+		}
+	}elseif(is_archive())
 	{ 
 		global $wp_query, $post;
 		$current_term = $wp_query->get_queried_object();
@@ -205,7 +259,7 @@ function blog_filter_orderby($content)
 }
 /*
 Name : search_cal_event_where
-Description : where fileter to show events on day we selected from calendar
+Description : where filter to show events on day we selected from calendar
 */
 function search_cal_event_where($where)
 {
@@ -234,9 +288,9 @@ Name : feature_listing_orderby
 Description : Order by filter for different pages with different options BOF 
 */
 function feature_listing_orderby($orderby) {
-	global $wpdb,$current_term;
-	
-	if($current_term->taxonomy == CUSTOM_CATEGORY_TYPE2)
+	global $wpdb,$current_term;	
+	$post_type = get_post_type();
+	if(isset($current_term) && $current_term->taxonomy == CUSTOM_CATEGORY_TYPE2)
 	{ 
 		if(get_option('ptthemes_listing_order') == ALPHA_ORDER_TEXT ){ 
 		$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\") asc,$wpdb->posts.post_title ASC";	
@@ -246,14 +300,14 @@ function feature_listing_orderby($orderby) {
 		$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"st_date\") asc,$wpdb->posts.ID DESC";	
 		}
 	}else{
+	$orderby = '';
 		if(is_home()){
 			if(get_option('ptthemes_listing_order') == ALPHA_ORDER_TEXT){
 			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"home_featured_type\") asc,$wpdb->posts.post_title asc";	
 			}else if(get_option('ptthemes_listing_order') == RANDOM_ORDER_TEXT) { 
 			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"home_featured_type\") ASC,rand()";
-			
-			}else{  
-			$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"home_featured_type\") asc,$wpdb->posts.ID DESC";	
+			} else {
+				$orderby.= "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"home_featured_type\") asc,$wpdb->posts.ID DESC";	
 			}
 		}else{
 		 if(get_option('ptthemes_listing_order') == ALPHA_ORDER_TEXT){
@@ -277,28 +331,55 @@ function author_filter_where($where)
 {
 	global $wpdb,$current_user,$curauth,$wp_query;
 	
+	$where = '';
 	$query_var = $wp_query->query_vars;
 	$user_id = $query_var['author'];
 	$post_ids = get_user_meta($current_user->ID,'user_favourite_post',true);
 	$final_ids = '';
-	if($post_ids)
-	  {
-		foreach($post_ids as $key=>$value)
-		 {
-		  if($value != '')
-		    {
-			 $final_ids .= $value.',';
-		    }
-	    }
-		$post_ids = substr($final_ids,0,-1);
-	 }
+	if(!empty($post_ids))
+	{
+		$post_ids = implode(",",$post_ids);
+	}
+	else
+	{
+	 	$post_ids = "''";
+	}
+
+	$qvar = $wp_query->query_vars;
+	$authname = $qvar['author_name'];
+	$curauth = get_userdata($qvar['author']);
+	$nicename = $current_user->user_nicename;
+	$user_id = $curauth->ID;
+	if(!$user_id){
+		$user_id  = $current_user->ID;
+	}
+	if($curauth->ID == $current_user->ID)
+	{ 
+		$post_status = " ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private' OR $wpdb->posts.post_status = 'draft' OR $wpdb->posts.post_status = 'attachment')";
+		
+	}else{
+		if ($curauth->ID == $current_user->ID ) {
+			$post_status = " ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private' OR $wpdb->posts.post_status = 'draft' OR $wpdb->posts.post_status = 'attachment')";
+		}else{
+			$post_status = " ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private' OR $wpdb->posts.post_status = 'attachment')";
+		}
+	}
+
 	if($_REQUEST['list']=='favourite')	{
-		$where = " AND ($wpdb->posts.ID in ($post_ids)) AND ($wpdb->posts.post_type in('place','event','attachment') OR $wpdb->posts.post_type = '".CUSTOM_POST_TYPE1."' OR  $wpdb->posts.post_type = '".CUSTOM_POST_TYPE2."') AND ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private' OR $wpdb->posts.post_status = 'draft' OR $wpdb->posts.post_status = 'attachment') ";			
+		$where .= " AND ($wpdb->posts.ID in ($post_ids)) AND ($wpdb->posts.post_type in('place','event','attachment') OR $wpdb->posts.post_type = '".CUSTOM_POST_TYPE1."' OR  $wpdb->posts.post_type = '".CUSTOM_POST_TYPE2."') AND  $post_status";			
 	}else
 	{	
-		$where = " AND ($wpdb->posts.post_author = $user_id) AND ( $wpdb->posts.post_type ='place' OR $wpdb->posts.post_type ='event' ) AND ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' OR $wpdb->posts.post_status = 'attachment') ";
+		if(is_plugin_active('wpml-string-translation/plugin.php')){
+
+			$language = ICL_LANGUAGE_CODE;
+			$where = " AND ($wpdb->posts.post_author = $user_id) AND ( $wpdb->posts.post_type ='place' OR $wpdb->posts.post_type ='event' ) AND $post_status  AND t.language_code='".$language."'";
+		}else{
+			$where = " AND ($wpdb->posts.post_author = $user_id) AND ( $wpdb->posts.post_type ='place' OR $wpdb->posts.post_type ='event' ) AND $post_status";
+		}
 	}
+
 	return $where;
+	
 }
 /* 
 Name : searching_filter_where
@@ -307,20 +388,46 @@ description : function for filtering posts as per user search and as per city
 function searching_filter_where($where) {
 
 	global $wpdb;
-	$sn = trim($_REQUEST['sn']);
-	$s = trim($_REQUEST['s']);
-	$scat = trim($_REQUEST['catdrop']);
-	$stag = trim($_REQUEST['tag_s']);
-	$todate = trim($_REQUEST['todate']);
-	$frmdate = trim($_REQUEST['frmdate']);
-	$articleauthor = trim($_REQUEST['articleauthor']);
-	$exactyes = trim($_REQUEST['exactyes']);
+	if(isset($_REQUEST['sn']) && $_REQUEST['sn'] !=''){
+		$sn = trim($_REQUEST['sn']);
+	}else{ $sn =''; }
+	
+	if(isset($_REQUEST['s']) && $_REQUEST['s'] !=''){
+		$s = trim($_REQUEST['s']);
+	}else{ $s=''; }
+	
+	if(isset($_REQUEST['catdrop']) && $_REQUEST['catdrop'] !=''){
+		$scat = trim($_REQUEST['catdrop']);
+	}else{ $scat =''; }
+	
+	if(isset($_REQUEST['tag_s']) && $_REQUEST['tag_s'] !=''){
+		$stag = trim($_REQUEST['tag_s']);
+	}else{ $stag =''; }
+	
+	if(isset($_REQUEST['todate']) && $_REQUEST['todate'] !=''){
+		$todate = trim($_REQUEST['todate']);
+	}else{ $todate =''; }
+	
+	if(isset($_REQUEST['frmdate']) && $_REQUEST['frmdate'] !=''){
+		$frmdate = trim($_REQUEST['frmdate']);
+	}else{ $frmdate =''; }
+	
+	if(isset($_REQUEST['articleauthor']) && $_REQUEST['articleauthor'] !=''){
+		$articleauthor = trim($_REQUEST['articleauthor']);
+	}else{
+		$articleauthor = '';
+	}
+	
+	if(isset($_REQUEST['exactyes']) && $_REQUEST['exactyes'] !=''){
+		$exactyes = trim($_REQUEST['exactyes']);
+	}else{ $exactyes = ''; }
 
 	if($_SESSION['multi_city'])
-	{	
+	{	if(isset($_REQUEST['sn']) && $_REQUEST['sn'] !=''){
 		$multi_city_name = $_REQUEST['sn'];
+		}else{ $multi_city_name =''; }
 		$citytable = $wpdb->prefix."multicity";
-		  /* fetch city ID from searched city name */
+		/* fetch city ID from searched city name */
 		if($multi_city_name){
 			$cityid = $wpdb->get_row("select * from $citytable where cityname LIKE '%".$multi_city_name."%'");
 			$multi_city_id = $cityid->city_id;
@@ -337,7 +444,7 @@ function searching_filter_where($where) {
 			 /* search as per address */
 			if($sn !=""){
 			$qry = " AND $wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='geo_address' and $wpdb->postmeta.meta_value like \"%$sn%\") ";
-			}
+			}else{ $qry='';	}
 			/* city search if find cityname in table else search in default city   */
 			if($multi_city_name !=""){
 			
@@ -395,7 +502,7 @@ function searching_filter_where($where) {
 	$custom_metaboxes = get_post_custom_fields_templ($serch_post_types,'','user_side','1');
 	foreach($custom_metaboxes as $key=>$val) {
 	$name = $key;
-		if($_REQUEST[$name]){ 
+		if(isset($_REQUEST[$name]) && $_REQUEST[$name] !=''){ 
 			$value = $_REQUEST[$name];
 			if($name == 'proprty_desc' || $name == 'event_desc'){
 				$where .= " AND ($wpdb->posts.post_content like \"%$value%\" )";
@@ -410,7 +517,7 @@ function searching_filter_where($where) {
 	
 	 /* Added for tags searching */
 	if(is_search() && !@$_REQUEST['catdrop']){
-	$where .= " OR  ($wpdb->posts.ID in (select p.ID from $wpdb->terms c,$wpdb->term_taxonomy tt,$wpdb->term_relationships tr,$wpdb->posts p ,$wpdb->postmeta t where c.name like '".$s."' and c.term_id=tt.term_id and tt.term_taxonomy_id=tr.term_taxonomy_id and tr.object_id=p.ID and p.ID = t.post_id and p.post_status = 'publish' group by  p.ID))";
+	$where .= " OR  ($wpdb->posts.ID in (select p.ID from $wpdb->terms c,$wpdb->term_taxonomy tt,$wpdb->term_relationships tr,$wpdb->posts p ,$wpdb->postmeta t where c.name like '".$s."' and c.term_id=tt.term_id and tt.term_taxonomy_id=tr.term_taxonomy_id and tr.object_id=p.ID and p.ID = t.post_id and p.post_status = 'publish' group by  p.ID)) AND  ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='post_city_id' and ($wpdb->postmeta.meta_value like \"%,$multi_city_id,%\" or  $wpdb->postmeta.meta_value like \"$multi_city_id,%\" or $wpdb->postmeta.meta_value like \"%,$multi_city_id\" or $wpdb->postmeta.meta_value like \"$multi_city_id\") $qry )) AND $wpdb->posts.post_status='publish'";
 	}
 
 	return $where;
@@ -425,5 +532,32 @@ function author_filter_orderby($orderby) {
 	$orderby = "(select $wpdb->postmeta.meta_value from $wpdb->postmeta where $wpdb->postmeta.post_id=$wpdb->posts.ID and $wpdb->postmeta.meta_key like \"featured_type\")+0 desc"; 
 	
 	return $orderby;
+}
+
+/*
+Name : popular_posts_where
+Description : return popular posts city wise */
+function popular_posts_where($where){
+
+		$multi_city_id = $_SESSION['multi_city'];
+		global $wpdb;
+
+		if(!strstr($_SERVER['REQUEST_URI'],'/wp-admin/')){
+			$where .= " AND  ($wpdb->posts.ID in (select $wpdb->postmeta.post_id from $wpdb->postmeta where $wpdb->postmeta.meta_key='post_city_id' and ($wpdb->postmeta.meta_value like \"%,$multi_city_id,%\" or $wpdb->postmeta.meta_value like \"$multi_city_id,%\" or $wpdb->postmeta.meta_value like \"%,$multi_city_id\" or $wpdb->postmeta.meta_value like \"$multi_city_id\" or $wpdb->postmeta.meta_value='' or $wpdb->postmeta.meta_value='0'))) AND $wpdb->posts.post_status='publish' ";
+		}
+		return $where;
+}
+
+/*
+Name : upcoming_events_where
+Dedc : Upcoming events with WPML
+*/
+function upcoming_events_where($where){
+	global $wpdb;
+	if(is_plugin_active('wpml-string-translation/plugin.php')){
+			$language = ICL_LANGUAGE_CODE;
+			$where = " AND t.language_code='".$language."'";
+	}
+	return $where;
 }
 ?>

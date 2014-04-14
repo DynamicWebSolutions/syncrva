@@ -84,7 +84,7 @@ if($_POST['submit_ip'] != "" || isset($_POST['submit_ip']))
 		} */
 	}
  ?>
- <script>location.href = <?php echo site_url().'wp-admin/admin.php?page=manage_settings&mod=ipsettings&updated=1#option_ip_settings'; ?></script>
+ <script type="text/javascript">location.href = <?php echo home_url().'wp-admin/admin.php?page=manage_settings&mod=ipsettings&updated=1#option_ip_settings'; ?></script>
 
 <?php }
 if($_REQUEST['updated'] != "")
@@ -94,11 +94,11 @@ if($_REQUEST['updated'] != "")
  </div>
 <?php }
 ?>
-<form action="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=ipsettings&updated=1#option_ip_settings'; ?>" method="post" name="frmip">
+<form action="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=ipsettings&updated=1#option_ip_settings'; ?>" method="post" name="frmip">
 <input type="submit" name="submit_ip" class="button-framework-imp right position_top" value="<?php _e('Save all changes','templatic');?>">		
 
 <h4><?php _e('IP settings','templatic'); ?></h4>
-<p><?php _e('The IP addresses you have blocked previously appear here. Once you remove them from the list below, they will be unblocked. Suspicious IP addresses should be added to the list below in order to prevent listings done from that IP.','templatic'); ?></p>
+<p><?php _e('Add suspicious IP addresses to the list below in order to prevent listings being submitted to your site from those blocked IPs. To ublock an IP address, remove it from the list.','templatic'); ?></p>
  <div class="option option-select"  >
 	<h3><?php _e('Blocked IP addresses: ','templatic');?></h3>
 		<div class="section">

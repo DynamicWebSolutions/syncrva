@@ -6,8 +6,8 @@ if(!isset($_POST['front_post_city_id'])  && isset($_REQUEST) && $_REQUEST!='' ) 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
-     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta http-equiv="Content-Type" content="<?php echo get_bloginfo('html_type'); ?>; charset=<?php echo get_bloginfo('charset'); ?>" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title><?php wp_title ( '|', true,'right' ); ?></title>
    <?php do_action('templ_head_meta');?>
     <link rel="profile" href="http://gmpg.org/xfn/11" />
@@ -15,14 +15,14 @@ if(!isset($_POST['front_post_city_id'])  && isset($_REQUEST) && $_REQUEST!='' ) 
     <?php do_action('templ_head_css');?>
 	<?php
     wp_enqueue_script('jquery');
-    wp_enqueue_script('cycle', get_template_directory_uri() . '/js/jquery.cycle.all.min.js', 'jquery', false);
-    wp_enqueue_script('cookie', get_template_directory_uri() . '/js/jquery.cookie.js', 'jquery', false);
+    wp_enqueue_script('cycle', get_template_directory_uri() . '/js/jquery.cycle.all.latest.js', 'jquery', false);
+    wp_enqueue_script('cookie', get_template_directory_uri() . '/js/geoplaces.js', 'jquery', false);
     if ( is_singular() ) wp_enqueue_script( 'comment-reply' );
     do_action('templ_head_js');
 	remove_action( 'wp_head', 'feed_links_extra', 3 ); // Display the links to the extra feeds such as category feeds
 	wp_head();
 	
-	?>	<script src="<?php bloginfo('stylesheet_directory'); ?>/js/customSelect.jquery.js"></script>
+	?>	<script src="<?php echo get_bloginfo('stylesheet_directory'); ?>/js/customSelect.jquery.js"></script>
     <style type="text/css">
 		body { margin:0; padding:0; background:#00a3d3; border-top:5px solid #0880a3; font-family:Georgia, "Times New Roman", Times, serif; }
 		img { outline:none; border:0; }
@@ -47,7 +47,7 @@ if(!isset($_POST['front_post_city_id'])  && isset($_REQUEST) && $_REQUEST!='' ) 
 		
 		.styled-select select:focus { color:#333; }
 		.styled-select {
-		   background:url(<?php bloginfo('template_directory'); ?>/images/canvas-arrow.png) no-repeat 229px center;
+		   background:url(<?php echo get_bloginfo('template_directory'); ?>/images/canvas-arrow.png) no-repeat 229px center;
 		   background-color:#fff;
 		   width: 267px !important;
 		   height: 45px !important;
@@ -61,7 +61,7 @@ if(!isset($_POST['front_post_city_id'])  && isset($_REQUEST) && $_REQUEST!='' ) 
 		   *height:auto;
 	  
 		}
-		.b_go { display:block; width:89px; height:48px; background:url(<?php bloginfo('template_directory'); ?>/images/b_go.png) no-repeat left top;  
+		.b_go { display:block; width:89px; height:48px; background:url(<?php echo get_bloginfo('template_directory'); ?>/images/b_go.png) no-repeat left top;  
 		position: absolute; text-indent:-9009px; right:0px; border:none; cursor:pointer;  } 
 		.b_go:hover { background-position:left -48px; }
 		
@@ -83,12 +83,13 @@ function multisite_body_classes($classes) {
 		}
         return $classes;
 }
+add_filter('body_class', 'multisite_body_classes'); 
+global $site_url;
 ?>
-<?php add_filter('body_class', 'multisite_body_classes'); ?>
 <body <?php body_class(); ?>>
 
 	<div class="header">
-    	<?php  templ_site_logo(); ?> 
+    	<?php  do_action('templ_site_logo');  ?> 
     </div>
 	 
      
@@ -96,7 +97,7 @@ function multisite_body_classes($classes) {
      	<h3><?php echo SELECT_CITY_TPL;?></h3>
         <p><?php echo SELECT_CITY_DESC_TPL;?></p>
           <div class="styled-select">
-           <form name="frmcity" id="frmcity" action="<?php echo site_url();?>/" method="post">
+           <form name="frmcity" id="frmcity" action="<?php echo $site_url;?>" method="post">
 		   <?php echo get_multicit_select_dl('front_post_city_id','front_post_city_id','','onchange="document.frmcity.submit();" style="position: absolute; opacity: 0; left:34px;" ');?>
            </form>
          </div>
@@ -108,7 +109,7 @@ function multisite_body_classes($classes) {
 <?php } else  {
 	setcookie("multi_city1", $_POST['front_post_city_id'],time()+3600*24*30*12);
 	$_SESSION['multi_city1'] = $_COOKIE['multi_city1'];
-	wp_redirect(site_url().'/');
+	wp_redirect($site_url);
 	exit;
 }
 

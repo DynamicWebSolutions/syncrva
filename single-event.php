@@ -22,33 +22,30 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
   <?php templ_page_title_below(); //page title below action hook?>
 	<!--  CONTENT AREA START. -->
   <?php templ_before_single_entry(); // before single entry  hooks?>
-   <?php global $single_post;?>
+  <?php global $single_post;?>
   <?php if ( have_posts() ) : ?>
-  <?php while ( have_posts() ) : the_post();
-   $single_post=$post;
-   ?>
+  <?php while ( have_posts() ) : the_post();  $single_post=$post; ?>
  
   <div class="entry">
     <div <?php post_class('single clear'); ?> id="post_<?php the_ID(); ?>">
       <div class="post-meta single_meta">
         <?php if(templ_is_show_post_author()){
 		?>
-        <span class="post-author"><label> <?php echo By ;?> </label> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>">
+        <?php _e('By','templatic');?> <span class="post-author"> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>">
         <?php the_author(); ?>
         </a> </span>
         <?php } ?>
         <?php if(templ_is_show_post_date()){?>
-			<span class="post-date">
-				<label><?php echo on ;?></label> 
-				<?php the_time(templ_get_date_format()) ?>
-			</span> 
+        <?php _e('on','templatic'); ?>
+        <span class="post-date">
+        <?php the_time(templ_get_date_format()) ?>
+        </span> 
         <?php 	} 
-			if(templ_is_show_listing_views()){
-			echo '<span class="post-total-view">'.VIEW_LIST_TEXT.user_post_visit_count($post->ID).'</span>';
+		if(templ_is_show_listing_views()){
+			echo '<span class="post-total-view">'.VIEW_LIST_TEXT.": ".user_post_visit_count($post->ID).'</span>';
 
-			echo '<span class="post-daily-view">'.VIEW_LIST_TEXT_DAILY.user_post_visit_count_daily($post->ID).'</span>';
-			}
-		
+			echo '<span class="post-daily-view">'.VIEW_LIST_TEXT_DAILY.": ".user_post_visit_count_daily($post->ID).'</span>';
+		}
 			if(templ_is_show_post_comment()){?>
         <?php 						comments_popup_link(__('No Comments','templatic'), __('1 Comment','templatic'), __('% Comments','templatic'), '', __('Comments closed','templatic')); ?>
         <?php 					} ?>
@@ -90,34 +87,36 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
       </div>
       <?php }else{?>
       <div class="post-content">
-		 <!-- Image gallery start -->
-        <script src="<?php bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
-        <?php $post_images = bdw_get_images($post->ID,'large');
-		if(count($post_images) != '') { ?>
+        
+        <?php $post_images = bdw_get_images($post->ID,'large');?>
         <div id="galleria" style="overflow:hidden;">
           <?php
                 if(count($post_images)>0)
-				{
+				{ ?>
+                <script src="<?php bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
+                <?php
 					for($im=0;$im<count($post_images);$im++)
-					{
-					?>
-          <div class="small" > <a href="<?php echo $post_images[$im];?>"> <img src="<?php echo $post_images[$im];?>" alt=""  /> </a> </div>
-          <?php	
+					{ ?>
+					  <div class="small" > <a href="<?php echo $post_images[$im];?>"> <img src="<?php echo $post_images[$im];?>" alt=""  /> </a> </div>
+					<?php	
 					}
 				}
 				?>
         </div>
-		<?php } ?>
-		<!-- Image Gallery End -->
-		<?php
-		$agent = $_SERVER['HTTP_USER_AGENT']; // Put browser name into local variable
-		/* Check user agent */
-		$swidth = $_COOKIE['swidth'];
-		if($swidth==0){ $swidth = 1000; }
-		if (preg_match("/iPhone/", $agent) || preg_match("/iPad/", $agent) || preg_match("/Phone/", $agent) || preg_match("/Android/", $agent) || intval($swidth) <= 497 ) {
-			templ_event_detail_sidebar($post,'sidebar right right_col','below_gallery_sidebar');	
-		}
-        the_content(); ?>
+        <?php 
+	  	$agent = $_SERVER['HTTP_USER_AGENT']; // Put browser name into local variable
+		$swidth = $_COOKIE['swidth'];		
+		if(!$swidth){ $swidth = 1000; }		
+		/* Check user agent */	
+		  $event_data = $post;
+    if (preg_match("/iPhone/", $agent) || (preg_match("/iPad/", $agent) && $swidth < 1024) || preg_match("/iPad/", $agent) || preg_match("/Phone/", $agent) || preg_match("/Android/", $agent) || (intval($swidth) <= 497 && $swidth !=0)) {
+      templ_event_detail_sidebar($post,'sidebar right right_col','below_gallery_sidebar');  
+        $post = $event_data;
+        global $post;
+        setup_postdata($post);
+    }
+		
+	   	the_content(); ?>
          <?php if(get_post_meta($post->ID,'video',true)){?>
             <div style="margin-bottom:20px;">
             <?php echo get_post_meta($post->ID,'video',true);?>
@@ -130,7 +129,7 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
 		   <?php } ?>
 		   <?php if(get_post_meta($post->ID,'register_link',true) != '') { ?><p><a class="button" href="<?php echo get_post_meta($post->ID,'register_link',true);?>"><?php echo REGISTER_NOW;?></a></p> <?php } ?>
 			<?php if(get_post_meta($post->ID,'reg_fees',true) !=""){ ?>
-           <p><?php echo FEES_TEXT;?><span class="fees"><?php echo get_post_meta($post->ID,'reg_fees',true);?> </span></p>   <?php } ?>
+           <p><?php _e('Fees','templatic');?> : <span class="fees"><?php echo get_post_meta($post->ID,'reg_fees',true);?> </span></p>   <?php } ?>
       		 </div> <!-- register info #end -->
 
 		<?php } ?>
@@ -164,6 +163,7 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
 			$taxonomy_category = str_replace(CUSTOM_MENU_CAT_TITLE2.':','',$taxonomy_category);
 			$taxonomy_category = str_replace(', and',',',$taxonomy_category);
 			$taxonomy_category = str_replace(' and ',', ',$taxonomy_category);
+			$taxonomy_category = substr($taxonomy_category,1,-1);
 			?>
         <?php _e('','templatic');  if ($taxonomy_category != ''){?>
         <span class="post-category"><?php echo $taxonomy_category; ?></span>
@@ -173,10 +173,10 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
         <?php if(templ_is_show_post_tags()){?>
          <?php $taxonomy_tags = get_the_taxonomies();
 		$taxonomy_tags = $taxonomy_tags[CUSTOM_TAG_TYPE2];
-		$taxonomy_tags = str_replace(CUSTOM_MENU_TAG_LABEL.':','',$taxonomy_tags);
+		$taxonomy_tags = str_replace(CUSTOM_MENU_TAG_LABEL2.':','',$taxonomy_tags);
 		$taxonomy_tags = str_replace(', and',',',$taxonomy_tags);
 		$taxonomy_tags = str_replace(' and ',', ',$taxonomy_tags);
-		 ?>
+		//$taxonomy_tags = substr($taxonomy_tags,1,-1); ?>
         <?php if ($taxonomy_tags != ''){?>
     
         <span class="post-tags"><?php echo $taxonomy_tags; ?></span>
@@ -219,7 +219,7 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
   <script type="text/javascript">
 var $cg = jQuery.noConflict();
 // Load theme
-Galleria.loadTheme('<?php bloginfo('template_directory'); ?>/js/galleria.classic.js');
+Galleria.loadTheme('<?php echo get_bloginfo('template_directory'); ?>/js/galleria.classic.js');
 // run galleria and add some options
     $cg('#galleria').galleria({
         image_crop: true, // crop all images to fit
@@ -247,5 +247,5 @@ Galleria.loadTheme('<?php bloginfo('template_directory'); ?>/js/galleria.classic
 </script>
   <!--  CONTENT AREA END -->
 </div>
-<?php include_once ('library/includes/sidebar_event_detail.php'); ?>
+<?php $post = $pdata; include_once ('library/includes/sidebar_event_detail.php'); ?>
 <?php get_footer(); ?>

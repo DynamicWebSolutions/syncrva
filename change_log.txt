@@ -1,7 +1,2988 @@
+Templatic theme - GeoPlaces       (Initial launched on 28th Fabruary 2012)
+=================================================================================================================================================================================================================
+
+10th April 2014 (Version : 4.6.13)
+-------------------------------------------------------------------------------------
+Fix: Responsive changes
+-------------------------------------------------------------------------------------
+skins/1-default.css
+style.css
+
+-------------------------------------------------------------------------------------
+Fix:  Translation
+-------------------------------------------------------------------------------------
+library/functions/widgets.php
+loop.php
+monetize/registration/profile.php
+single-blog.php
+single-event.php
+single-place.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+taxonomy-placecategory.php
+taxonomy-placetags.php
+tpl_advanced_search.php
+tpl_archives.php
+language/en_US.mo
+language/en_US.po
+
+-------------------------------------------------------------------------------------
+Improvements: Mixed - Code improvement and Responsive
+-------------------------------------------------------------------------------------
+library/functions/theme_options/theme-options.xml
+library/functions/widgets.php
+library/functions/custom_functions.php
+library/functions/widgets/login/login.php
+monetize/registration/registration.php
+monetize/registration/registration_form.php
+monetize/csv/country.csv
+templatic_login.php
+monetize/general/uploadfile.php
+
+-------------------------------------------------------------------------------------
+Fix: Default Navigation menu option was working in reverse for active/deactive options.
+-------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------------------------------
+Fix: Remove select files button from add media button from wp - editor.
+-------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-------------------------------------------------------------------------------------
+Fix: Fetch Address in Gmail Calender & Yahoo calender
+Fix: Default Navigation menu option was working in reverse for active/deactive options.
+-------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------------------------------
+Fix: Facebook popup
+-------------------------------------------------------------------------------------
+loop.php
+
+-------------------------------------------------------------------------------------
+Fix: Blank site with the latest version 1.5.2 of WordPress SEO.
+-------------------------------------------------------------------------------------
+admin/breadcrumbs/yoast-breadcrumbs.php
+
+-------------------------------------------------------------------------------------
+Fix: Allow to upload images only global probelm
+-------------------------------------------------------------------------------------
+monetize/upload/upload.php
+
+-------------------------------------------------------------------------------------
+Fix: Sidebar was not appearing in print preview
+-------------------------------------------------------------------------------------
+library/css/print.css
+
+-------------------------------------------------------------------------------------
+Fix: Excerpts was not working as per backend
+-------------------------------------------------------------------------------------
+loop.php
+
+-------------------------------------------------------------------------------------
+Fix: Remove loop id and added loop class for grid view/list view
+-------------------------------------------------------------------------------------
+library/functions/widgets.php
+style.css
+
+-------------------------------------------------------------------------------------
+Fix: Slider Fade effect was not working & Facebook popup
+-------------------------------------------------------------------------------------
+style.css
+
+-------------------------------------------------------------------------------------
+Fix: Visual editor in back end was not working   
+-------------------------------------------------------------------------------------
+monetize/basic_settings.php
+
+-------------------------------------------------------------------------------------
+Fix: Facebook share was not showing description 
+-------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------------------------------
+New: Registration Auto-login and re-cpatcha
+-------------------------------------------------------------------------------------
+library/functions/theme_options/theme-options.xml
+monetize/registration/login_form.php
+monetize/registration/registration.php
+monetize/registration/registration_form.php
+
+-------------------------------------------------------------------------------------
+Fix: Added 'stripslashes' function for textarea  
+-------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+-------------------------------------------------------------------------------------
+Fix - sidebar showing wrong content due up coming widget. 
+-------------------------------------------------------------------------------------
+single-event.php
+single-place.php
+
+-------------------------------------------------------------------------------------
+Fix: sidebar showing wrong content with upcoming widget.
+-------------------------------------------------------------------------------------
+library/includes/payment/paypal/paypal_response.php
+
+
+-------------------------------------------------------------------------------------
+Fix: PayPal error resolved - The link you have used to enter the PayPal system is invalid.  
+-------------------------------------------------------------------------------------
+library/includes/payment/paypal/paypal_response.php
+monetize/general/return.php
+
+-------------------------------------------------------------------------------------
+Fix: Subcategories order and other child category related fixes
+-------------------------------------------------------------------------------------
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+-------------------------------------------------------------------------------------
+Fix: - Multicity not working if T-post width image and date widget
+ is placed first(with Post type-Post), T-featured listing homepage grid widget second
+-------------------------------------------------------------------------------------
+library/functions/widgets/latest_posts.php
+library/functions/widgets.php
+
+-------------------------------------------------------------------------------------
+Fix: Rating not saving on client side
+-------------------------------------------------------------------------------------
+library/rating/post_rating.php
+taxonomy-placecategory.php
+
+-------------------------------------------------------------------------------------
+Fix: Call Mega Menu JS file
+-------------------------------------------------------------------------------------
+header.php
+js/geoplaces.js
+
+
+13th October 2013 (Version : 4.6.12)
+-----------------------------------------------------------
+Improvement: Backend design updates for WordPress 3.8 
+-------------------------------------------------------
+admin/theme_options/css/option_tree_style.css
+functions.php
+monetize/manage_settings/admin_paymethods_list.php
+--------------------------------------------------------
+Security improvement - Added wordpress nonce while registration
+------------------------------------------------------------------
+library/functions/widgets/login/login.php
+monetize/registration/registration.php
+monetize/registration/registration_form.php
+----------------------------------------------------------
+Improvement: Better localization
+----------------------------------------------
+functions/widgets.php
+loop.php
+monetize/registration/profile.php
+single-blog.php
+single-event.php
+single-place.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+taxonomy-placecategory.php
+taxonomy-placetags.php
+tpl_advanced_search.php
+tpl_archives.php
+-----------------------------------------------------------
+Fix - Script issue in mega menu while in mobile view
+------------------------------------------------------
+js/geoplaces.js
+-----------------------------------------------------
+
+26th October 2013 (Version : 4.6.11)
+-----------------------------------------
+FIX : Registration issue with WordPress 3.7
+-----------------------------------------
+monetize/registration/registration.php
+monetize/registration/login_form.php
+
+------------------------------------
+FIX : Issue of image path was wrong.
+------------------------------------
+skins/1-default.css
+skins/4-orange.css
+style.css
+
+---------------------------------------------------------------------------------
+FIX : Category price was not working properly while category selection is select box.
+---------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-----------------------
+FIX : Regading minify js.
+-----------------------
+Modifie files :
+header.php
+library/map/markermanager.js
+tpl_splash.php
+
+New added file :
+js/geoplaces.js
+
+---------------------------------------------
+FIX : Issues with setting blog as a static page.
+---------------------------------------------
+admin/breadcrumbs/yoast-breadcrumbs.php
+index.php
+library/functions/listing_filters.php
+
+---------------------------------------------------------------------------------
+FIX : Issue of hiding post title from image when no image is there for particular post.
+---------------------------------------------------------------------------------
+library/map/category_listing_map.php
+
+-------------------------------------
+FIX : Design issue of sub menu length.
+-------------------------------------
+style.css
+
+
+
+19th October 2013 (Version : 4.6.10)
+-------------------------------------------------------------------
+FIX : Issue of displaying child category as per multi city location wise.
+-------------------------------------------------------------------
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+----------------------------------------------------------------------
+FIX : Added "Remember me on this computer" link within the Login widget.
+----------------------------------------------------------------------
+library/functions/widgets/login/login.php
+monetize/registration/login_form.php
+
+-------------------------------------
+FIX : Issue of errors due to video code.
+-------------------------------------
+monetize/place/preview.php
+
+------------------------------------------------------------------------------------------
+FIX : Issue of displaying subcategory listing as per city wise post available in subcategory list.
+------------------------------------------------------------------------------------------
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+--------------------------------------------------------------------------------------------------
+FIX : In send inquiry mail [#reply-to#] legend was not getting converted to its equivalent reply to mail.
+--------------------------------------------------------------------------------------------------
+monetize/email_notification/popup_inquiry_frm.php
+
+-------------------------------------------
+FIX : Not getting translated via .po .mo files.
+-------------------------------------------
+language/en_US.po
+monetize/registration/registration_validation.php
+
+---------------------------------------------------
+FIX : wp-gallery responsive issue on blog detail page.
+---------------------------------------------------
+style.css
+
+---------------------------------------------------------------------------
+FIX : Issue of displaying youtube video at the preview event in google chrome.
+---------------------------------------------------------------------------
+monetize/place/preview.php
+monetize/event/preview_event.php
+
+----------------------------------
+FIX : Changed in tea view port tag.
+----------------------------------
+tpl_splash.php
+
+---------------------------------------------------------
+FIX : Issue of line break up was not working with texteditor.
+---------------------------------------------------------
+monetize/general/post_function.php
+
+-----------------------------------------------------------
+FIX : Added link at author dashboard page to number of post.
+-----------------------------------------------------------
+library/functions/custom_functions.php
+
+
+
+5th October 2013 (Version : 4.6.9)
+------------------------------------------------------------
+FIX : Some of the strings added into .po file for the translation.
+------------------------------------------------------------
+language/en_US.po
+library/functions/custom_functions.php
+
+------------------------------------------------------------
+FIX : Demo issues, optimize css and removed unaccessory css.
+------------------------------------------------------------
+library/functions/custom_functions.php
+style.css
+
+---------------------------------------------
+FIX : Category price was not showing/fetching.
+---------------------------------------------
+monetize/event/event_category.php
+
+
+
+29th September 2013 (Version : 4.6.8)
+----------------------------------------------------
+FIX : Issue of database errors showing in the error log.
+----------------------------------------------------
+index.php
+library/functions/listing_filters.php
+
+---------------------------------------------------------------------------
+FIX : Featured entry on home page widget was not showing on top of the list.
+---------------------------------------------------------------------------
+library/functions/widgets.php
+
+--------------------------------------------------
+FIX : Issue of home page grid view pointer on hover.
+--------------------------------------------------
+style.css
+
+-------------------------
+Changed post type in mail.
+-------------------------
+library/functions/ajax_update_status.php
+
+-------------------------------------------------------------------------------------
+FIX : Added mail after updating transaction from transaction section to admin and client.
+-------------------------------------------------------------------------------------
+library/functions/ajax_update_status.php
+
+--------------------------------------------------------------------------------------------
+FIX : Issue of styling for multi checkbox on registration and profile page as same as submit page.
+--------------------------------------------------------------------------------------------
+style.css
+monetize/registration/profile.php
+monetize/registration/registration_form.php
+
+---------------------------------------------------------------------------------------------------------------------------
+FIX : “Blocked loading mixed active content” error was comming up when we try to save options in backend when SSL is enabled.
+---------------------------------------------------------------------------------------------------------------------------
+admin/theme_options/option_settings.php
+
+--------------------------------------------------------------------------------
+FIX : Some errors were showing with the wp_redirect function regarding below files.
+--------------------------------------------------------------------------------
+header.php
+monetize/place/submit_place.php
+
+-------------------------------------------
+FIX : Issue of not showing option of edit link.
+-------------------------------------------
+library/functions/custom_functions.php
+
+---------------------------------------------------------
+FIX : Issue of not showing options of renew/edit/delete link.
+---------------------------------------------------------
+loop.php
+
+
+
+4th September 2013 (Version : 4.6.7)
+------------------------------------------------------------------------
+FIX : Issue of Registration email when register from login dashboard widget.
+------------------------------------------------------------------------
+library/functions/widgets/login/login.php
+
+-------------------------------------------------------------
+Improve: Content Index of style.css corrected.
+FIX : Issue of visual editor border on submit place & event form.
+-------------------------------------------------------------
+style.css
+
+---------------------------------------
+FIX : Change date function to date_i18n.
+---------------------------------------
+search.php
+
+----------------------------------------------------------------------------------------------------------------------------------
+FIX : Issue of visual editor's border was not getting displayed on add place/event page the in "Visual" mode window for less then 768px.
+----------------------------------------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+---------------------------------------------------------------
+FIX : Neighborhood widget was not working with event post type.
+---------------------------------------------------------------
+single-event.php
+
+------------------------------------------------------------------------------------------------------
+FIX : The widget "T>Latest post/place/event" doesn't show any listing for post type as "Places' or "event".
+------------------------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+--------------------------------------------------------------------------------------------------
+FIX : Gallery was not working on preview page when the user deletes a place from the user dashboard.
+--------------------------------------------------------------------------------------------------
+monetize/place/preview.php
+
+----------------------------------------------------------------------------------------------
+FIX : Blur error message was appearing on Login Widget for registration form if we leave field blank.
+----------------------------------------------------------------------------------------------
+library/functions/widgets/login/login.php
+
+-----------------------------------------------------
+FIX : All pop up modal box was not working in IE 8,9,10.
+-----------------------------------------------------
+js/jquery.simplemodal.js
+
+---------------------------------------------------------------------
+FIX :
+Custom field select box value were not appearing over the detail page.
+Subject was mot coming in post expiration mail.
+---------------------------------------------------------------------
+library/functions/custom_functions.php
+
+----------------------------------
+FIX : Replaced "clarfix" to "clearfix".
+----------------------------------
+admin/functions/custom_functions.php
+library/functions/custom_functions.php
+monetize/event/preview_event.php
+monetize/place/preview.php
+
+----------------------------------
+FIX : Image Upload - Security fixes.
+----------------------------------
+monetize/manage_settings/admin_transaction_report.php
+monetize/manage_settings/ajax_category_list.php
+monetize/manage_settings/ajax_custom_taxonomy.php
+
+------------------------------------------------------------------------------------
+FIX : Issue of showing media button to logout for all users other than administrator role.
+------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-----------------------------------------------
+FIX : Console error in Chrome and Opera browser.
+-----------------------------------------------
+admin/functions/custom_functions.php
+header.php
+library/functions/widgets.php
+
+----------------------------------------------------------------
+FIX : Issue of extra fields no saving in geoplaces while bulk upload.
+----------------------------------------------------------------
+monetize/manage_settings/admin_bulk_upload.php
+
+----------------------------------------------------------------
+FIX : Click login no translated through po file while registration mail.
+----------------------------------------------------------------
+monetize/registration/registration.php
+
+
+
+9th August 2013 (Vesion : 4.6.6)
+---------------------------------------------------------------
+Fix : Security issue in image upload
+-------------------------------------------
+monetize/manage_settings/admin_transaction_report.php
+monetize/manage_settings/ajax_category_list.php
+monetize/manage_settings/ajax_custom_taxonomy.php
+Added - monetize/upload/image_uploader.php
+Added - monetize/upload/index.html
+Deleted - monetize/upload/index.php
+
+
+
+
+5th August 2013 (Vesion : 4.6.5)
+--------------------------------------------------------------------------------
+New added : Replaced tiny mce to wp editor while submitting a form rom front end.
+--------------------------------------------------------------------------------
+style.css
+functions.php
+monetize/event/submit_event.php
+monetize/general/post_function.php
+monetize/place/submit_place.php
+
+
+
+1st Aug 2013 (Version : 4.6.4)
+--------------------------------------------------------------
+FIX : Change in country and state code for city with auto install.
+--------------------------------------------------------------
+library/includes/auto_install/auto_install.php
+
+--------------------------------------------
+FIX :
+Event tag listing was not working as city wise.
+Tag listing was not working as city wise.
+---------------------------------------------
+library/functions/listing_filters.php
+
+------------------------------------------------------
+FIX : Upcoming events were not work with WPML plugin.
+------------------------------------------------------
+library/functions/listing_filters.php
+library/functions/widgets.php
+
+-----------------------------------------------------
+FIX : Sample CSV could not download with splash page.
+-----------------------------------------------------
+archive.php
+common_settings.php
+functions.php
+index.php
+page.php
+tpl_archives.php
+tpl_contact.php
+
+--------------------------------------------------------------------------
+FIX : Placeholder was not getting translated was not work (IE browser issue).
+--------------------------------------------------------------------------
+header.php
+js/modernizr.js
+
+------------------------------
+FIX : Issue of facebook fan div.
+------------------------------
+library/functions/widgets.php
+
+
+
+19th July 2013 (Version : 4.6.3)
+---------------------------------------------------------------------------------
+FIX : Issue of new custom fields did not save for events while editing from front end.
+---------------------------------------------------------------------------------
+monetize/event/paynow_event.php
+
+----------------------------------------------------
+FIX : Coupon code overwrite the last inserted coupon.
+----------------------------------------------------
+monetize/manage_settings/admin_coupon.php
+
+----------------------------------------------------------------------------------------------
+Security fixes for "ptype" in URLs with this fixes user can't put out any script or code on your site.
+----------------------------------------------------------------------------------------------
+monetize/manage_settings/ajax_manage_settings.php
+monetize/registration/registration_main.php
+library/functions/custom_functions.php
+admin/functions/custom_functions.php
+monetize/registration/registration.php
+monetize/event/submit_event.php
+common_settings.php
+tpl_contact.php
+archive.php
+index.php
+page.php
+
+--------------------------------------------------------------
+FIX : Latest post widget was not working multiple category wise.
+--------------------------------------------------------------
+library/functions/widgets.php
+
+------------------------------------------------------------------------------------------------------------------
+FIX : Images were not getting resized into the responsive view when we insert them into the post or page descriptions.
+------------------------------------------------------------------------------------------------------------------
+style.css
+
+-----------------------------------------------------------------------------------------
+FIX : Issue of Fetch date format from backend in event detail, listing and on tag listin pages.
+-----------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+
+---------------------------------------
+FIX : New user registration mail to admin.
+---------------------------------------
+monetize/registration/registration.php
+monetize/general/single_insertuser.php
+
+----------------------------------------------------------------------
+FIX : Issue of image was not getting saved from submit place and event.
+----------------------------------------------------------------------
+monetize/place/paynow.php
+monetize/event/paynow_event.php
+
+------------------------------------------------------------------------------
+FIX : Desing issue of category icon at the category settings(back end) in Chrome.
+------------------------------------------------------------------------------
+admin/theme_options/css/option_tree_style.css
+
+---------------------------------
+FIX : Issue of Remove hidden field.
+---------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+--------------------------------------------------------------------------------------------
+FIX : Issue of showing city and country fields while editing listings from the front end dashboard.
+--------------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-------------------------------------------------------------------------
+FIX : WP-recaptcha error message was coming after submitting the Listings.
+-------------------------------------------------------------------------
+monetize/event/preview_event.php
+monetize/place/preview.php
+
+--------------------------------------------------------------------------------------------------
+FIX :
+Issue with the wordpress 3.5.2 appearing as broken when we select a city rather than san Fransisco.
+Event detail page was not displaying event detail sidebar.
+--------------------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------
+FIX : Coupon code was not working properly.
+-------------------------------------------
+monetize/manage_settings/admin_manage_coupon.php
+monetize/manage_settings/admin_coupon.php
+
+
+
+26th June 2013 (Version : 4.6.2)
+------------------------------------------------------------
+FIX : Issue of widget section with wordpress 3.5+ version only.
+------------------------------------------------------------
+monetize/manage_settings/manage_post_custom_fields.php
+monetize/manage_settings/manage_custom_usermeta.php
+monetize/registration/registration_form.php
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+monetize/registration/profile.php
+tpl_advanced_search.php
+functions.php
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+FIX : Images were not getting displayed on detail page if we submit listing from front end because of getting wrong path with the name of month.
+-------------------------------------------------------------------------------------------------------------------------------------------
+monetize/place/paynow.php
+monetize/event/paynow_event.php
+
+---------------------------------------------------------------------------------------------------------
+FIX : Datepicker calendar was not working as per the "Week Starts On" option from backend General settings.
+---------------------------------------------------------------------------------------------------------
+Modified files :
+monetize/manage_settings/manage_post_custom_fields.php
+monetize/manage_settings/manage_custom_usermeta.php
+monetize/registration/registration_functions.php
+monetize/registration/registration_form.php
+monetize/general/post_function.php
+library/functions/custom_filters.php
+monetize/registration/profile.php
+taxonomy-placecategory.php
+tpl_advanced_search.php
+functions.php
+header.php
+style.css
+
+Deleted file :
+js/dhtmlgoodies_calendar.js
+
+New added files :
+library/css/images/ui-bg_highlight-soft_75_cccccc_1x100.png
+library/css/images/ui-bg_glass_75_dadada_1x400.png
+library/css/images/ui-bg_glass_75_e6e6e6_1x400.png
+library/css/images/ui-bg_glass_95_fef1ec_1x400.png
+library/css/images/ui-bg_glass_55_fbf9ee_1x400.png
+library/css/images/ui-bg_flat_0_aaaaaa_40x100.png
+library/css/images/ui-bg_glass_65_ffffff_1x400.png
+library/css/images/ui-bg_flat_75_ffffff_40x100.png
+library/css/images/ui-icons_222222_256x240.png
+library/css/images/ui-icons_454545_256x240.png
+library/css/images/ui-icons_888888_256x240.png
+library/css/images/ui-icons_cd0a0a_256x240.png
+library/css/images/ui-icons_2e83ff_256x240.png
+library/css/images/animated-overlay.gif
+library/css/jquery.ui.all.css
+js/jquery.ui.datepicker.js
+js/jquery.ui.core.js
+library/css/images
+
+-----------------------------------------
+FIX : Issue of specific design break in MAC.
+-----------------------------------------
+monetize/registration/registration_functions.php
+admin/functions/custom_functions.php
+admin/theme_options/options.php
+admin/tpl/footer.php
+footer_bottom.php
+header.php
+
+--------------------------------------------
+FIX :
+Place/event detail page was getting blank. 
+Site was getting blank because of Fatal error.
+--------------------------------------------
+admin/breadcrumbs/yoast-breadcrumbs.php
+
+---------------------------------------------------------------
+FIX : Images were not getting displayed on category listing page.
+---------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------------------------------
+FIX : Warning was showing on author page if no favorite post exists for a particular user.
+-------------------------------------------------------------------------------------
+library/functions/listing_filters.php
+
+-----------------------------------------------------------------------
+FIX :
+Category pop up and home page popup were having different design issue.
+Alignment on blog listing page.
+-----------------------------------------------------------------------
+style.css
+
+--------------------------------------------------------------------------------------------
+FIX : "by" and "on" text was not getting translated on detail page of event and blog detail page.
+--------------------------------------------------------------------------------------------
+single-blog.php
+single-event.php
+
+------------------------------------------------------
+FIX : Home text was not being translated in breadcrumb.
+------------------------------------------------------
+admin/breadcrumbs/yoast-breadcrumbs.php
+
+--------------------------------------------------------------------------------------------
+FIX : WPML related issue as custom fields was not getting translated on submit and detail page.
+--------------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+monetize/general/post_function.php
+loop.php
+
+------------------------------------------------------------------------------
+FIX : Quick Edit a place category title and the category looses the category icon.
+------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+---------------------------------------------------------------------------------------------------------------------------
+FIX : A link from the registration mail redirect to the sign-in page correctly but it was showing "Ng== " there above the sign up page.
+---------------------------------------------------------------------------------------------------------------------------
+monetize/registration/registration.php
+
+---------------------------------------------------------
+FIX :
+Decimal floating issue with total in submit place and event.
+Twitter widget spelling mistake.
+---------------------------------------------------------
+library/functions/widgets/twitter.php
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+--------------------------------------
+FIX : Added Tweeter Widget Guide link .
+--------------------------------------
+library/functions/widgets/twitter.php
+
+---------------------------------------------------------------------------------------------------------------------
+FIX : In backend custom fields list in advanced settings "Field Name" was coming from "Admin Field Label" instead of "Title".
+---------------------------------------------------------------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_list.php
+
+------------------------------------------
+FIX : Issue of recent rating widget disable.
+------------------------------------------
+library/functions/widgets.php
+
+
+
+15th June 2013 (v:4.6.1)
+-----------------------------------
+FIX : Localization issues with WPML.
+-----------------------------------
+monetize/event/paynow_event.php
+monetize/event/preview_buttons_event.php
+monetize/event/preview_event.php
+monetize/event/submit_event.php
+monetize/place/paynow.php
+monetize/place/preview_buttons.php
+monetize/place/submit_place.php
+monetize/email_notification/popup_inquiry_frm.php
+monetize/general/submition_validation.php
+monetize/general/post_function.php
+monetize/general/success.php
+library/functions/custom_functions.php
+library/functions/widgets.php
+functions.php
+language.php
+footer.php
+loop.php
+
+---------------------------
+FIX : W3C Validation issues.
+---------------------------
+WHOLE THEME FOLDER.
+
+---------------------------------------------------------------------------------------------
+FIX : Block IP meta box was not displaying on back end when "claim ownership" option is disabled.
+---------------------------------------------------------------------------------------------
+library/functions/meta_boxes.php
+library/functions/widgets.php
+
+------------------------------------------------------------------
+FIX : Redirection issue of Existing user link on listing submission page.
+------------------------------------------------------------------
+library/functions/widgets.php
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+------------------------------------------------------------------
+FIX : Issue of Twitter widget was not working if cURL is not installed.
+------------------------------------------------------------------
+library/functions/widgets/twitter.php
+
+-----------------------------------
+FIX : Enabled caching for archives
+-----------------------------------
+archive.php
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+-----------------------------------------------------------------------------
+FIX : Issue of add place/event when full page template is set as static page 
+-----------------------------------------------------------------------------
+tpl_full_page.php
+
+
+--------------------------------------
+FIX : Updated files with new strings 
+--------------------------------------
+language/en_US.mo
+language/en_US.po
+
+-----------------------------------------
+FIX : Added theme and forum guide links.
+FIX : Double delete buttin issue 
+-----------------------------------------
+Modified file :
+library/includes/auto_install/auto_install.php
+
+New added file :
+js/admin_notification.js
+
+-------------------------------------------------------------
+FIX : Set Default permalink to post name on theme activation
+-------------------------------------------------------------
+functions.php
+
+----------------------------------------------------------------------
+FIX : Redirection issue of static page with the theme page templates 
+----------------------------------------------------------------------
+Modified files :
+tpl_advanced_search.php
+tpl_full_page.php
+tpl_gallery.php
+tpl_left_sidebar_page.php
+tpl_sitemap.php
+
+New added file :
+common_settings.php
+
+--------------------------------
+FIX : Inquiry mail not working 
+--------------------------------
+monetize/email_notification/popup_inquiry_frm.php
+
+------------------------------------------
+FIX : Issue of coupon code not inserted 
+------------------------------------------
+monetize/manage_settings/admin_coupon.php
+
+-----------------------------------------------------
+FIX : Subcategory bubbles not comes alphabatically 
+-----------------------------------------------------
+taxonomy-placecategory.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+taxonomy-placetags.php
+
+----------------------------
+FIX : Issue of  I AM text
+----------------------------
+language.php
+
+----------------------------------------------------
+FIX : Package description is not getting translated 
+----------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------
+FIX : Issue of user name in post successfully submitted email 
+FIX : Issue of featured place/event after renewing.
+--------------------------------------------------------------
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+---------------------------------------------------------------------
+FIX : Issue of subject was not coming as per the back end settings
+---------------------------------------------------------------------
+monetize/email_notification/popup_inquiry_frm.php
+monetize/place/paynow.php
+monetize/place/single_page_checkout_insertuser.php
+
+----------------------------------------------------------
+FIX : Select all button was missing in category selection 
+----------------------------------------------------------
+monetize/manage_settings/admin_add_city.php
+
+---------------------------------------------------
+FIX : Post title was not showing on preview page 
+---------------------------------------------------
+monetize/event/preview_event.php
+monetize/place/preview.php
+
+----------------------------------------------
+FIX : Caption tag is displaying in listing page 
+----------------------------------------------
+admin/functions/custom_functions.php
+
+-------------------------------------------------------------
+FIX : Calendar was not working on backend event add page 
+-------------------------------------------------------------
+js/dhtmlgoodies_calendar.js
+
+----------------------------------------------------------------------------
+FIX : Designing issue of gravatar and comments with neighbourhood widget
+----------------------------------------------------------------------------
+style.css
+
+
+
+
+29th May 2013 (v:4.6.0)
+---------------------------------------------
+Tag insert issue when wpml activated - Solved.
+---------------------------------------------
+monetize/place/paynow.php
+
+---------------------------------
+Category icon save issue - Solved.
+---------------------------------
+library/functions/custom_functions.php
+
+--------------------------------------
+Issue of forgot password error - Solved.
+--------------------------------------
+library/functions/widgets/login/login.php
+
+-------------------------------------------
+Issue of the below countries - Solved.
+France Metropolitan,
+Korea Democratic People's Republic of,
+Korea Republic of,
+Macedonia The Former Yugoslav Republic of,
+Micronesia Federated States of
+Moldova Republic of.
+-------------------------------------------
+monetize/csv/country.csv
+
+-------------------------
+Remove admin.css - Fixed.
+-------------------------
+monetize/custom_post_type/custom_post_type.php
+
+-------------------------------------------------------
+Related posts were showing in descending order - Solved.
+-------------------------------------------------------
+library/functions/custom_functions.php
+
+---------------------------------------------------------------------------
+Issue of the translation for text "you can upload maximum 10 images" - Solved.
+---------------------------------------------------------------------------
+language/en_US.mo
+language/en_US.po
+
+------------------------------------------
+Theme Guide link was given wrong - Solved.
+------------------------------------------
+library/functions/custom_functions.php
+library/functions/custom_filters.php
+admin/theme_options/options.php
+
+-----------------------------------------
+Revertback changes of mega menu - Done.
+-----------------------------------------
+Modified file :
+functions.php
+
+Deleted file :
+library/functions/mega_menu_widget.php
+
+-----------------------------------------------
+Fatal error of cannot redeclare function - Solved.
+-----------------------------------------------
+library/functions/custom_functions.php
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+-----------------------------------------------------------------
+Issue of Custom fields >> Add a new field - revised Strings - Solved.
+-----------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+
+----------------------------------------------------------------------------------
+Pagination not working on city listing page where there is more than 7 pages - Solved.
+----------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------
+Mail not fired after registration from login widget - Solved.
+-------------------------------------------------------
+library/functions/widgets/login/login.php
+
+--------------------------------------------------------
+Featured image not displaying on category pages - Solved.
+--------------------------------------------------------
+admin/functions/custom_functions.php
+
+----------------------------------------------------------------------
+In event detail page post content comes wrong in mobile view - -Solved.
+----------------------------------------------------------------------
+single-event.php
+
+------------------------------------------
+Removed exit code given by mistake - Fixed.
+------------------------------------------
+monetize/manage_settings/admin_manage_coupon.php
+
+--------------------------------------------------------------------
+In place detail page post content comes wrong in mobile view - Solved.
+--------------------------------------------------------------------
+single-place.php
+
+----------------------------------------------------------
+To save coupon code from serialize to json_decode - Solved.
+----------------------------------------------------------
+functions.php
+
+-----------------------------------------------------------------
+Dead link issue -> Facebook field when filled from frontend - Solved.
+-----------------------------------------------------------------
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+----------------------------------------------------------------------------------------------------------
+Function calls without any condition therefore so many unwanted folders are created in root directory - Solved.
+----------------------------------------------------------------------------------------------------------
+monetize/manage_settings/admin_bulk_upload.php
+
+------------------------------------------
+Subcategory not properly managed - Solved.
+------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+
+-------------------------------------------------
+Auto login after register from login widget - Solved.
+-------------------------------------------------
+library/functions/widgets/login/login.php
+
+---------------------------------------------------
+Remove echo text after deleting auto install - Solved.
+---------------------------------------------------
+library/includes/auto_install/auto_install.php
+
+--------------------------------------------------------------------------------------
+When has two or more words in field name, they are hidden on advanced search - Solved.
+Issue of latest version(3.6) of WordPress - Solved.
+Category page -> meta design - Solved.
+Sharelink font size in iPhone - Solved.
+--------------------------------------------------------------------------------------
+style.css
+
+--------------------------------------------------------
+Not removed thumb url after removing thumb.php - Solved.
+--------------------------------------------------------
+monetize/general/image_uploader.php
+
+----------------------------------------------------------------
+Issue of Latest Post / Place / Event widget differentiates - Solved.
+Featured post display issue - Solved.
+Issue of wpml link - Solved.
+----------------------------------------------------------------
+library/functions/widgets.php
+
+---------------------------------------
+Avoid multicity form from cache - Solved.
+---------------------------------------
+monetize/general/multi_city_functions.php
+
+--------------------------------
+Spelling error corrected - Solved.
+--------------------------------
+library/functions/theme_options/theme-options.xml
+
+--------------------------------
+Subcategory not display - Solved.
+--------------------------------
+taxonomy-placecategory.php
+
+--------------------------------------------------------------
+SiteName and URL was not showing in footer credit link - Solved.
+--------------------------------------------------------------
+footer_bottom.php
+
+--------------------------------------------------------------------------------------
+facebook share button not work -because of splash page (improvements + fixes) - Solved.
+--------------------------------------------------------------------------------------
+admin/functions/custom_functions.php
+library/functions/custom_functions.php
+functions.php
+
+---------------------------------------------------------------
+caching was not included in all pages - fix it for archives - Solved.
+---------------------------------------------------------------
+archive.php
+functions.php
+monetize/general/multi_city_functions.php
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+--------------------------------------------------
+Description not display in user profile fields - Solved.
+--------------------------------------------------
+monetize/registration/registration_functions.php
+
+--------------------------------
+Category selected issue - Solved.
+--------------------------------
+monetize/place/places_category.php
+
+-------------------------------------
+Added phone number in email - Solved.
+-------------------------------------
+monetize/email_notification/popup_owner_frm.php
+
+--------------------------------------------------------------------------------------------------------
+Select box field were remaining selected by default in advanced search, so search was not working - Solved.
+--------------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------
+Calender day change as per user selection - Solved.
+--------------------------------------------------
+header.php
+js/dhtmlgoodies_calendar.js
+
+
+
+18th April 2013 (v:4.5.9)
+--------------------------------
+Added Auto update script - Done.
+--------------------------------
+functions.php
+library/functions/custom_functions.php
+style.css
+templatic_login.php
+wp-updates-theme.php
+
+--------------------------------------------------------------------------------------------
+Text was coming in tag listing below description and it was cropping 1st character too - Solved.
+--------------------------------------------------------------------------------------------
+single-event.php
+
+---------------------------------------------------------------------------------------
+Place category was coming to uncategorized if categoty is displayed in selectbox - Solved.
+---------------------------------------------------------------------------------------
+monetize/place/paynow.php
+
+-----------------------------------------------------
+Unnecessary folders creates at root directory - Solved.
+-----------------------------------------------------
+library/includes/auto_install/auto_install_data.php
+
+----------------------------------------------
+Slashes add in required field validation - Solved.
+----------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+
+------------------------------
+Antivirus plugins issue - Solved.
+------------------------------
+library/functions/custom_functions.php
+monetize/basic_settings.php
+monetize/manage_settings/admin_coupon.php
+monetize/manage_settings/admin_manage_coupon.php
+monetize/manage_settings/function_manage_settings.php
+search.php
+
+----------------------------------------------------------------------
+Remove CSS class field value for google map view custom fields - Solved.
+----------------------------------------------------------------------
+monetize/db_table_creation.php
+
+------------------------------------------------
+Bulk Upload/Export not working correctly - Solved.
+------------------------------------------------
+admin/theme_options/css/option_tree_style.css
+monetize/manage_settings/admin_bulk_upload.php
+
+-------------------------
+Tags save issue - Solved.
+-------------------------
+monetize/place/paynow.php
+
+-------------------------------------------------------------------------
+Issue of define css class in custom fields display on detail page too - Solved.
+Category icon getting blank when save category - Solved.
+-------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+----------------------------------
+Issue of zoom control on - Soolved.
+----------------------------------
+library/map/single_map_widget.php
+
+--------------------------------------------------------
+Image gallery was not displaying in success page - Solved.
+--------------------------------------------------------
+monetize/place/preview.php
+monetize/event/preview_event.php
+
+-------------------------------------------
+Latest post widget not display post - Solved.
+-------------------------------------------
+library/functions/widgets.php
+
+--------------------------------------
+Blog category looses bg colour - Solved.
+--------------------------------------
+skins/2-green.css
+skins/3-yellow.css
+skins/4-orange.css
+skins/5-purple.css
+skins/6-bottlegreen.css
+
+-------------------------------------------------------------------------------------------------
+"None of Above" option was not remaining selected by default in featured option in backend - Solved.
+-------------------------------------------------------------------------------------------------
+monetize/manage_settings/manage_post_custom_fields.php
+
+
+
+23rd March 2013 (v:4.5.8)
+-----------------------------------
+localization issue in event calendar widget
+------------------------------------------
+library/calendar/ajax_calendar.php
+library/calendar/calendar.php
+-----------------------------------
+Grid view was not looking fine on mobile device.
+------------------------------------------------
+style.css
+-----------------------------
+fix - rating option not working.
+-----------------------------------
+admin/theme_options/option_settings.php
+---------------------------------------
+fix - below login-registration widget add  description
+------------------------------------------------------
+library/functions/custom_filters.php
+------------------------------------------
+Feature - add columns events and places on user dashboard listing page.
+---------------------------------------------------------------------------
+library/functions/custom_functions.php
+-------------------------------------------------------
+
+7th March 2013 (V:4.5.7)
+----------------------------------------------------------------------------------
+changed the limit of characters in --> field_category` varchar(118) NOT NULL - Done.
+----------------------------------------------------------------------------------
+monetize/db_table_creation.php
+
+----------------------------------
+remove available details link - Done.
+Remove uncessery print_r - Done.
+----------------------------------
+wp-updates-theme.php
+
+--------------------------------------
+display note on update now link - Done.
+--------------------------------------
+templatic_login.php
+
+--------------------------------------------------------------------------------
+Profile picture was not displaying in comments, only avatar was displaying - Solved.
+--------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+------------------------------------------
+general setting description changes - Done.
+------------------------------------------
+library/functions/theme_options/theme-options.xml
+loop.php
+single-blog.php
+
+----------------------------------
+Issue of twitter alignment - Solved.
+----------------------------------
+style.css
+
+-----------------------------------------------------------------------------
+add condition for comments option not work for place and event listing - Solved.
+-----------------------------------------------------------------------------
+library/functions/widgets.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+taxonomy-placecategory.php
+taxonomy-placetags.php
+
+--------------------------------------------
+tag wise search not work as per city - Solved.
+--------------------------------------------
+library/functions/listing_filters.php
+
+-------------------------------------------
+extra slash were coming in url - "//" - Solved.
+-------------------------------------------
+tpl_splash.php
+
+----------------------------------------------------------
+removed extra dot(.) after the tag/category names - Solved.
+----------------------------------------------------------
+admin/breadcrumbs/yoast-breadcrumbs.php
+single-event.php
+single-place.php
+
+
+
+
+22nd February 2013 (v:4.5.6)
+------------------------------------------------------------------
+filtering issue with event category upcomming and past tab - Solved.
+multycitywise listing not work on category page - Solved.
+------------------------------------------------------------------
+library/functions/listing_filters.php
+
+---------------------------------------------------------------------
+tweeter alignment issue in submit event and submit place page--Solved.
+---------------------------------------------------------------------
+style.css
+
+---------------------------------------------------------
+Issue of wrong URLs with WPML plugin installation - Solved.
+---------------------------------------------------------
+admin/functions/custom_functions.php
+library/functions/widgets.php
+functions.php
+
+---------------------------------------------------------------------------------
+add condition check post status - draft post should be not visible for users - Solved.
+author page showing draft listings - Solved.
+---------------------------------------------------------------------------------
+library/functions/listing_filters.php
+
+-----------------------------------------------------------------------------
+Extra slash(/) is displaying in URL When select the city from drop down - Solved.
+-----------------------------------------------------------------------------
+monetize/general/multi_city_functions.php
+
+-------------------------------------
+remove 0 from category price - Solved.
+-------------------------------------
+monetize/event/event_category.php
+monetize/place/places_category.php
+
+--------------------------------------------------------------
+Events are diplaying in one row in iphone mobile device - Solved.
+megamenu responsive issue - Solved.
+--------------------------------------------------------------
+style.css
+
+---------------------------------------------------------
+image upload button not work in zoom in zoom out - Solved.
+---------------------------------------------------------
+library/js/jqueryupload/ajaxupload.3.5.js
+style.css
+
+-------------------------
+localization issue - Solved.
+-------------------------
+language.php
+library/calendar/ajax_calendar.php
+monetize/email_notification/popup_frms.php
+monetize/email_notification/popup_owner_frm.php
+monetize/event/ajax_check_coupon.php
+monetize/place/ajax_check_coupon_places.php
+
+----------------------------------------
+images not display in auto install - Solved.
+----------------------------------------
+library/includes/auto_install/auto_install_data.php
+
+
+
+8th February 2013 (v:4.5.5)
+-----------------------------------------------------------------------
+From detail page after logged in redirect to particular detail page - Solved.
+-----------------------------------------------------------------------
+monetize/registration/registration.php
+
+---------------------------------------------------
+Images not display in post in back end issue - Solved.
+---------------------------------------------------
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+------------------------------------------------------------
+Change option_value('site_url') to get_option('home') - Solved.
+------------------------------------------------------------
+library/calendar/ajax_calendar.php
+library/functions/widgets/login/login.php
+library/includes/auto_install/auto_install.php
+library/includes/auto_install/auto_install_data.php
+monetize/email_notification/popup_inquiry_frm.php
+monetize/email_notification/popup_owner_frm.php
+monetize/registration/registration_main.php
+monetize/email_notification/popup_frms.php
+monetize/general/success.php
+comments.php
+
+------------------------------------------------------
+Auto install images and bulk upload image issue - Solved.
+------------------------------------------------------
+monetize/manage_settings/admin_bulk_upload.php
+library/includes/auto_install/auto_install_data.php
+
+---------------------------------------------------------------
+Issue of export and upload of cities not working properly - Solved.
+---------------------------------------------------------------
+monetize/manage_settings/admin_bulk_upload.php
+monetize/manage_settings/export_cities.php
+
+---------------------------------------------------------------------------------------------------
+Remove count from child category if we do not want to show count from category post count - Solved.
+---------------------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+----------------------------------------
+Issue with default custom fields - Solved.
+----------------------------------------
+monetize/db_table_creation.php
+
+------------------------------------------------
+footer was mased up because of floating - Solved.
+------------------------------------------------
+skins/1-default.css
+
+-------------------------
+localization issues - Fixed.
+-------------------------
+library/functions/widgets.php
+taxonomy-eventcategory.php
+
+----------------------------------------------------
+Default custom field not loading at first time - Solved.
+Changed the description of add event - Done.
+----------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+language.php
+
+-------------------------------------
+tag listing issue with filtering - Solved.
+-------------------------------------
+library/functions/listing_filters.php
+
+-----------------------------------------------------------------------------
+Issue of alignment for searchbox in header when registration is disabled - Solved.
+-----------------------------------------------------------------------------
+style.css
+
+--------------------------------------------------------------------------------------
+Change site URL to home URL (Wordpress default settings from General settings) - Solved.
+--------------------------------------------------------------------------------------
+Updated - Whole monetize folder
+
+Files :
+admin/theme_options/option_settings.php
+footer.php
+functions.php
+language.php
+library/functions/custom_functions.php
+library/functions/general_functions.php
+library/functions/meta_boxes.php
+library/functions/widgets/login/login.php
+library/functions/widgets.php
+library/includes/csvdl.php
+library/includes/payment/2co/2co_response.php
+library/includes/payment/authorizenet/authorizenet_response.php
+
+----------------------------
+Remove orderby filter - Done.
+----------------------------
+library/functions/widgets.php
+
+-----------------------------------
+mega menu full width issue - Solved.
+-----------------------------------
+header.php
+js/jquery.hoverIntent.minified.js
+
+-----------------------------------------
+Issue of anchor tag closing issue - Solved.
+-----------------------------------------
+library/functions/widgets.php
+
+------------------------------------
+Default field cannot deleted - Solved.
+------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+
+
+
+31st January 2013(4.5.4)
+----------------------------------
+Fixed member area integration issue
+----------------------------------
+templatic_login.php
+wp-updates-theme.php
+
+
+30th January 2013
+--------------------------------
+Added an option of Auto Updates
+--------------------------------
+functions.php
+images/templatic.jpg
+templatic_login.php
+wp-updates-theme.php
+
+------------------------------------------------------
+if ssl enabled on server then urls should come with https
+------------------------------------------------------
+admin/functions/custom_functions.php
+library/map/home_map_widget.php
+
+---------------------------------------------------
+authentication issue with place/event editing - Solved.
+---------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-------------------------------------------------------------
+Show post count with category in category Wise Listing widget 
+-------------------------------------------------------------
+library/functions/widgets.php
+
+----------------------------------
+in IE city was not staying selected 
+----------------------------------
+functions.php
+library/functions/custom_functions.php
+
+---------------------------------------------------------------
+The send inquiry link on listing detail page gets invisible 
+on disabling the Email to friend link from themes backend - Solved.
+---------------------------------------------------------------
+library/functions/custom_functions.php
+
+
+
+19th January 2013 (4.5.3)
+-----------------------------------------------
+Translation issues with the WPML plugin - Solved.
+-----------------------------------------------
+functions.php
+language.php
+library/functions/listing_filters.php
+library/functions/widgets.php
+library/functions/widgets/login/login.php
+monetize/event/paynow_event.php
+monetize/event/submit_event.php
+monetize/general/multi_city_functions.php
+monetize/general/post_function.php
+monetize/manage_settings/admin_custom_usermeta_edit.php
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+monetize/place/paynow.php
+monetize/place/submit_place.php
+monetize/registration/profile.php
+monetize/registration/registration_functions.php
+single-event.php
+
+------------------------------------------------------------------------------------
+Issue of fatal error on preview page - it was coming on most of the users site - Solved.
+------------------------------------------------------------------------------------
+monetize/event/preview_event.php
+monetize/place/preview.php
+
+-----------------------------------------------------------
+removed space and image cropped issue in backend - Solved.
+removed exit and solved category saved issue - Solved.
+-----------------------------------------------------------
+admin/functions/custom_functions.php
+
+---------------------------------------------------------------------------
+Issue of remove is plugin active condition not work in some situations - Solved.
+---------------------------------------------------------------------------
+library/functions/widgets.php
+
+-----------------------------------------------
+Issue of remove strlower from table name - Done.
+-----------------------------------------------
+monetize/db_table_creation.php
+
+----------------------------------------------------------
+category saved and city saved issueon renew time - Solved.
+----------------------------------------------------------
+monetize/place/submit_place.php
+
+
+
+
+16th January 2013 (4.5.2)
+-------------------------------------------
+Issue of make categories in one line - Solved.
+-------------------------------------------
+style.css
+
+----------------------------------------------------
+Issue of query could not find the table name - Solved.
+----------------------------------------------------
+monetize/db_table_creation.php
+
+-----------------------------------------------------
+query have mistake which create the error log - Solved.
+-----------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------
+placeholder not working in IE - Solved.
+-------------------------------------
+js/modernizr.js
+
+------------------------------------------
+Issue of move title in content area - Solved.
+------------------------------------------
+search.php
+
+
+
+
+11th January 2013 (4.5.1)
+-------------------------------------------------
+Issue of mobile menu hover for ubermenu - Solved.
+-------------------------------------------------
+style.css
+
+-----------------------------------------
+Issue of user event detail sidebar - Solved.
+-----------------------------------------
+single-event.php
+
+----------------------------------------------------------------------------------------------------------------
+If we use neighborhood widget per miles then in mobile view detail page content is displaying of widget post - Solved.
+----------------------------------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+-------------------------------------------
+Issue of removed scroll in validation - Solved.
+-------------------------------------------
+monetize/event/submit_event.php
+monetize/general/submition_validation.php
+monetize/place/submit_place.php
+
+---------------------------------------------------------
+Issue of warning when all in one seo plugin active - Solved.
+---------------------------------------------------------
+library/functions/listing_filters.php
+
+-------------------------------------------------------------------
+In third level category price was comes from above category - Solved.
+-------------------------------------------------------------------
+monetize/event/event_category.php
+monetize/place/places_category.php
+
+-----------------------------------
+city wpml translation issue - Solved.
+-----------------------------------
+monetize/general/multi_city_functions.php
+
+-----------------------------------
+removed dash from file name - Done.
+-----------------------------------
+Modified file:
+monetize/general/image_uploader.php
+
+Deleted file:
+monetize/general/upload-file.php
+
+New added file:
+monetize/general/uploadfile.php
+
+-----------------------------------
+changed query of home map - Done.
+-----------------------------------
+library/map/home_map_widget.php
+
+-------------------------------
+Removed echoed query - Solved.
+-------------------------------
+library/map/home_map_widget.php
+
+----------------------------------------------------------------------------------------------
+map not displyed when Hide Home Page Map in Mobile View option in backend set as yes - Solved. 
+----------------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------
+Credit text was looking different in Four column footer - Solved.
+map look bad in responsive - Solved.
+-------------------------------------------------------------
+style.css
+
+------------------------------------------------
+Select city assign value issue in go back - Solved.
+------------------------------------------------
+monetize/place/submit_place.php
+
+---------------------------------------------------
+Spelling mistake removed in one class name - Solved.
+---------------------------------------------------
+fluid_structure.css
+footer_bottom.php
+style.css
+
+--------------------------------------------------
+Map not comes in ipad rotated right screen - Solved.
+--------------------------------------------------
+single-event.php
+single-place.php
+
+-------------------------------------------
+Changed the warning message text - Solved.
+-------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_list.php
+
+---------------------------------------------------------
+upload user photo issue solved at edit profile page - Solved.
+---------------------------------------------------------
+monetize/registration/profile.php
+
+--------------------------------------------------------------------
+Issue of changed profile page and put user photo upload field - Solved.
+--------------------------------------------------------------------
+monetize/registration/lang_reg.php
+monetize/registration/profile.php
+
+-------------------------------------------------------------
+Issue of changed query syntax to solve error in log file - Solved.
+-------------------------------------------------------------
+library/map/home_map_widget.php
+
+---------------------------------------------------------------------------
+Issue of category icon path was coming wrong in edit category form - Solved.
+Issue of fetched get avatar image - Solved.
+---------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+
+
+28th December 2012
+---------------------
+Syntax error - Solved.
+---------------------
+single-place.php
+
+----------------------------------------
+Image uploader stopped working - Solved.
+----------------------------------------
+monetize/general/image_uploader.php
+
+
+
+24th December 2012 (v:4.5.0)
+-------------------------------------------
+Issue of tags could not be inserted - Solved.
+-------------------------------------------
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+--------------------------------------------------------------------
+Comment out error message while uploading an corrupt image - Solved.
+--------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-----------------------------------------------------------------
+while edit a place or event tag field fetch all the post tags - Solved.
+-----------------------------------------------------------------
+monetize/general/post_function.php
+
+----------------------------------------------------------------------------------
+show video when the video code is submitted while adding a place or event - Solved.
+----------------------------------------------------------------------------------
+monetize/event/preview_event.php
+monetize/place/preview.php
+
+------------------------
+update po mo file - Done.
+------------------------
+New Added - language/en_US.mo
+language/en_US.po
+
+-------------------------------------------------------
+localization changes for next and previous button - Done.
+-------------------------------------------------------
+taxonomy-placecategory.php
+taxonomy-placetags.php
+
+---------------------------------------------------------------
+localization  changes, remove rating start from blog posts - Done.
+---------------------------------------------------------------
+library/functions/widgets.php
+
+--------------------------
+Currect some texts - Done.
+--------------------------
+single-event.php
+single-place.php
+
+-----------------------------------------------
+Issue of localize the unloader messages - Solved.
+-----------------------------------------------
+monetize/general/image_uploader.php
+
+
+
+-----------------------------
+21 st December 2012(v:4.4.9)
+-----------------------------
+localization issue
+-------------------------------------------------------
+Geoplaces4/language.php
+Geoplaces4/library/functions/custom_functions.php
+Geoplaces4/library/functions/listing_filters.php
+Geoplaces4/library/functions/widgets.php
+Geoplaces4/library/rating/get_rating.php
+Geoplaces4/monetize/custom_post_type/custom_post_type_lang.php
+Geoplaces4/monetize/manage_settings/admin_bulk_upload.php
+Geoplaces4/single-event.php
+Geoplaces4/taxonomy-eventcategory.php
+Geoplaces4/taxonomy-eventtags.php
+Geoplaces4/taxonomy-placecategory.php
+Geoplaces4/taxonomy-placetags.php
+Geoplaces4/single-place.php
+Geoplaces4/search.php
+
+17th December 2012(v:4.4.8)
+-------------------------------------------------------
+Mobile view sidebar problem solve
+-------------------------------------------------------
+Geoplaces4/single-place.php
+Geoplaces4/single-event.php
+Geoplaces4/library/functions/custom_functions.php
+------------------------------------------------------------------
+show profile picture if its selected
+-------------------------------------------------
+library/functions/custom_functions.php
+author.php
+--------------------------------------------------------------
+remove the place_detail_content_banner widget in single-blog.php file
+----------------------------------------------------------------------
+single-blog.php
+--------------------------------------------------------------------------------
+custom fields could not be translated - solved
+------------------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+-------------------------------------------------------------
+set icl_register_string for custom field 
+-----------------------------------------------
+monetize/general/post_function.php
+monetize/general/submition_validation.php
+wpml-config.xml
+----------------------------------------------
+save price package in floating point
+------------------------------------------
+monetize/db_table_creation.php
+------------------------------------------
+fetch upto two decimal price
+------------------------------------------------
+monetize/place/submit_place.php
+monetize/event/submit_event.php
+monetize/place/place.js
+---------------------------------------------------------------------------------------------
+all categories were showing is price package is set to be category wise in add place - Solved.
+----------------------------------------------------------------------------
+monetize/place/paynow.php
+-----------------------------------------------------
+image issue on go back and edit page
+-----------------------------------------------------
+monetize/general/image_uploader.php
+------------------------------------------
+radio type custom field is displaying in detail page even if no value is entered.
+-----------------------------------------------------------------------------------
+library/functions/custom_functions.php
+------------------------------------------------------------
+show city wise category  count in category wise listing widget
+we recommended slider image height and width issue.
+---------------------------------------------------------------
+library/functions/widgets.php
+----------------------------------------------
+
+
+
+11th December 2012 (v:4.4.7)
+-------------------------------------------------------------------------------------
+twitter widget not working solved with time of tweet posted and link to that tweet
+-------------------------------------------------------------------------------------
+Geoplaces4\library\functions\widgets\twitter.php
+-------------------------------------------------------------
+multicheckbox custom fields display issue - solved
+------------------------------------------------------
+library/functions/custom_functions.php
+--------------------------------------------
+post with image widget not working 
+----------------------------------------------
+library/functions/widgets/latest_posts.php
+------------------------------------------------
+RSS widget style issue - solved 
+------------------------------------
+style.css
+-------------------------------------------------------------
+passed extra parameter in function get_wp_category_checklist
+------------------------------------------------------------
+monetize/manage_settings/ajax_custom_taxonomy.php
+------------------------------------------------------------------
+show on add place in custom fields will show yes if we select 
+display location on user side or both side else it will display no
+-------------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_list.php
+-----------------------------------------------------------------
+define event start time and event end time in language file
+-------------------------------------------------------------
+language.php
+----------------------------------------------------------
+Designed calender widget pop up for mobile devices
+-----------------------------------------------------
+library/calendar/ajax_calendar.php
+style.css
+--------------------------------------------------
+popular post widget not working for post type - post
+---------------------------------------------
+library/functions/widgets/popularposts.php
+----------------------------------------------------------------	
+latest post ,place and event widget not working in footer area
+---------------------------------------------------------------
+library/functions/widgets.php	
+
+
+7th Dec - 2012 (v: 4.4.6)
+-------------------------------------------------
+Event Listing Calendar Display Responsive - Done.
+-------------------------------------------------
+style.css
+
+1st Dec - 2012 (v:4.4.5)
+---------------------------
+localization changes - Done.
+---------------------------
+language.php
+library/calendar/ajax_calendar.php
+library/functions/custom_functions.php
+monetize/email_notification/popup_inquiry_frm.php
+monetize/event/preview_event.php
+monetize/general/image_uploader.php
+monetize/registration/lang_reg.php
+search.php
+single-event.php
+taxonomy-eventcategory.php
+tpl_contact.php
+tpl_splash.php
+
+---------------------------------------------
+moved rating setting in general setting - Done.
+---------------------------------------------
+library/functions/theme_options/theme-options.xml
+
+---------------------------------------------------------
+add condition to eevrything makes work with ajax - Solved.
+---------------------------------------------------------
+functions.php
+
+-----------------------------------------
+change query for auto install table - Done.
+-----------------------------------------
+monetize/db_table_creation.php
+
+-----------------------------------
+Issue errors in error log file - Solved.
+database error - Solved.
+-----------------------------------
+library/functions/custom_functions.php
+library/map/category_listing_map.php
+
+--------------------------------------------------------
+remove add to favourite from latest post widgets - Solved.
+--------------------------------------------------------
+library/functions/widgets.php
+
+
+
+
+27th Nov - 2012 (v:4.4.4)
+---------------------
+security fixes - Done.
+---------------------
+images/tmp/.htaccess
+monetize/upload/upload.php
+monetize/general/image_uploader.php
+functions.php
+monetize/general/upload-file.php
+
+
+26th Nov - 2012 (v:4.4.3)
+--------------------------------------------------------------
+Issue of Fourth column widget were going out of footer - Solved.
+--------------------------------------------------------------
+footer_bottom.php
+
+---------------------------------
+show custom fields issue - Solved.
+---------------------------------
+monetize/manage_settings/function_manage_settings.php
+
+------------------------------------------------------
+coupon code at 100% shows a wrong message - Solved.
+------------------------------------------------------
+monetize/event/ajax_check_coupon.php
+monetize/place/ajax_check_coupon_places.php
+
+----------------------------------------------
+Issue with custom fields on add event - Solved.
+----------------------------------------------
+monetize/event/paynow_event.php
+
+-----------------------------------
+sample csv download issue - Solved.
+-----------------------------------
+library/includes/csvdl.php
+monetize/manage_settings/admin_bulk_upload.php
+
+--------------------------------------------------------
+price amount in float not saving in price package - Solved.
+--------------------------------------------------------
+monetize/db_table_creation.php
+
+--------------------------
+slider thumb issue - Solved.
+--------------------------
+library/functions/widgets.php
+
+-------------------------------------------------
+changes to resolve security problem issue - Solved.
+security fixes - Done.
+-------------------------------------------------
+monetize/upload/index.php
+monetize/upload/upload.php
+
+----------------------------------------------------
+widget field text changed from "Slugs" to "Id" - Solved.
+post contet issue in mobile phone - Solved.
+----------------------------------------------------
+library/functions/widgets/latest_posts.php
+
+-----------------------------------------------------
+Issue of category does not save while editing - Solved.
+-----------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+---------------------------------------------------------------------------------------------------------------------
+check condition for allowed only images/picture file extension file on file upload, global assign file extension array - Solved.
+assign global variable file extension - Solved.
+---------------------------------------------------------------------------------------------------------------------
+functions.php
+monetize/general/upload-file.php
+
+---------------------------------------------------------
+check condition for request pid not equal to blank - Solved.
+---------------------------------------------------------
+monetize/general/image_uploader.php
+
+
+
+
+22nd nov - 2012 (v:4.4.2)
+------------------------------
+added missing </div> - Solved.
+------------------------------
+footer_bottom.php
+
+-----------------------------------
+can't access the back end - Solved.
+-----------------------------------
+functions.php
+
+------------------------------------------------------------
+Remove post type validation for home page order by - Solved.
+------------------------------------------------------------
+library/functions/listing_filters.php
+
+---------------------------------------------------------------------
+just add stripslashes for apostrophe issue in custom fields - Solved.
+---------------------------------------------------------------------
+monetize/general/post_function.php
+
+----------------------------------------------------
+the issue with apostrophe in custom fields - Solved.
+----------------------------------------------------
+monetize/place/preview.php
+
+------------------------------------------------
+sub menu issue with custom menu widget - Solved.
+------------------------------------------------
+style.css
+
+------------------------------------------------------------------------------------
+Issue of use get_the_ID() in neighborhood_bymiles widget for get the image - Solved.
+------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+-------------------------------------------------------------------------
+issue with view your submitted information link on success page - Solved.
+-------------------------------------------------------------------------
+monetize/general/success.php
+
+----------------------------------------------------
+custom field not saving in event post type - Solved.
+----------------------------------------------------
+monetize/event/paynow_event.php
+monetize/manage_settings/function_manage_settings.php
+
+-----------------------------------------
+Issue of collon related changes - Solved.
+-----------------------------------------
+author.php
+language.php
+library/functions/custom_functions.php
+library/functions/widgets.php
+loop.php
+single-blog.php
+single-event.php
+taxonomy-eventcategory.php
+taxonomy-eventtags.php
+taxonomy-placecategory.php
+taxonomy-placetags.php
+
+------------------------------------------
+Issue of fetch selected category - Solved.
+------------------------------------------
+monetize/event/paynow_event.php
+
+--------------------------------------------------
+Issue of change map version for pinpoint - Solved.
+--------------------------------------------------
+library/map/category_listing_map.php
+library/map/city_location_add_map.php
+library/map/home_map_widget.php
+library/map/listing_map_widget.php
+library/map/location_add_map.php
+library/map/preview_map.php
+library/map/single_map_widget.php
+
+
+
+
+
+17th Nov - 2012 (v:4.4.1)
+-------------------------------------------------------------
+Issue of tags for both post types - Solved.
+-------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------
+issue of true to concate with post - Solved.
+--------------------------------------------------------------
+monetize/place/paynow.php
+
+-----------------------------------------------------------------------------------
+remove unnecessary code it show not found error - Done.
+-----------------------------------------------------------------------------------
+library/css/dhtmlgoodies_calendar.css
+style.css
+
+----------------------------------------------------------------------------
+Issue of add multicity widget in auto install - Solved.
+----------------------------------------------------------------------------
+library/includes/auto_install/auto_install_data.php
+
+------------------------------------------------------------------------
+Issue of popular posts not work properly - Solved.
+------------------------------------------------------------------------
+library/functions/widgets/popularposts.php
+library/functions/listing_filters.php
+
+---------------------------------------------------------------------------
+Issue of multicity widget not working in IE - Solved.
+---------------------------------------------------------------------------
+functions.php
+index.php
+
+-------------------------------------------------------------------
+Issue of shows error on splash page - Solved.
+-------------------------------------------------------------------
+functions.php
+
+----------------------------------------------------------------------------------------------
+Issue of price package select all categories not working - solved.
+----------------------------------------------------------------------------------------------
+library/functions/general_functions.php
+monetize/manage_settings/admin_manage_settings.php
+monetize/manage_settings/admin_price_add.php
+
+----------------------------------------------------------------
+Issue of message of custom fields - Solved.
+----------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_list.php
+
+------------------------------------------------------------------------------------------------------
+Issue of event detail page blank fields also display in sidebar - Solved.
+------------------------------------------------------------------------------------------------------
+library/includes/sidebar_event_detail.php
+
+--------------------------------------------------------------------
+Issue of event detail sidebar changes - Solved.
+--------------------------------------------------------------------
+library/functions/custom_functions.php
+
+---------------------------------
+Remove substr -Done.
+---------------------------------
+monetize/event/event_category.php
+monetize/place/places_category.php
+
+------------------------------------------------------------
+Issue of author url on dashboard -Solved.
+------------------------------------------------------------
+author.php
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Issue of latest post, event, places category not working when category not selected for post type post - Solved.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+--------------------------------------------
+fit all available issue - Solved.
+--------------------------------------------
+library/map/home_map_widget.php
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+if select all selected from category selection in backend and ,admin create new category , then new category automatically get selected for all fields/packages you have select SELECT ALL checkbox - Solved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+library/functions/general_functions.php
+monetize/general/post_function.php
+monetize/manage_settings/admin_add_city.php
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+monetize/manage_settings/admin_manage_custom_fields_list.php
+monetize/manage_settings/admin_price_add.php
+monetize/manage_settings/ajax_custom_taxonomy.php
+monetize/manage_settings/ajax_price_taxonomy.php
+
+-------------------------------------------------------------------------------
+Issue of add option for resposive map enable - Solved.
+-------------------------------------------------------------------------------
+library/functions/custom_functions.php
+library/functions/theme_options/theme-options.xml
+monetize/db_table_creation.php
+
+--------------------------------------------------------------------------------------
+Issue of Set map show/hide option for responsive - Solved.
+--------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+-------------------------------------------------------------------------------
+Issue of add option for resposive map enable - Solved.
+-------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+----------------------------------
+Change the title - done.
+----------------------------------
+library/functions/theme_options/theme-options.xml
+
+
+
+7th Nov 2012 (v:4.4.0)
+------------------------------------------------------------------------
+Issue of map not displaying on tag page - Solved.
+------------------------------------------------------------------------
+library/map/category_listing_map.php
+
+------------------------------------------------------------------------------
+Issue of search page not display the images - Solved.
+------------------------------------------------------------------------------
+library/functions/listing_filters.php
+
+----------------------------------------------------------------------------------
+Issue of insert custom fields value in database - Solved.
+----------------------------------------------------------------------------------
+monetize/event/paynow_event.php
+monetize/manage_settings/function_manage_settings.php
+monetize/place/paynow.php
+
+----------------------------------------------------------------------------------------------------------------
+Issue of custom fields select all not working for place custom fields - Solved.
+----------------------------------------------------------------------------------------------------------------
+library/functions/general_functions.php
+monetize/manage_settings/ajax_custom_taxonomy.php
+
+-------------------------------------------------------------------------------------------------------------------------
+Issue of show select option for all post type and both in add custom fields - Solved.
+-------------------------------------------------------------------------------------------------------------------------
+library/functions/general_functions.php
+
+----------------------------------------------------------------------------------------------------------------
+Issue of custom fields select all not working for place custom fields - Solved.
+----------------------------------------------------------------------------------------------------------------
+monetize/manage_settings/admin_manage_custom_fields_edit.php
+
+--------------------------------------------------------------------------------------
+Issue of popular posts widget not comes citywise - Solved.
+--------------------------------------------------------------------------------------
+library/functions/widgets/popularposts.php
+
+
+
+
+30th Oct 2012 (v:4.3.9)
+-------------------------------------------------------------------------------------------
+Issue of Apostrophy s is not working in custom fields - Solved.
+-------------------------------------------------------------------------------------------
+monetize/event/preview_event.php
+
+----------------------------------------
+Issue of a js error - Solved.
+----------------------------------------
+monetize/event/submit_event.php
+
+------------------------------------------------------------------------------------------------------------------------
+Issue of background image was not changing from backend in green skin - Solved.
+------------------------------------------------------------------------------------------------------------------------
+skins/2-green.css
+
+----------------------------------------------------------------------------------
+Issue change DOMAIN to templatic twitter.php - Solved.
+----------------------------------------------------------------------------------
+library/functions/widgets/twitter.php
+
+------------------------------------------------------------------------------------------
+Issue of categories not save when comes for editing - Solved.
+------------------------------------------------------------------------------------------
+monetize/place/submit_place.php
+
+--------------------------------------------------------------------------------------------------------------------------------
+Issue of category and tags + excerpt not display correctly when comes for edit - Solved.
+--------------------------------------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------------------
+Issue of Megamenu padding & line height - Solved.
+Issue of custom menu design - Solved.
+--------------------------------------------------------------------------
+style.css
+skins/1-default.css
+
+----------------------------------------------------------------------------
+Issue of edit events- category not showing - Solved.
+----------------------------------------------------------------------------
+monetize/event/submit_event.php
+
+-------------------------------------------------------------------------------------
+Issue of change DOMAIN to templatic twitter.php - Solved.
+Issue of RSS page giving an error - Solved.
+-------------------------------------------------------------------------------------
+functions.php
+
+------------------------------------------------------------------------------------------------------------------------
+Issue of MY favorites not showing up on newly registered user dashboard - Solved.
+Issue of show only publish post while searching a post - Solved.
+Issue of remove echo - Solved.
+------------------------------------------------------------------------------------------------------------------------
+library/functions/listing_filters.php
+
+----------------------------------------------------------------------------------------------
+Issue of contact us page showing content besides map - Solved.
+----------------------------------------------------------------------------------------------
+style.css
+tpl_contact.php
+
+-----------------------------------------------------------------------------------------------------------------------------
+Issue of Place is being added to Uncategorized category for Select box type - Solved.
+-----------------------------------------------------------------------------------------------------------------------------
+monetize/place/paynow.php
+
+--------------------------------------------------------------------------------------------------
+Issue of changes asked by vishakha madam for language - Solved.
+--------------------------------------------------------------------------------------------------
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+--------------------------------------------------------------------------------------------------------
+Issue of show listing of current city on home page map widget - Solved.
+Issue of query filter - Solved.
+--------------------------------------------------------------------------------------------------------
+library/map/home_map_widget.php
+
+-------------------------------------------------------------------------------------------------------------------------
+Issue of show checkbox of feature post for home page and category page - Solved.
+-------------------------------------------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+---------------------------------------------------------------------------------------
+Issue of Event is added in Uncategorized category - Solved.
+---------------------------------------------------------------------------------------
+monetize/event/paynow_event.php
+
+-----------------------------------------------------------------------
+Issue of fetch latest post category wise - Solved.
+-----------------------------------------------------------------------
+library/functions/widgets.php
+
+
+
+
+24th Oct - 2012 (v:4.3.8)
+----------------------------------------------------------------------------------------------------
+email issue, slash in mail when use inverted comma in title - Solved.
+----------------------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+library/functions/widgets/contact/contact.php
+library/functions/widgets/login/login.php
+monetize/email_notification/popup_frms.php
+monetize/email_notification/popup_inquiry_frm.php
+monetize/email_notification/popup_owner_frm.php
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+monetize/place/single_page_checkout_insertuser.php
+monetize/registration/registration.php
+
+---------------------------------------------------------------------------------------------------
+Calender widget was showing Location field blank in popup - Solved.
+---------------------------------------------------------------------------------------------------
+library/calendar/ajax_calendar.php
+
+---------------------------------------------------------------
+Issue of twitter widget not working - Solved.
+---------------------------------------------------------------
+library/functions/widgets/twitter.php
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+Issue of map pin not display on event category listing page when "Show all places on category map" selected yes - Solved.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+library/map/category_listing_map.php
+
+--------------------------------------------------------------------
+Giving a javascript error on add event - Solved.
+--------------------------------------------------------------------
+monetize/place/submit_place.php
+
+------------------------------------------------------------------------------
+View Your Listing after adding a place issue - Solved.
+------------------------------------------------------------------------------
+monetize/general/success.php
+
+-----------------------------------------------------------
+Issue of return url issue paypal - Solved.
+-----------------------------------------------------------
+library/includes/payment/paypal/paypal_response.php
+
+------------------------------------------------------------------------------
+Image upload button is not showing properly - Solved.
+------------------------------------------------------------------------------
+monetize/general/image_uploader.php
+
+-------------------------------------------------------------------------------------
+Issue of "BY" text in "Latest Place/posts" widget - Solved.
+-------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+
+
+
+20th Oct - 2012 (v:4.3.7)
+-------------------------------------------------
+added / in site url variable - Done.
+-------------------------------------------------
+functions.php
+monetize/general/multi_city_functions.php
+
+----------------------------------------------------------------
+Removed greenbox from success message.
+----------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-------------------------------------------------------------
+Text were not included in .po file - Solved.
+-------------------------------------------------------------
+monetize/general/image_uploader.php
+
+---------------------------------------------------------------
+Issue of twitter widget not working - Solved.
+---------------------------------------------------------------
+library/functions/widgets/twitter.php
+
+----------------------------------------------------------------------------------------------
+Link in We Recommend widget are not working in IE 9 - Solved.
+Header design messup in mobile view if site title is long - Solved.
+Issue of Header Logo height issue - Solved.
+----------------------------------------------------------------------------------------------
+style.css
+
+----------------------------------------------------------------------------------------------------------------
+Issue of radio button validation not working on user registration form - Solved.
+Issue of through up when click on button - Solved.
+----------------------------------------------------------------------------------------------------------------
+monetize/general/submition_validation.php
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+Removed "0" from the categories which are not having any amount specified on Add Event page - Done.
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+monetize/event/event_category.php
+
+----------------------------------------------------------------------------
+Removed custom query of category assign - Solved.
+----------------------------------------------------------------------------
+monetize/place/paynow.php
+monetize/event/paynow_event.php
+
+------------------------------------------------------------
+Changed structure for responsive - Done.
+------------------------------------------------------------
+header.php
+
+--------------------------------------------------------------------------------------------
+Issue of localization issue for food,products or places - Solved.
+--------------------------------------------------------------------------------------------
+language.php
+
+-----------------------------------------
+SEO related issue - Solved.
+-----------------------------------------
+admin/functions/custom_functions.php
+
+----------------------------------------------------------------------------------------------------------------
+Issue of radio button validation not working on user registration form - Solved.
+----------------------------------------------------------------------------------------------------------------
+monetize/registration/registration_validation.php
+
+-----------------------------------------------------------
+Upcoming Events widget issue - Solved.
+-----------------------------------------------------------
+library/functions/listing_filters.php
+library/functions/widgets.php
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Issue of If we add custom field of type "Select", it is not showing field label in the frontend "Submit place/event" page - Solved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+---------------------------------------------------------------------------------------------------------------------------------------
+Issue of View your listing is giving 404 error when draft is set as default post status - Solved.
+---------------------------------------------------------------------------------------------------------------------------------------
+language.php
+monetize/general/success.php
+
+------------------------------------------------
+Issue of preview url link - Solved.
+------------------------------------------------
+monetize/general/success.php
+
+-------------------------------------------------------------
+Coupon validation is not working - Solved.
+-------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+----------------------------------------------------------------------------------------------------------------------------------------
+wp-recaptcha validation comes even if its right and same user validation not working - Solved.
+----------------------------------------------------------------------------------------------------------------------------------------
+monetize/registration/registration.php
+
+----------------------------------------------
+Issue of redirect url - Resolved.
+----------------------------------------------
+language.php
+monetize/general/success.php
+
+---------------------------------------------------------
+Issue of manage coupon error - Solved.
+---------------------------------------------------------
+monetize/event/ajax_check_coupon.php
+monetize/event/submit_event.php
+monetize/place/ajax_check_coupon_places.php
+monetize/place/submit_place.php
+
+-----------------------------------------------------------------------------------------
+Issue of fetch all users name for backend add page - Solved.
+-----------------------------------------------------------------------------------------
+functions.php
+
+
+
+10th Oct - 2012 (v:4.3.6)
+--------------------------------------------------------------
+Text were not included in .mo file - Solved.
+--------------------------------------------------------------
+monetize/email_notification/popup_owner_frm.php
+
+----------------------------------------
+mega menu issue - Solved.
+----------------------------------------
+header.php
+
+----------------------------------------------------
+map zooming factor issue - Solved.
+----------------------------------------------------
+library/map/location_add_map.php
+
+--------------------------------------------
+zooming factor issue - Solved.
+--------------------------------------------
+library/map/location_add_map.php
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+-----------------------------------------------
+display category issue - Solved.
+-----------------------------------------------
+library/map/home_map_widget.php
+
+-----------------------------------------------------
+custom fields display issue - solved.
+-----------------------------------------------------
+monetize/manage_settings/function_manage_settings.php
+
+----------------------------------------------------------------
+Issue of footer in responsive mode - Solved.
+----------------------------------------------------------------
+style.css
+
+
+
+6th Oct - 2012 (v:4.3.5)
+------------------------------------------------
+language wise category - Solved.
+place as per langauges - Solved.
+------------------------------------------------
+monetize/event/event_category.php
+monetize/place/places_category.php
+
+----------------------------------------------------------------------------
+Issue of delete the query of get categories - Solved.
+----------------------------------------------------------------------------
+monetize/manage_settings/ajax_category_list.php
+
+-----------------------------------------------------------------------------------------------------
+popup not work when click on change link because of heigth - Solved.
+removed code for get image - Done.
+-----------------------------------------------------------------------------------------------------
+monetize/upload/index.php
+
+-------------------------------------------------------------------------------------
+author field hide, two times showing in dashboard - Solved.
+-------------------------------------------------------------------------------------
+author.php
+
+--------------------------------------------------------------------
+categorywise custom fields not came - Solved.
+--------------------------------------------------------------------
+monetize/place/submit_place.php
+monetize/manage_settings/function_manage_settings.php
+
+
+
+3rd Oct - 2012 (v:4.3.4)
+--------------------------------------------------
+Issue of NevoSlider slide - Solved.
+--------------------------------------------------
+style.css
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Issue of link color changed from back-end should not apply to admin baar in front-end - Solved.
+------------------------------------------------------------------------------------------------------------------------------------------
+admin/add_style.php
+
+--------------------------------------------------------------------
+Issue of near by widget with WPML - Solved.
+issue of neighbour hood miles widget - Solved.
+--------------------------------------------------------------------
+library/functions/widgets.php
+
+----------------------------------------------------------
+wpml add to favorites not work - Solved.
+----------------------------------------------------------
+library/functions/listing_filters.php
+
+-----------------------------------------------
+navigation menu issue - Solved.
+-----------------------------------------------
+admin/functions/custom_functions.php
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Event redirect issue - when we select any category the page is being redirected to submit place page - Solved.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+
+------------------------------------------------------
+Time field do not get saved - Solved.
+------------------------------------------------------
+monetize/event/paynow_event.php
+
+--------------------------------
+wpml issues - Solved.
+--------------------------------
+Whole folder of the theme.
+
+------------------------------------------------------------------------------------------
+Menu Locations problem for Above header menu too - Solved.
+------------------------------------------------------------------------------------------
+admin/functions/custom_functions.php
+
+--------------------------------------------------------------------------------------------
+Map scaling factor is not changing while editing a city - Solved.
+--------------------------------------------------------------------------------------------
+library/map/city_location_add_map.php
+
+----------------------------------------------------------------------------
+recent review widget issue for wpml issues - Solved.
+----------------------------------------------------------------------------
+library/functions/widgets.php
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+If a field is enabled to display as per category - it's value is not being stored while adding post from back-end - Solved.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+monetize/manage_settings/function_manage_settings.php
+
+--------------------------------------------
+WPML xml file include - Done.
+--------------------------------------------
+New added file - wpml-config.xml
+
+-----------------------------------------------------------------------------------
+upcoming events shows unlimited num of posts - Solved.
+-----------------------------------------------------------------------------------
+library/functions/widgets.php
+
+--------------------------------------------------------------------------
+change the link of user in comments form - Solved.
+--------------------------------------------------------------------------
+comments.php
+
+--------------------------------------------------------------------------------------------
+Issue of event satart date and end date view changes - Solved.
+--------------------------------------------------------------------------------------------
+taxonomy-eventcategory.php
+
+-----------------------------------
+city with wpml - Solved.
+-----------------------------------
+monetize/manage_settings/admin_add_city.php
+monetize/manage_settings/admin_manage_city.php
+
+-----------------------------------------------------
+Issue of change form name - solved.
+-----------------------------------------------------
+monetize/manage_settings/admin_manage_settings.php
+
+-----------------------------------------------------------
+Issue of price package amount - Solved.
+-----------------------------------------------------------
+monetize/place/submit_place.php
+monetize/event/submit_event.php
+
+
+
+22nd Sept - 2012 (v: 4.3.3)
+------------------------------------------------------------------------------------------------------------------------------------------
+shows error if image not uploaded- Solved.
+Added Price and Category icon fields in price and events categories page in back end - Solved.
+------------------------------------------------------------------------------------------------------------------------------------------
+library/functions/custom_functions.php
+
+----------------------------------------------------
+validation not work on edit - Solved.
+----------------------------------------------------
+monetize/general/submition_validation.php
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+category page Map : add setting for show all posts in map + sub categories icon issue - Solved.
+-------------------------------------------------------------------------------------------------------------------------------------------
+library/map/category_listing_map.php
+library/functions/theme_options/theme-options.xml
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+child category not fetching when category type is both while creating a custom fields from backend - Solved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+library/functions/general_functions.php
+
+-------------------------------------------------------------
+The issue of menu in responsive - Solved.
+-------------------------------------------------------------
+admin/functions/custom_functions.php
+js/recurring_event.js
+style.css
+
+---------------------------------------------------------------------
+show error when no category selected - Solved.
+---------------------------------------------------------------------
+library/functions/custom_functions.php
+
+------------------------------------------------------------------
+solve the issue of special character - Solved.
+------------------------------------------------------------------
+monetize/manage_settings/admin_bulk_upload.php
+
+-------------------------------------------------------------------------------------
+changed the options text for new category option - Solved.
+-------------------------------------------------------------------------------------
+library/functions/theme_options/theme-options.xml
+library/map/category_listing_map.php
+
+-----------------------------------------------------------------------------------------
+menu showing twice with Ubermenu - Solved.
+Menu toogle coming twice with Ubermenu activated - Solved.
+header navigation issue - Solved.
+-----------------------------------------------------------------------------------------
+admin/functions/custom_functions.php
+
+--------------------------------------------------------------------
+call galleria js when images are there - Solved.
+--------------------------------------------------------------------
+single-event.php
+single-place.php
+
+-------------------------------------------------
+validation for re-captcha - Solved.
+-------------------------------------------------
+monetize/registration/registration_form.php
+monetize/registration/registration.php
+
+----------------------------------------------------------------------------------------
+show full content or excerpt as per backend setting - Solved.
+----------------------------------------------------------------------------------------
+taxonomy-eventcategory.php
+taxonomy-placecategory.php
+
+--------------------------------------------------------------------
+user profile field design on dashboard - Solved.
+--------------------------------------------------------------------
+style.css
+
+------------------------------------------------------------------------------------------------------------
+multi chechkbox and select box default value not getting saved - Solved.
+------------------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------------------
+texteditor not showing in user profile page - Solved.
+--------------------------------------------------------------------------
+monetize/registration/profile.php
+library/functions/custom_filters.php
+monetize/registration/registration_form.php
+
+---------------------------------------------------
+edit form does not submit - Solved.
+---------------------------------------------------
+monetize/place/submit_place.php
+monetize/event/submit_event.php
+
+---------------------------------------------------------------
+textarea not fetching default value - Solved.
+---------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------------
+show title for text heading in backend - Solved.
+--------------------------------------------------------------------
+monetize/manage_settings/admin_custom_usermeta_edit.php
+
+-------------------------------------------------------------------------------
+multi check box showing error in profile page - Solved.
+-------------------------------------------------------------------------------
+monetize/registration/profile.php
+
+-----------------------------------------------------------------------------------------------------------------------
+renew time category selection redirect to submit page not on renew page - Solved.
+-----------------------------------------------------------------------------------------------------------------------
+monetize/event/submit_event.php
+monetize/place/submit_place.php
+
+-------------------------------------------------------------------
+renew time category remain selected - Solved.
+-------------------------------------------------------------------
+monetize/event/paynow_event.php
+monetize/place/paynow.php
+
+--------------------------
+changed the label
+--------------------------
+library/functions/theme_options/theme-options.xml
+
+----------------------------------------------------------------------------------------------------
+remove billing cycle period if set to recurring to no after yes - Solved.
+----------------------------------------------------------------------------------------------------
+monetize/general/post_function.php
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Front Sidebar Widget pushes widgets to bottom - (Removed an extra </div> for <div class="flickr"> from that file)--> Done.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+library/functions/widgets/flickr.php
+
+----------------------------------------
+coupon code error - Solved.
+----------------------------------------
+Added -> monetize/place/ajax_check_coupon_places.php
+Added -> monetize/event/ajax_check_coupon.php
+monetize/place/submit_place.php
+monetize/event/submit_event.php
+
+------------------------------------------------------------------------------
+hide html variable name for edit custom field - Solved.
+------------------------------------------------------------------------------
+monetize/manage_settings/admin_custom_usermeta_edit.php
+
+-------------------------------------------------
+WPML compatible code - Solved.
+-------------------------------------------------
+library/functions/widgets/latest_posts.php
+library/functions/widgets/popularposts.php
+
+----------------------------------------------
+scroll on bottom issue - Solved.
+----------------------------------------------
+admin/theme_options/js/jquery.option.tree.js
+
+---------------------------------------------------------------------------------------------------------------------
+T - Upcoming events widget was not displaying events from current city - Solved.
+---------------------------------------------------------------------------------------------------------------------
+library/functions/widgets.php
+
+-------------------------------------------------------------------------
+changed template path to get_template_directory()
+-------------------------------------------------------------------------
+For the whole theme it self.
+
+---------------------------------------------------------------
+WPML compatible code - Solved.
+changes related to recent reviews - Solved.
+---------------------------------------------------------------
+monetize/general/multi_city_functions.php
+library/functions/listing_filters.php
+library/functions/widgets.php
+library/map/home_map_widget.php
+
+-------------------------------------------------------------
+changes related to theme chacker - Done.
+-------------------------------------------------------------
+For the whole theme it self.
+
+
+
 12th Sept - 2012
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 add admin init action for insert the event and place latitude and longitude in postcodes table if post id didn't in postcodes table then insert event and place latitude and longitude in postcodes table - Done.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 library/functions/custom_functions.php
 
 ---------------------------------------------------

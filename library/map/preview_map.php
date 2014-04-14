@@ -20,7 +20,7 @@ if(!function_exists('show_address_google_map'))
 }
 $term_icon = get_bloginfo('template_directory').'/library/map/icons/pin.png';
     ?>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false" type="text/javascript"></script>
     <script type="text/javascript">
 	/* <![CDATA[ */
 	function initialize() {	

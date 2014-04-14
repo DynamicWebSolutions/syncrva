@@ -1,6 +1,6 @@
 <!-- bottom section start -->
  <div class="bottom">
- 	<div class="bottom_in clear">
+ 	<div class="bottom_in clearfix">
  	<?php if(templ_is_footer_widgets_2colright()) {?>
           
            		 
@@ -57,23 +57,23 @@
   		}else if(templ_is_footer_widgets_4col())
 		{?> 
     	  
-            <div class="foruth_column left">
+            <div class="fourth_column left">
             	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('footer1'); }?>
             </div> <!-- three_column #end -->
             
             
-            <div class="foruth_column spacer_4col left">
+            <div class="fourth_column spacer_4col left">
             	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('footer2'); }?>
             </div> <!-- three_column #end -->
             
-            <div class="foruth_column spacer_4col left">
+            <div class="fourth_column spacer_4col left">
             	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('footer3'); }?>
             </div> <!-- three_column #end -->
-            
-             <div class="foruth_column right">
+           
+             <div class="fourth_column right">
             	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('footer4'); }?>
             </div> <!-- three_column #end -->
-          
+           </div>
         <?php	
  		}else if(templ_is_footer_widgets_fullwidth())
 		{?> 
@@ -91,10 +91,10 @@
   
   		<?php if (function_exists('dynamic_sidebar') && dynamic_sidebar('footer_nav')){?><?php } else {?>  <?php }?> 
   			
-    <p class="copyright">&copy; <?php the_time('Y'); ?> <a href="<?php bloginfo('home'); ?>">
+    <p class="copyright">&copy; <?php the_time('Y'); ?> <a  href="http://templatic.com/demos/geoplaces/wordpress-business-directory-theme-and-city-guide/" alt="WordPress Business Directory Theme" title="WordPress Business Directory Theme">
       <?php bloginfo('name'); ?>
       </a>. <?php echo RIGHTS_TEXT;?> </p>
-    <p class="credits"><?php echo DESIGNED_TEXT;?> <a class="footer-logo" href="http://templatic.com"><?php echo TEMPLATIC_TEXT;?></a></p>
+    <p class="credits"><?php echo DESIGNED_TEXT;?> <a class="footer-logo" href="http://templatic.com" title="wordpress themes" alt="wordpress themes"><?php echo TEMPLATIC_TEXT;?></a></p>
   </div>
 </div> <!-- footer #end -->
 <?php templ_after_footer(); // content end hooks?>

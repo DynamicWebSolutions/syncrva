@@ -33,7 +33,6 @@ box-shadow: 1px 1px 1px #ccc;
 #calendarDiv td:hover { color:#666; }
 #calendarDiv .selectBox{ border:none; background:none;  color:#eee; text-shadow:1px 1px 1px #333; }
 #calendarDiv .selectBoxOver { border:none; background:#none; color: #fff; text-shadow:1px 1px 1px #333;  }
-#calendarDiv .topBar { background: #282828 url(../../images/calendar_topbg.png) repeat-x left bottom;padding:4px;  }
 #calendarDiv .activeDay { color:#fff; background:#333; text-shadow:1px 1px 1px #333; }
 #calendarDiv .activeDay:hover { color:#fff; }
 #calendarDiv .oldDay { color: #c4c4c4; pointer-events: none; background:none; }

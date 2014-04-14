@@ -4,12 +4,15 @@ Template Name: Page - Advanced Search
 */
 ?>
 <?php
+if(file_exists(get_template_directory()."/common_settings.php")){
+		include(get_template_directory()."/common_settings.php");
+	}
 add_action('wp_head','templ_header_tpl_advsearch');
 function templ_header_tpl_advsearch()
 {
 	?>
-	<script type="text/javascript" language="javascript">var rootfolderpath = '<?php echo bloginfo('template_directory');?>/images/';</script>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script>
+	<script type="text/javascript" language="javascript">var rootfolderpath = '<?php echo get_bloginfo('template_directory');?>/images/';</script>
+	<?php /* <script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script> */ ?>
     <?php
 }
 ?>
@@ -40,10 +43,10 @@ function templ_header_tpl_advsearch()
     	 <?php the_content(); ?>
     </div>
       
-      
+      <?php global $site_url,$wcode;?>
       <div id="advancedsearch">
         <h4> <?php echo SEARCH_WEBSITE; ?></h4>
-        <form method="get"  action="<?php echo bloginfo('url')."/"; ?>" name="searchform" onsubmit="return sformcheck();">
+        <form method="get"  action="<?php echo $site_url; ?>" name="searchform" onsubmit="return sformcheck();">
           <div class="advanced_left">
            <p> <label><?php echo SEARCH;?></label>
               <input class="adv_input" name="s" id="adv_s" type="text" PLACEHOLDER="<?php echo SEARCH; ?>" value="" />
@@ -57,14 +60,25 @@ function templ_header_tpl_advsearch()
          
               <?php wp_dropdown_categories( array('name' => 'catdrop','orderby'=> 'name','show_option_all' => __('select category','templatic'), 'taxonomy'=>array(CUSTOM_CATEGORY_TYPE1,CUSTOM_CATEGORY_TYPE2)) ); ?>
             </p>
+			<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery(function() {
+					jQuery( "#todate" ).datepicker( {
+						firstDay: firstDay,
+					} );
+					jQuery( "#frmdate" ).datepicker( {
+						firstDay: firstDay,
+					} );
+				});
+			</script>
             <p>
-              <label><?php echo DATE_TEXT;?></label>
-                <input name="todate" type="text" class="textfield" />
-                <img src="<?php echo bloginfo('template_directory');?>/images/cal.gif" alt="Calendar" class="adv_calendar" onclick="displayCalendar(document.searchform.todate,'yyyy-mm-dd',this)"  />
-				<?php echo TO;?> 
-                <input name="frmdate" type="text" class="textfield"  />
-                <img src="<?php echo bloginfo('template_directory');?>/images/cal.gif" alt="Calendar"  class="adv_calendar" onclick="displayCalendar(document.searchform.frmdate,'yyyy-mm-dd',this)"  />
+				<label><?php _e("Start Date",DOMAIN); ?></label>
+				<input name="todate" id="todate" type="text" class="textfield" />
             </p>
+			<p>
+				<label><?php _e("End Date",DOMAIN); ?></label>
+				<input name="frmdate" id="frmdate" type="text" class="textfield"  />
+			</p>
             <p>
               <label><?php echo AUTHOR_TEXT;?> </label>
                 <input name="articleauthor" type="text" class="textfield"  />
@@ -73,13 +87,16 @@ function templ_header_tpl_advsearch()
                 </span>
                 <input name="exactyes" type="checkbox" value="1" class="checkbox" />
 			</p>
+			<?php if($wcode == 1){ ?>
+			 <input name="lang" id="lang" type="hidden" class="s" PLACEHOLDER="<?php echo $wcode;?>" value="<?php echo ICL_LANGUAGE_CODE; ?>" /> 
+			 <?php } ?>
 			<?php 
 			$post_types = "'place','event'";
 			$custom_metaboxes = get_post_custom_fields_templ($post_types,'0','user_side','1');
 			search_custom_post_field($custom_metaboxes); ?>
             
           </div>
-          <input type="submit" value="Submit" class="adv_submit" />
+          <input type="submit" value="<?php _e("Submit",DOMAIN); ?>" class="adv_submit" />
         </form>
       </div>
     </div>

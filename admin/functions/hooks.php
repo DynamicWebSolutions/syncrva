@@ -319,7 +319,7 @@ function templ_post_limits_listing_page() {
 		}
 		if ( is_archive())
 		{
-			if($_REQUEST['per_pg'])
+			if(@$_REQUEST['per_pg'])
 			{
 				$rtr = $_REQUEST['per_pg'];
 			}elseif(get_option('ptthemes_cat_page')>0)

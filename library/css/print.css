@@ -1,4 +1,4 @@
-.top_navigation, .header, .logo, .post-meta, #comments, .bottom, .comments, .post-navigation, .main_nav, .breadcrumb, .sidebar {
+.top_navigation, .header, .logo, .post-meta, #comments, .bottom, .comments, .post-navigation, .main_nav, .breadcrumb,  {
   display: none !important;
 }
 

@@ -14,7 +14,7 @@ if( $cityinfo->map_type != ''){
 if($zooming_factor == ''){
 	$zooming_factor = 14;
 }?>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false&libraries=places"></script>
 <script type="text/javascript">
 /* <![CDATA[ */
 var map;
@@ -89,7 +89,7 @@ if(CITY_MAP_CENTER_LAT!='' && CITY_MAP_CENTER_LNG!='' && CITY_MAP_ZOOMING_FACT!=
     };
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     geocoder = new google.maps.Geocoder();
-	google.maps.event.addListener(map, 'zoom_changed', function() {
+	google.maps.event.addListener(map, 'zoom_changed', function() { 
 		document.getElementById("zooming_factor").value = map.getZoom();
 		document.getElementById("zooming").innerHTML = map.getZoom();
 			
@@ -296,12 +296,13 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
    });
 	
    }
-google.maps.event.addDomListener(window, 'load', initialize);
 <?php if(isset($_REQUEST['city_id'])):?>
 	google.maps.event.addDomListener(window, 'load', changeMap);
 <?php else: ?>
 	google.maps.event.addDomListener(window, 'load', geocode);
 <?php endif; ?>
+google.maps.event.addDomListener(window, 'load', initialize);
+
 
 /* ]]> */
 </script>

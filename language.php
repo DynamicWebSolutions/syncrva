@@ -8,7 +8,7 @@ define('HOME',__('Home','templatic'));
 define('LATEST_ENTRIES',__('Latest entries','templatic'));
 /*author.php BOF*/
 define('BACK_TO_DASHBOARD',__('&laquo; Back to my dashboard','templatic'));
-define('LISTING_TEXT',__('Listing :','templatic'));
+define('LISTING_TEXT',__('Listing','templatic'));
 define('MY_SUBMISSION',__('My Submissions','templatic'));
 define('DASHBOARD',__('Dashboard','templatic'));
 define('LISTING_NOT_AVAIL_MSG',__('You have not posted any listing yet.','templatic'));
@@ -22,13 +22,13 @@ define('READ_MORE_LABEL',__('Read more','templatic'));
 define('NEXT_TITLE',__('Next','templatic'));
 define('PREVIEW_TITLE',__('Previous','templatic'));
 define('SET_ADDRESS_ON_MAP',__('Set address on map','templatic'));
-define('TAG_SEARCG_TEXT',__('Tags ','templatic'));
+define('TAG_SEARCG_TEXT',__('Tags','templatic'));
 /*author.php EOF*/
 
 /*header_searchform.php BOF*/
 define('NEAR_TEXT',__('Near','templatic'));
 define('SEARCH_FOR_TEXT',__('Search for','templatic'));
-define('SEARCH_FOR_MSG',__('food, products or place','templatic'));
+define('SEARCH_FOR_MSG',__('food&#44; products or place','templatic'));
 define('SEARCH_NEAR_MSG',__('Zip code or address ','templatic'));
 define('MSG_SEARCH_ENTER',__('You have not entered anything in the search box.','templatic'));
 /*header_searchform.php EOF*/
@@ -45,9 +45,9 @@ define('BLOG_ARCHIVE_TEXT',__('Blog archives','templatic'));
 /* single-place.php BOF */
 define('POST_BY',__('Posts by ','templatic'));
 define('ON',__('on','templatic'));
-define('TAGS_LIST_TEXT',__('Tags :','templatic'));
-define('VIEW_LIST_TEXT',__('Total Views : ','templatic'));
-define('VIEW_LIST_TEXT_DAILY',__('Daily Views : ','templatic'));
+define('TAGS_LIST_TEXT',__('Tags','templatic'));
+define('VIEW_LIST_TEXT',__('Total Views','templatic'));
+define('VIEW_LIST_TEXT_DAILY',__('Daily Views','templatic'));
 define('LISITNG_MAP',__('Listing Map','templatic'));
 define('RELATED_LISTING',__('Related listing','templatic'));
 define('PREVIOUS_POST',__('Previous post','templatic'));
@@ -55,9 +55,9 @@ define('NEXT_POST',__('Next post','templatic'));
 define('MAIL_TO_FRIEND',__('Mail to a friend','templatic'));
 define('SEND_INQUIRY',__('Send Inquiry','templatic'));
 define('CLAIM_OWNERSHIP',__('Own this business?','templatic'));
-define('TIME',__('Time ','templatic'));
-define('PHONE',__('Phone ','templatic'));
-define('EMAIL',__('Email ','templatic'));
+define('TIME',__('Time','templatic'));
+define('PHONE',__('Phone','templatic'));
+define('EMAIL',__('Email','templatic'));
 define('RATING',__('Rating ','templatic'));
 define('TWITTER',__('Twitter','templatic'));
 define('FACEBOOK',__('Facebook','templatic'));
@@ -69,9 +69,9 @@ define('SPECIAL_OFFER',__('Special offer','templatic'));
 /* single-event.php BOF */
 define('HOW_TO_REGISTER',__('How to Register','templatic'));
 define('REGISTER_NOW',__('Register Now','templatic'));
-define('FEES_TEXT',__('Fees : ','templatic'));
-define('PREVIOUS',__('Previous','templatic'));
-define('NEXT',__('Next','templatic'));
+define('FEES_TEXT',__('Fees','templatic'));
+define('PREVIOUS',__('previous','templatic'));
+define('NEXT',__('next','templatic'));
 /* single-event.php EOF */
 
 /* taxonomy-placecategory.php BOF */
@@ -80,7 +80,7 @@ define('ALL',__('All','templatic'));
 define('REVIEWS',__('Reviews','templatic'));
 define('PINPOINT',__('Pinpoint','templatic'));
 define('SHARE_TEXT',__('Share','templatic'));
-/* taxonomy-placecategory.php BOF */
+/* taxonomy-placecategory.php EOF */
 
 /*comments.php BOF */
 define('PASSWORD_PROTECT',__('This post is password protected. Enter the password to view any comments.','templatic'));
@@ -160,9 +160,8 @@ define('INQ_SUBJECT',__('Subject','templatic'));
 define('INQ_MSG',__('Message','templatic'));
 define('INQ_SUB_BTN',__('Submit','templatic'));
 define('INQ_FRM_TITLE',__('Inquiry','templatic'));
-define('INQ_DEFAULT_MSG',__('Hello,
-
-I would like to inquire more about this listing. Please let me know how can I get in touch with you. Waiting for your prompt reply?','templatic'));
+define('INQ_FRM_TITLE_FOR',__('Inquiry for','templatic'));
+define('INQ_DEFAULT_MSG',__('Hello,I would like to inquire more about this listing. Please let me know how can I get in touch with you. Waiting for your prompt reply?','templatic'));
 /*popup_owner_frm.php EOF */
 /*End of Send inquiry module BOF */
 
@@ -170,7 +169,7 @@ I would like to inquire more about this listing. Please let me know how can I ge
 define('YEAR_TEXT',__('2010','templatic'));
 define('RIGHTS_TEXT',__('All rights reserved.','templatic'));
 define('DESIGNED_TEXT',__('Designed by','templatic'));
-define('TEMPLATIC_TEXT',__('Templatic','templatic'));
+define('TEMPLATIC_TEXT',__('Wordpress themes','templatic'));
 /*Footer EOF */
 //header.php
 define('HEADER_ADD_PLACE_SEO',__('Add place listing'));
@@ -200,11 +199,11 @@ define('EDIT_LISING_TEXT',__('Update place','templatic'));
 define('EVENT_DATE',__('Date','templatic'));
 define('EVENT_TIME',__('Time','templatic'));
 
-define('IAM_TEXT',"I am");
-define('LOGINORREGISTER',"Login or register");
-define('EXISTING_USER_TEXT',"Existing user");
-define('NEW_USER_TEXT',"New user? Register now");
-define('LOGIN_TEXT',__('Login'));
+define('IAM_TEXT',__('I am','templatic'));
+define('LOGINORREGISTER',__('Login or register','templatic'));
+define('EXISTING_USER_TEXT',__('Existing user','templatic'));
+define('NEW_USER_TEXT',__('New user? Register now','templatic'));
+define('LOGIN_TEXT',__('Login','templatic'));
 define('PASSWORD_TEXT',__('Password','templatic'));
 define('SUBMIT_BUTTON',__('Submit','templatic'));
 define('PRO_PHOTO_TEXT',__('Add images : <small>(You can upload more than one images to create image gallery on detail page)</small>','templatic'));
@@ -213,20 +212,20 @@ define('PRO_DESCRIPTION_TEXT',__('Listing Description'));
 define('EVENT_DESCRIPTION_TEXT',__('Event Description'));
 define('PRO_FEATURE_TEXT',__('Special Offers'));
 define('CONTACT_TEXT',__('Contact'));
-define('PRO_ADD_COUPON_TEXT',__('Enter Coupon Code'));
-define('COUPON_NOTE_TEXT',__('Enter coupon code here (optional)'));
+define('PRO_ADD_COUPON_TEXT',__('Enter Coupon Code','templatic'));
+define('COUPON_NOTE_TEXT',__('Enter coupon code here (optional)','templatic'));
 define('CAPTCHA_TITLE_TEXT',__('Captcha Verification'));
 define('SELECT_TYPE_TEXT',__('Select Package Type'));
-define('COUPON_CODE_TITLE_TEXT',__('Coupon Code'));
+define('COUPON_CODE_TITLE_TEXT',__('Coupon Code','templatic'));
 
 define('PUBLISH_DAYS_TEXT',__('%s : number of publish days are %s (<span id="%s">%s %s</span>)'));
 define('SELECT_PAY_MEHTOD_TEXT',__('Select payment method'));
 
 
-define('GOING_TO_PAY_MSG',__('This is a preview of your listing and it&rsquo;s not published yet. <br />You can either go back and edit the details or click on &lsquo;Pay &amp; Publish&rsquo;.<br/>Amount to be paid: <b>%s</b> with validity <b>%s</b> days | Selected Package: <b>%s</b>'));
-define('GOING_TO_FREE_MSG',__('This is a preview of your listing and it&rsquo;s not published yet. <br />You can either go back and edit the details or click on &lsquo;Pay &amp; Publish&rsquo;.<br/>Selected package: <b>%s</b> with validity <b>%s</b> days| Amount to be paid: <b>%s</b>'));
+define('GOING_TO_PAY_MSG',__('This is a preview of your listing and it&rsquo;s not published yet. <br />You can either go back and edit the details or click on &lsquo;Pay &amp; Publish&rsquo;.<br/>Amount to be paid: <b>%s</b> with validity <b>%s</b> days | Selected Package: <b>%s</b>','templatic'));
+define('GOING_TO_FREE_MSG',__('This is a preview of your listing and it&rsquo;s not published yet. <br />You can either go back and edit the details or click on &lsquo;Pay &amp; Publish&rsquo;.<br/>Selected package: <b>%s</b> with validity <b>%s</b> days| Amount to be paid: <b>%s</b>','templatic'));
 
-define('GOING_TO_UPDATE_MSG',__('This is a preview of your listing and it&lsquo;s not updated yet. <br />You can either go back and edit the details or click on &lsquo;Update Now&rsquo;.'));
+define('GOING_TO_UPDATE_MSG',__('This is a preview of your listing and it&lsquo;s not updated yet. <br />You can either go back and edit the details or click on &lsquo;Update Now&rsquo;.','templatic'));
 
 
 define('WRONG_COUPON_MSG',__('Invalid Coupon Code'));
@@ -275,20 +274,13 @@ define('EVENT_DESCRIPTION',__('Listing Description','templatic'));
 define('CONTACT_DETAIL_TITLE',__('Publisher Information','templatic'));
 define('EVENT_INFORMATION_TEXT',__('Fill Out Event Information','templatic'));
 define('LISTING_DETAILS_TEXT',__('Enter place details','templatic'));
+define('LISTING_DETAILS_TEXT_EVENT',__('Enter event details','templatic'));
 
 define('EVENT_DETAILS_TEXT',__('Enter Event Details','templatic'));
 define('EVENT_TITLE',__('Event Title','templatic'));
 define('EVENT_TITLE_HEAD',__('Event','templatic'));
-
-define('EVENT_ST_DATE',__('Event Start Date','templatic'));
-define('EVENT_ST_DATE_MSG',__('Enter Event Start Date. eg. : ','templatic').'<b>'.date('Y-m-d').'</b>');
-define('EVENT_ST_TIME',__('Start Time'));
-define('EVENT_ST_TIME_MSG',__('Enter Event Start Time. eg. : ','templatic').'<b>'.date('H:i').'</b>');
-
-define('EVENT_END_DATE',__('Event End Date'));
-define('EVENT_END_DATE_MSG',__('Enter Event End Date. eg. : ','templatic').'<b>'.date('Y-m-d').'</b>');
-define('EVENT_END_TIME',__('End Time'));
-define('EVENT_END_TIME_MSG',__('Enter Event End Time. eg. : ','templatic').'<b>'.date('H:i').'</b>');
+define('EVENT_ST_TIME',__('Start Time','templatic'));
+define('EVENT_END_TIME',__('End Time','templatic'));
 
 define('EVENT_CONTACT_INFO',__('Phone','templatic'));
 define('EVENT_CONTACT_EMAIL',__('Email','templatic'));
@@ -301,7 +293,7 @@ define('ADDREDD_MSG',__('Please enter listing address. eg. : <b>230 Vine Street 
 define('TIMING_MSG',__('Enter Business or listing Timing Information. <br /> eg. : <b>10.00 am to 6 pm every day</b>','templatic'));
 define('GET_LATITUDE_MSG',__('Please enter latitude for google map perfection. eg. : <b>39.955823048131286</b>','templatic'));
 define('GET_LOGNGITUDE_MSG',__('Please enter longitude for google map perfection. eg. : <b>-75.14408111572266</b>','templatic'));
-define('GET_MAP_MSG',__('Click on "Set Address on Map" and then you can also drag pinpoint to locate the correct address','templatic','templatic'));
+define('GET_MAP_MSG',__('After pressing "Set Address on Map" button above, you can also drag the pinpoint to locate the exact address on the map. ','templatic'));
 define('CONTACT_MSG',__('You can enter phone number,cell phone number etc.','templatic'));
 define('WEBSITE_MSG',__('Enter website URL. eg. : <b>http://myplace.com</b>','templatic'));
 define('TWITTER_MSG',__('Enter twitter URL. eg. : <b>http://twitter.com/myplace</b>','templatic'));
@@ -389,8 +381,8 @@ define('PRICE_POST_TYPE_LABLE',__('Post type','templatic'));
 define('PRICE_SETTING_TITLE',__('Price settings','templatic')); 
 define('PRICE_POST_TYPE_NOTE',__('Select post type','templatic')); 
 define('PRICE_CAT_TITLE',__('Apply this package to these categories','templatic')); 
-define('PRICE_POST_CAT_NOTE',__('<br/><p>This pricing package will be displayed on "Add a place" and "Add an event" page only when the above check-marked categories are opted by the user.<br><br><b>Note:</b> Category-specific price amount will be added / deducted from the final billing(<a href="'.site_url().'/wp-admin/admin.php?page=manage_settings#option_display_icons">Set category-specific charges here</a>)</p>','templatic')); 
-define('CAT_SECTION_TITLE',__('You can specify individual price-weightage for each category and their custom icons. <br /><br /><strong>Note:</strong> Use + and - signs to add and deduct the specified amount (from the price package amount) when that particular category is chosen by the user. (Check <a href="'.site_url().'/wp-admin/admin.php?page=manage_settings#option_display_price" target="blank">Price package settings</a>, too)','templatic')); 
+define('PRICE_POST_CAT_NOTE',__('<br/><p>This pricing package will be displayed on "Add a place" and "Add an event" page only when the above check-marked categories are opted by the user.<br><br><b>Note:</b> Category-specific price amount will be added / deducted from the final billing(<a href="'.home_url().'/wp-admin/admin.php?page=manage_settings#option_display_icons">Set category-specific charges here</a>)</p>','templatic')); 
+define('CAT_SECTION_TITLE',__('You can specify individual price-weightage for each category and their custom icons. <br /><br /><strong>Note:</strong> Use + and - signs to add and deduct the specified amount (from the price package amount) when that particular category is chosen by the user. (Check <a href="'.home_url().'/wp-admin/admin.php?page=manage_settings#option_display_price" target="blank">Price package settings</a>, too)','templatic')); 
 define('PRICE_PACK_TITLE',__('Price package title','templatic')); 
 define('PRICE_TITLE_NOTE',__('The name of the package that will appear in the front/back-end.','templatic')); 
 define('PRICE_AMOUNT_TITLE',__('Package cost','templatic')); 
@@ -479,8 +471,8 @@ define('ACCOUNT_ID_TEXT',__('Account Id','templatic'));
 define('ACCOUNT_ID_NOTE2',__('"Enter your bank Account ID','templatic'));
 define('VENDOR_ID_TEXT',__('Vendor Id','templatic'));
 define('VENDOR_ID_NOTE',__('Enter Vendor ID Example : 1303908','templatic'));
-define('ACCOUNT_ID_NOTE',__('Example : 12345','templatic'));
-define('INSTANT_ID_NOTE',__('Example : 123456','templatic'));
+define('ACCOUNT_ID_NOTE',__('Example: 12345','templatic'));
+define('INSTANT_ID_NOTE',__('Example: 123456','templatic'));
 define('WORLD_PAY_TEXT',__('Worldpay','templatic'));
 define('BANK_INFO_TEXT',__('Bank Information','templatic'));
 define('PRE_BANK_TRANSFER_TEXT',__('Pre Bank Transfer','templatic'));

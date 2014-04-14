@@ -3,7 +3,11 @@
 Template Name: Page - Left Sidebar
 */
 ?>
-<?php get_header(); ?>
+<?php 
+if(file_exists(get_template_directory()."/common_settings.php")){
+		include(get_template_directory()."/common_settings.php");
+	}
+get_header(); ?>
 <?php if ( have_posts() ) : ?>
 <?php while ( have_posts() ) : the_post(); ?>
 <!-- Content  2 column - Right Sidebar is here -->

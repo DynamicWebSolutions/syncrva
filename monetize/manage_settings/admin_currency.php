@@ -12,10 +12,10 @@ if(isset($_GET['pagetype']) && $_GET['pagetype'] == 'update_currency'){
 		$wpdb->query($update_currency);
 		$msgtype = 'edit';
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#currency_setup" method=get name="currency_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="currencymsg" value="success"><input type=hidden name="msgtype" value="'.$msgtype.'"></form>';
-	echo '<script>document.currency_success.submit();</script>';
+	echo '<script type="text/javascript">document.currency_success.submit();</script>';
 	exit;
 }	
 /* Update Query EOF */
@@ -27,11 +27,11 @@ if(isset($_REQUEST['currency_id']) && $_REQUEST['currency_id'] != ''){
 }
 ?>
  
-<form name="frm_settings" id="frm_settings" action="<?php echo site_url()?>/wp-admin/admin.php?page=manage_settings&&mod=currency&pagetype=update_currency" method="post" onsubmit="return currency_validation();">
+<form name="frm_settings" id="frm_settings" action="<?php echo home_url()?>/wp-admin/admin.php?page=manage_settings&&mod=currency&pagetype=update_currency" method="post" onsubmit="return currency_validation();">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp right position_top">
 <h4><?php _e($currency_title,'templatic');?> 
 
-<a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#currency_setup" name="btnviewlisting" class="l_back" title="<?php _e('Back to Currency List','templatic');?>"/><?php _e('&laquo; Back to Currency List','templatic'); ?></a>
+<a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#currency_setup" name="btnviewlisting" class="l_back" title="<?php _e('Back to Currency List','templatic');?>"/><?php _e('&laquo; Back to Currency List','templatic'); ?></a>
 </h4>
 <p class="notes_spec"><?php _e('Give the details about the currency you wish to use.','templatic');?></p>
 <input type="hidden" name="currency_id" id="currency_id" value="<?php echo $fetch_currency_res->currency_id;?>">

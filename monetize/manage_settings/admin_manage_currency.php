@@ -4,10 +4,10 @@ $currency_table = $wpdb->prefix . "currency";
 if($_REQUEST['pagetype'] == 'deletecuurency' && $_REQUEST['currency_id'] != '')
 {
 	$wpdb->query("DELETE from $currency_table where currency_id = '".$_REQUEST['currency_id']."'");
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#currency_setup" method=get name="currency_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="currencymsg" value="delsuccess"></form>';
-	echo '<script>document.currency_success.submit();</script>';
+	echo '<script type="text/javascript">document.currency_success.submit();</script>';
 	exit;
 }
 ?>
@@ -31,7 +31,7 @@ if($_REQUEST['pagetype'] == 'deletecuurency' && $_REQUEST['currency_id'] != '')
 	}
 	}
  	?>
-<form method="post" action="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings';?>#currency_setup" name="default_currency_frm">
+<form method="post" action="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings';?>#currency_setup" name="default_currency_frm">
 	<input type="hidden" name="set_default_currency_opt" value="1" />
     
      <div class="option option-select"  >
@@ -48,7 +48,7 @@ if($_REQUEST['pagetype'] == 'deletecuurency' && $_REQUEST['currency_id'] != '')
 
 <h4><?php _e('Manage Currency','templatic');?>
 
-<a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=currency#currency_setup';?>" title="<?php _e('Add New Currency','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add New Currency','templatic'); ?></a>
+<a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=currency#currency_setup';?>" title="<?php _e('Add New Currency','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add New Currency','templatic'); ?></a>
 </h4>
 
  <p class="notes_spec"> <?php _e('Here you can edit,delete and manage currency values.','templatic');?></p>
@@ -89,7 +89,7 @@ if($_REQUEST['pagetype'] == 'deletecuurency' && $_REQUEST['currency_id'] != '')
 			<td><?php echo $currency_data['currency_name'];?></td>
 			<td><?php echo $currency_data['currency_code'];?></td>
 			<td><?php echo $currency_data['currency_symbol'];?></td>
-			<td><a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=currency&currency_id='.$currency_data['currency_id'].'#currency_setup';?>" title="<?php _e('Edit Currency','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/edit.png" alt="<?php _e('Edit Currency','templatic');?>" border="0" /></a>&nbsp;&nbsp;<a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&pagetype=deletecuurency&currency_id='.$currency_data['currency_id'];?>#currency_setup" onclick="return confirmSubmit();" title="<?php _e('Delete Currency','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete Currency','templatic');?>" border="0" /></a></td>
+			<td><a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=currency&currency_id='.$currency_data['currency_id'].'#currency_setup';?>" title="<?php _e('Edit Currency','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/edit.png" alt="<?php _e('Edit Currency','templatic');?>" border="0" /></a>&nbsp;&nbsp;<a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&pagetype=deletecuurency&currency_id='.$currency_data['currency_id'];?>#currency_setup" onclick="return confirmSubmit();" title="<?php _e('Delete Currency','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete Currency','templatic');?>" border="0" /></a></td>
 		</tr>
 		<?php 	}	?>
 	</thead>					
@@ -102,7 +102,7 @@ if($_REQUEST['pagetype'] == 'deletecuurency' && $_REQUEST['currency_id'] != '')
 <li><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete Currency','templatic');?>" border="0" /> <?php _e('Delete Currency','templatic');?></li>
 </ul>
 </div>
-<script>
+<script type="text/javascript">
 function setDefaultCurrency(currency_code)
 {
 	document.getElementById("currencyprocess").style.display = '';

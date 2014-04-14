@@ -4,14 +4,14 @@ if($_REQUEST['pagetype'] == 'deleteprice' && $_REQUEST['price_id'] != '')
 {
 	$price_id = $_REQUEST['price_id'];
 	$wpdb->query("delete from $price_db_table_name where pid=\"$price_id\"");
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#option_display_price" method=get name="price_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="delpricesuccess"></form>';
-	echo '<script>document.price_success.submit();</script>';
+	echo '<script type="text/javascript">document.price_success.submit();</script>';
 	exit;
 }
 ?>
-<script>
+<script type="text/javascript">
 function delete_pack(packid)
 { 
 	var answer = confirm("<?php echo DELETE_CONFIRM_ALERT; ?>");
@@ -50,7 +50,7 @@ function delete_pack(packid)
 } 
 </script>
 <h4><?php _e('Manage price packages','templatic');?>
-<a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=price#option_display_price';?>" title="<?php _e('Add new price','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add new price package','templatic'); ?></a>
+<a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=price#option_display_price';?>" title="<?php _e('Add new price','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add new price package','templatic'); ?></a>
 </h4>
 <p class="notes_spec"><?php _e('Add, edit and manage price packages from here. To create a new package, click &lsquo;Add new price package&rsquo; link above.','templatic');?></p>
 

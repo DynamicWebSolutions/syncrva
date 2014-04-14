@@ -11,7 +11,7 @@ var POSTRATINGS_MAX = '<?php echo POSTRATINGS_MAX;?>';
 <?php
 	for($i=1;$i<=POSTRATINGS_MAX;$i++)
 	{
-		if($i==1){$rating_text = $i.' rating';}else{$rating_text = $i.__(' rating');}
+		if($i==1){$rating_text = $i.__(' rating');}else{$rating_text = $i.__(' rating');}
 		
 		echo '<img src="'.$rating_image_off.'" class="rating_img" onmouseover="current_rating_star_on(\''.$post->ID.'\',\''.$i.'\',\''.$rating_text.'\');" onmousedown="current_rating_star_off(\''.$post->ID.'\',\''.$i.'\');" id="rating_'.$post->ID.'_'.$i.'"  alt="" />';							
 	}

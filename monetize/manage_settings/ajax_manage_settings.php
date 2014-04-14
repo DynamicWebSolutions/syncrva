@@ -23,7 +23,7 @@ if($packid != "")
 	}
 }
 $ptype = $_REQUEST['ptype'];
-if($ptype !=""){
+if($ptype !="" && is_stringonly()){
 update_option('post_type_export',$ptype);
 return $ptype;
 }

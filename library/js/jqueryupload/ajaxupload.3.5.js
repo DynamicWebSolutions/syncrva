@@ -1,130 +1,3 @@
-/* Added code only for MAC os on 03-02-2012 */
-(function() {
-
-    var BrowserDetect = {
-        init: function () {
-            this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
-            this.version = this.searchVersion(navigator.userAgent)
-                || this.searchVersion(navigator.appVersion)
-                || "an unknown version";
-            this.OS = this.searchString(this.dataOS) || "an unknown OS";
-        },
-        searchString: function (data) {
-            for (var i=0;i<data.length;i++) {
-                var dataString = data[i].string;
-                var dataProp = data[i].prop;
-                this.versionSearchString = data[i].versionSearch || data[i].identity;
-                if (dataString) {
-                    if (dataString.indexOf(data[i].subString) != -1)
-                        return data[i].identity;
-                }
-                else if (dataProp)
-                    return data[i].identity;
-            }
-        },
-        searchVersion: function (dataString) {
-            var index = dataString.indexOf(this.versionSearchString);
-            if (index == -1) return;
-            return parseFloat(dataString.substring(index+this.versionSearchString.length+1));
-        },
-        dataBrowser: [
-            {
-                string: navigator.userAgent,
-                subString: "Chrome",
-                identity: "Chrome"
-            },
-            {   string: navigator.userAgent,
-                subString: "OmniWeb",
-                versionSearch: "OmniWeb/",
-                identity: "OmniWeb"
-            },
-            {
-                string: navigator.vendor,
-                subString: "Apple",
-                identity: "Safari",
-                versionSearch: "Version"
-            },
-            {
-                prop: window.opera,
-                identity: "Opera"
-            },
-            {
-                string: navigator.vendor,
-                subString: "iCab",
-                identity: "iCab"
-            },
-            {
-                string: navigator.vendor,
-                subString: "KDE",
-                identity: "Konqueror"
-            },
-            {
-                string: navigator.userAgent,
-                subString: "Firefox",
-                identity: "Firefox"
-            },
-            {
-                string: navigator.vendor,
-                subString: "Camino",
-                identity: "Camino"
-            },
-            {       // for newer Netscapes (6+)
-                string: navigator.userAgent,
-                subString: "Netscape",
-                identity: "Netscape"
-            },
-            {
-                string: navigator.userAgent,
-                subString: "MSIE",
-                identity: "Explorer",
-                versionSearch: "MSIE"
-            },
-            {
-                string: navigator.userAgent,
-                subString: "Gecko",
-                identity: "Mozilla",
-                versionSearch: "rv"
-            },
-            {       // for older Netscapes (4-)
-                string: navigator.userAgent,
-                subString: "Mozilla",
-                identity: "Netscape",
-                versionSearch: "Mozilla"
-            }
-        ],
-        dataOS : [
-            {
-                string: navigator.platform,
-                subString: "Win",
-                identity: "Windows"
-            },
-            {
-                string: navigator.platform,
-                subString: "Mac",
-                identity: "Mac"
-            },
-            {
-                string: navigator.userAgent,
-                subString: "iPhone",
-                identity: "iPhone/iPod"
-            },
-            {
-                string: navigator.platform,
-                subString: "Linux",
-                identity: "Linux"
-            }
-        ]
-
-    };
-
-    BrowserDetect.init();
-
-    window.jQuery.client = { os : BrowserDetect.OS, browser : BrowserDetect.browser };
-
-})();
-
-/* End code only for MAC os on 03-02-2012 */
-
 /**
  * Ajax upload
  * Project page - http://valums.com/ajax-upload/
@@ -404,54 +277,14 @@ AjaxUpload.prototype = {
 		input.setAttribute('type', 'file');
 		input.setAttribute('multiple', 'multiple');
 		input.setAttribute('name', this._settings.name);
-		var styles = {
-			'position' : 'absolute'
-			,'margin': '0px 0 0 -175px'
-			,'padding': 0
-			,'width': '220px'
-			,'height': '30px'
-			,'fontSize': '14px'
-			,'opacity': 0
-			,'cursor': 'pointer'
-			,'display' : 'none'
-			,'zIndex' :  2147483583 //Max zIndex supported by Opera 9.0-9.2x
-			
-			// Strange, I expected 2147483647					
-		};
-		
-		/* Added code only for MAC os on 03-02-2012 */
-		
-		if(jQuery.client.os == 'Mac')
-		{
-			var styles = {
-			'position' : 'absolute'
-			,'margin': '-5px 0 0 -210px'
-			,'padding': 0
-			,'width': '220px'
-			,'height': '30px'
-			,'fontSize': '14px'
-			,'opacity': 0
-			,'cursor': 'pointer'
-			,'display' : 'none'
-			,'zIndex' :  2147483583 //Max zIndex supported by Opera 9.0-9.2x
-			// Strange, I expected 2147483647					
-		};
-
-		/* Added code only for MAC os on 03-02-2012 */
-		
-		}
-		for (var i in styles){
-			input.style[i] = styles[i];
-		}
-		
+		input.setAttribute('class', 'uploadfilebutton');
 		// Make sure that element opacity exists
 		// (IE uses filter instead)
 		if ( ! (input.style.opacity === "0")){
 			input.style.filter = "alpha(opacity=0)";
-			input.style.margin = "-5px 0 0 -175px";
 		}
 							
-		this._parentDialog.appendChild(input);
+		jQuery("#uploadimage").append(input);
 
 		addEvent(input, 'change', function(){
 			// get filename from input
@@ -489,58 +322,8 @@ AjaxUpload.prototype = {
 		// addEvent(this._button, 'click', function(e){
 		//   self._input.click();
 		// });
-				
 		var box, dialogOffset = {top:0, left:0}, over = false;							
-		addEvent(self._button, 'mouseover', function(e){
-			if (!self._input || over) return;
-			over = true;
-			box = getBox(self._button);
-					
-			if (self._parentDialog != d.body){
-				dialogOffset = getOffset(self._parentDialog);
-			}	
-		});
-		
-	
-		// we can't use mouseout on the button,
-		// because invisible input is over it
-		addEvent(document, 'mousemove', function(e){
-			var input = self._input;
-			if (!input || !over) return;
-			
-			if (self._disabled){
-				removeClass(self._button, 'hover');
-				input.style.display = 'none';
-				return;
-			}	
-										
-			var c = getMouseCoords(e);
-
-			if ((c.x >= box.left) && (c.x <= box.right) && 
-			(c.y >= box.top) && (c.y <= box.bottom)){			
-				input.style.top = c.y - dialogOffset.top + 'px';
-				input.style.left = c.x - dialogOffset.left + 'px';
-				input.style.display = 'block';
-				addClass(self._button, 'hover');				
-			} else {		
-				// mouse left the button
-				//over = false;
-				if (!self.justClicked){
-					//input.style.display = 'none';
-				}
-				removeClass(self._button, 'hover');
-			}			
-		});			
-			
 		var input = self._input;
-		addEvent(input, 'mousemove', function(e){
-				var c = getMouseCoords(e);
-				input.style.top = c.y - dialogOffset.top + 'px';
-				input.style.left = c.x - dialogOffset.left + 'px';
-				input.style.display = 'block';
-				addClass(self._button, 'hover');				
-
-		});
 	},
 	/**
 	 * Creates iframe with unique name

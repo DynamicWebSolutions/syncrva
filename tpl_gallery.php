@@ -4,6 +4,9 @@ Template Name: Page - Gallery
 */
 ?>
 <?php
+if(file_exists(get_template_directory()."/common_settings.php")){
+		include(get_template_directory()."/common_settings.php");
+	}
 add_action('wp_head','templ_header_tpl_gallery');
 function templ_header_tpl_gallery()
 {

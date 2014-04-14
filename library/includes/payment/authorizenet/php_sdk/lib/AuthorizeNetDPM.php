@@ -131,7 +131,7 @@ class AuthorizeNetDPM extends AuthorizeNetSIM_Form
         $post_url = ($test_mode ? self::SANDBOX_URL : self::LIVE_URL);
         
         $form = '
-        <style>
+        <style type="text/css">
         fieldset {
             overflow: auto;
             border: 0;

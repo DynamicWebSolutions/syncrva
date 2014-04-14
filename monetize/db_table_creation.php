@@ -98,6 +98,10 @@ if(!get_option('splash_page') || get_option('splash_page') == ''){
 add_option('ptthemes_related_listing','Yes'); 
 }
 
+if(!get_option('ptthemes_enable_responsivemap') || get_option('ptthemes_enable_responsivemap') == ''){
+add_option('ptthemes_enable_responsivemap','Yes'); 
+}
+
 
 $field_check1 = $wpdb->get_var("SHOW COLUMNS FROM $wpdb->terms LIKE 'term_icon'");
 		if('term_icon' != $field_check1)	{
@@ -121,17 +125,25 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$currency_table\"") != $currency_table) {
 	  PRIMARY KEY currency_id (currency_id));";
 	$wpdb->query($create_currency);
 	$currency_file = DIR_FS_CSV_PATH."currency.csv";
-	$currency_handel = fopen($currency_file, 'r');
+	if(file_exists($currency_file))
+	  {
+		$currency_handel = fopen($currency_file, 'r');
+	  }
 	$theData = fgets($currency_handel);
 	$i = 0;
+	$insert_currency = "Insert into $currency_table(currency_id,currency_name,currency_code,currency_symbol,symbol_position) values";
 	while (!feof($currency_handel)) { 
 		
 		$currency_data[] = fgets($currency_handel, 1024); 
 		$currency_array = explode(",",$currency_data[$i]);
-		$insert_currency = "Insert into $currency_table values('".trim($currency_array[0])."','".trim($currency_array[1])."','".trim($currency_array[2])."','".trim($currency_array[3])."','".trim($currency_array[4])."')";
-		$wpdb->query($insert_currency);
+		if(trim($currency_array[0])!='' && trim($currency_array[2])!='' && trim($currency_array[2])!='' && trim($currency_array[3])!='' && trim($currency_array[4])!='')
+		{
+			$insert_currency.= "('".trim($currency_array[0])."','".trim($currency_array[1])."','".trim($currency_array[2])."','".trim($currency_array[3])."','".trim($currency_array[4])."'),";
+		}
+		
 		$i++;
-	}	 
+	}	
+	$wpdb->query(substr($insert_currency,0,-1));
 	fclose($currency_handel);
 }
 /*Currency Table Creation EOF */
@@ -151,13 +163,30 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$zones_table\"") != $zones_table) {
 	$zones_handel = fopen($zones_file, 'r');
 	$theData = fgets($zones_handel);
 	$i = 0;
+	$j=0;
+	$counter=1;
+	$insert_zones = "INSERT INTO $zones_table(country_id,zone_code,zone_name) VALUES";
 	while (!feof($zones_handel)) { 
 		$zones_data[] = fgets($zones_handel, 1024); 
 		$zones_array = explode(",",$zones_data[$i]);
-		$insert_zones = "Insert into $zones_table values('".trim($zones_array[0])."','".trim($zones_array[1])."','".trim($zones_array[2])."','".trim($zones_array[3])."')";
-		$wpdb->query($insert_zones);
+		
+		/*if($j==200)
+		{
+			$wpdb->query(substr($insert_zones,0,-2));
+			$insert_zones='';
+			$insert_zones.= "INSERT INTO $zones_table(country_id,zone_code,zone_name) VALUES";			
+			$counter++;
+			$j=0;
+		}
+		$j++;*/
+		//$insert_zones = "Insert into $zones_table values('".trim($zones_array[0])."','".trim($zones_array[1])."','".trim($zones_array[2])."','".trim($zones_array[3])."')";
+		if(trim($zones_array[0])!='' && trim($zones_array[1])!='' && trim($zones_array[2])!='' && trim($zones_array[3])!='')
+		{
+			$insert_zones.= "(".trim($zones_array[1]).",'".mysql_escape_string(trim($zones_array[2]))."','".mysql_escape_string(trim($zones_array[3]))."'), ";
+		}				
 		$i++;
-	}	 
+	}	
+	$wpdb->query(substr($insert_zones,0,-2));		
 	fclose($zones_handel);
 }
 /*zones Table Creation EOF */
@@ -178,13 +207,27 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$country_table\"") != $country_table) {
 	$country_handel = fopen($country_file, 'r');
 	$theData = fgets($country_handel);
 	$i = 0;
+	$j=0;
+	$insert_country = "INSERT INTO $country_table(country_id,country_name,iso_code_2,iso_code_3) VALUES";
 	while (!feof($country_handel)) { 
 		$country_data[] = fgets($country_handel, 1024); 
 		$country_array = explode(",",$country_data[$i]);
-		$insert_country = "Insert into $country_table values('".trim($country_array[0])."','".trim($country_array[1])."','".trim($country_array[2])."','".trim($country_array[3])."')";
-		$wpdb->query($insert_country);
+		/*if($j==100)
+		{			
+			$wpdb->query(substr($insert_country,0,-1));
+			$insert_country='';
+			$insert_country.= "INSERT INTO $country_table(country_id,country_name,iso_code_2,iso_code_3) VALUES";
+			$j=0;
+		}*/
+		if(trim($country_array[0])!='' && trim($country_array[1])!='' && trim($country_array[2])!='' && trim($country_array[3])!='')
+		{
+			$insert_country.="('".trim($country_array[0])."','".mysql_escape_string(trim($country_array[1]))."','".mysql_escape_string(trim($country_array[2]))."','".mysql_escape_string(trim($country_array[3]))."'),";
+		}
+		$j++;
 		$i++;
-	}	 
+	}
+	
+	$wpdb->query(substr($insert_country,0,-1));	
 	fclose($country_handel);
 }
 
@@ -251,7 +294,7 @@ if(!isset($cat_ptype))	{
 /*MultiCity Table Creation EOF */
 
 /* Custom Post Field TABLE Creation BOF */
-$custom_post_meta_db_table_name = strtolower($table_prefix . "templatic_custom_post_fields_g4");
+$custom_post_meta_db_table_name = $table_prefix . "templatic_custom_post_fields_g4";
 global $custom_post_meta_db_table_name,$wpdb ;
 //$wpdb->query("DROP TABLE $custom_post_meta_db_table_name");
 global $wpdb;
@@ -260,65 +303,86 @@ if(!isset($is_search))	{
 $wpdb->query("ALTER TABLE $custom_post_meta_db_table_name  ADD `is_search` VARCHAR(10) NOT NULL AFTER `is_require`");
 }
 
-if($wpdb->get_var("SHOW TABLES LIKE \"$custom_post_meta_db_table_name\"") != $custom_post_meta_db_table_name){
-$wpdb->query("CREATE TABLE IF NOT EXISTS $custom_post_meta_db_table_name (
-  `cid` int(11) NOT NULL AUTO_INCREMENT,
-  `post_type` varchar(255) NOT NULL,
-  `admin_title` varchar(255) NOT NULL,
-  `field_category` varchar(118) NOT NULL ,
-  `htmlvar_name` varchar(255) NOT NULL,
-  `admin_desc` text NOT NULL,
-  `site_title` varchar(255) NOT NULL,
-  `ctype` varchar(255) NOT NULL COMMENT 'text,checkbox,date,radio,select,textarea,upload',
-  `default_value` text NOT NULL,
-  `option_values` text NOT NULL,
-  `clabels` text NOT NULL,
-  `sort_order` int(11) NOT NULL,
-  `is_active` tinyint(4) NOT NULL DEFAULT '1',
-  `is_delete` tinyint(4) NOT NULL DEFAULT '0',
-  `is_edit` tinyint(4) NOT NULL DEFAULT '1',
-  `is_require` tinyint(4) NOT NULL DEFAULT '0',
-  `show_on_page` varchar(20) NOT NULL ,
-  `show_on_listing` tinyint(4) NOT NULL DEFAULT '1',
-  `show_on_detail` tinyint(4) NOT NULL DEFAULT '1',
-  `field_require_desc` text NOT NULL,
-  `style_class` varchar(200) NOT NULL,
-  `extra_parameter` text NOT NULL,
-  `validation_type` varchar(20) NOT NULL,
-  `extrafield1` text NOT NULL,
-  `extrafield2` text NOT NULL,
-  PRIMARY KEY (`cid`)
-);");
-$qry = $wpdb->query("INSERT INTO $custom_post_meta_db_table_name (`cid`, `post_type`, `admin_title`, `field_category`, `htmlvar_name`, `admin_desc`, `site_title`, `ctype`, `default_value`, `option_values`, `clabels`, `sort_order`, `is_active`, `is_delete`, `is_edit`, `is_require`, `show_on_page`, `show_on_listing`, `show_on_detail`, `field_require_desc`, `style_class`, `extra_parameter`, `validation_type`, `extrafield1`, `extrafield2`) VALUES
-(1, 'place', 'Listing Title', '0', 'property_name', 'Enter listing title.', 'Listing Title', 'text', '', '', 'Listing Title', 1, 1, 0, 1, 1, 'user_side', 0, 0, 'Please Enter Listing Title', '', '', 'require', '', ''),
-(2, 'both', 'Address', '0', 'geo_address', 'Please enter listing address. eg. : <b>230 Vine Street And locations throughout Old City, Philadelphia, PA 19106</b>', 'Address', 'geo_map', '', '', 'Address', 2, 1, 0, 1, 1, 'both_side', 0, 0, 'Please enter address to locate your location on map.', '', '', ' ', '', ''),
-(3, 'both', 'Address Latitude', '0', 'geo_latitude', '', 'Address Latitude', 'text', '', '', 'Address Latitude', 3, 1, 0, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(4, 'both', 'Address Longitude', '0', 'geo_longitude', '', 'Address Longitude', 'text', '', '', 'Address Longitude', 4, 1, 0, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(5, 'both', 'Google Map View', '0', 'map_view', '', 'Google Map View', 'radio', 'Default Map', 'Default Map,Satellite Map,Hybrid Map', 'Google Map View', 7, 1, 0, 1, 1, 'both_side', 0, 0, '0', 'Please select map-view.', '', ' ', '', ''),
-(6, 'place', 'Listing Description', '0', 'proprty_desc', 'Note : Basic HTML tags are allowed', 'Listing Description', 'texteditor', 'Enter description for your listing.', '', 'Listing Description', 5, 1, 0, 1, 1, 'user_side', 0, 0, 'Enter place description.', 'mce', '', 'require', '', ''),
 
-(7, 'place', 'Special Offers', '0', 'proprty_feature', 'Note: List out any special offers (optional)', 'Special Offers', 'texteditor', '', '', 'Special Offers', 7, 1, 1, '1', 0, 'both_side', 0, 0, '', 'mce', '', ' ', '', ''),
-(8, 'place', 'Time', '0', 'timing', 'Enter Business or Listing Timing Information. <br> eg. : <b>10.00 am to 6 pm every day</b>', 'Time', 'text', '', '', 'Time', 8, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(9, 'both', 'Phone', '0', 'contact', 'You can enter phone number,cell phone number etc.', 'Phone', 'text', '', '', 'Phone', 10, 1, 1, '1', 1, 'both_side', 0, 0, 'Please enter phone number', '', '', 'phone_no', '', ''),
-(10, 'both', 'Email', '0', 'email', 'Enter your email address.', 'Email', 'text', '', '', 'Email', 11, 1, 0, 1, 1, 'both_side', 0, 0, 'Please enter your email address.', '', '', 'email', '', ''),
-(11, 'both', 'Website', '0', 'website', 'Enter website URL. eg. : <b>http://myplace.com</b>', 'Website', 'text', '', '', 'Website', 11, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(12, 'both', 'Twitter', '0', 'twitter', 'Enter twitter URL. eg. : <b>http://twitter.com/myplace</b>', 'Twitter', 'text', '', '', 'Twitter', 12, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(13, 'both', 'Facebook', '0', 'facebook', 'Enter facebook URL. eg. : <b>http://facebook.com/myplace</b>', 'Facebook', 'text', '', '', 'Facebook', 13, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(14, 'place', 'Tag Keyword', '0', 'kw_tags', 'Tags are short keywords, with no space within. Up to 40 characters only.', 'Tag Keyword', 'text', '', '', 'Tag Keyword', 14, 1, 1, 1, 0, 'user_side', 0, 0, '', '', '', ' ', '', ''),
-(15, 'place', 'Select Images', '0', 'listing_image', 'Note : You can sort images from Dashboard and then clicking on &quot; Edit&quot;  in the listing', 'Select Images', 'image_uploader', '', '', 'Select Images', 15, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(16, 'event', 'Event Title', '0', 'property_name', 'Enter event title.', 'Event Title', 'text', '', '', 'Event Title', 1, 1, 0, 1, 1, 'user_side', 0, 0, 'Please enter event title', '', '', 'require', '', ''),
+		 
 
-(21, 'event', 'Event Start Date', '0', 'st_date', 'Enter Event Start Date. eg. : <b>2011-09-05</b>', 'Event Start Date', 'date', '', '', 'Event Start Date', 8, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter start date of an avent.', '', '', ' ', '', ''),
-(22, 'event', 'Start Time', '0', 'st_time', 'Enter Event Start Time. eg. : <b>10:14</b>', 'Start Time', 'text', '', '', 'Start Time', 8, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter start time of an event.', '', '', ' ', '', ''),
-(23, 'event', 'Event End Date', '0', 'end_date', 'Enter Event End Date. eg. : <b>2011-09-05</b>', 'Event End Date', 'date', '', '', 'Event End Date', 9, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter end date of event.', '', '', ' ', '', ''),
-(24, 'event', 'End Time', '0', 'end_time', 'Enter Event End Time. eg. : <b>10:14</b>', 'End Time', 'text', '', '', 'End Time', 9, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter event end time.', '', '', ' ', '', ''),
-(25, 'event', 'Event Description', '0', 'event_desc', 'Note : Basic HTML tags are allowed', 'Event Description', 'texteditor', 'You should enter description content for your listing.', '', 'Event Description', 5, 1, 0, 1, 1, 'user_side', 0, 0, 'Please enter description of an event.', '', '', 'require', '', ''),
-(26, 'event', 'How to Register', '0', 'reg_desc', 'Enter how to register details ', 'How to Register', 'texteditor', '<h3>How to Register</h3><p>Click on the below link to register by going to our website. Just enter your detail and pay the registration fees.</p><p><a href &equiv; &acute;javascript:void(0)&acute; mce_href &equiv; &acute;javascript:void(0)&acute; class &equiv; &acute;button&acute;>Register Now</a></p>', '', 'How to Register', 11, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(27, 'event', 'Registration Fees', '0', 'reg_fees', 'Enter Registration Fees, in USD eg. : <b>$50</b>', 'Registration Fees', 'text', '', '', 'Registration Fees', 12, 1, 1, '1', 0, 'both_side', 0, 1, '', '', '', ' ', '', ''),
-(33, 'event', 'Select Images', '0', 'listing_image', 'Note : You can sort images from Dashboard and then clicking on &quot; Edit&quot; in the lisitng', 'Select Images', 'image_uploader', '', '', 'Select Images', 18, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
-(35, 'both', 'Excerpt', '0', 'excerpt', 'Note : Basic HTML tags are allowed', 'Excerpt', 'texteditor', 'Enter excerpt for your listing.', '', 'Excerpt', 6, 1, 0, 1, 1, 'user_side', 0, 0, 'Enter excerpt for this listing.', 'mce', '', '', '', ''),
-(34, 'both', 'Video code', '0', 'video', 'Add video code here', 'Video code', 'textarea', '', '', 'Video code', 18, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),(37, 'event', 'Registration URL', '0', 'register_link', '', 'Registration URL', 'text', '', '', 'Registration URL', 12, 1, 0, 0, 0, 'both_side', 0, 0, 'Enter URL for the &acute;Register&acute; button', '', '', '', '', '')"); 
 
+add_action('init','insert_categories',14);		  
+function insert_categories(){
+	global $wpdb,$custom_post_meta_db_table_name;
+	if($wpdb->get_var("SHOW TABLES LIKE \"$custom_post_meta_db_table_name\"") != $custom_post_meta_db_table_name){
+	$wpdb->query("CREATE TABLE IF NOT EXISTS $custom_post_meta_db_table_name (
+	  `cid` int(11) NOT NULL AUTO_INCREMENT,
+	  `post_type` varchar(255) NOT NULL,
+	  `admin_title` varchar(255) NOT NULL,
+	  `field_category` varchar(255) NOT NULL ,
+	  `htmlvar_name` varchar(255) NOT NULL,
+	  `admin_desc` text NOT NULL,
+	  `site_title` varchar(255) NOT NULL,
+	  `ctype` varchar(255) NOT NULL COMMENT 'text,checkbox,date,radio,select,textarea,upload',
+	  `default_value` text NOT NULL,
+	  `option_values` text NOT NULL,
+	  `clabels` text NOT NULL,
+	  `sort_order` int(11) NOT NULL,
+	  `is_active` tinyint(4) NOT NULL DEFAULT '1',
+	  `is_delete` tinyint(4) NOT NULL DEFAULT '0',
+	  `is_edit` tinyint(4) NOT NULL DEFAULT '1',
+	  `is_require` tinyint(4) NOT NULL DEFAULT '0',
+	  `show_on_page` varchar(20) NOT NULL ,
+	  `show_on_listing` tinyint(4) NOT NULL DEFAULT '1',
+	  `show_on_detail` tinyint(4) NOT NULL DEFAULT '1',
+	  `field_require_desc` text NOT NULL,
+	  `style_class` varchar(200) NOT NULL,
+	  `extra_parameter` text NOT NULL,
+	  `validation_type` varchar(20) NOT NULL,
+	  `extrafield1` text NOT NULL,
+	  `extrafield2` text NOT NULL,
+	  PRIMARY KEY (`cid`)
+	);");
+
+	$categories = get_terms( 'eventcategory', array( 'hide_empty' => 0 ) );
+	foreach($categories as $categories){
+		$term_ids .= $categories->term_id.',';
+		$eids = rtrim($term_ids,',');
+	}
+	$categories1 = get_terms( 'placecategory', array( 'hide_empty' => 0 ) );
+	foreach($categories1 as $categories1){
+		$term_ids1 .= $categories1->term_id.',';
+		$pids = rtrim($term_ids1,',');
+	}
+	$ids = rtrim($term_ids.$term_ids1,',');
+	$_SESSION['custom_ids'] = $ids;
+		
+	$qry = $wpdb->query("INSERT INTO $custom_post_meta_db_table_name (`cid`, `post_type`, `admin_title`, `field_category`, `htmlvar_name`, `admin_desc`, `site_title`, `ctype`, `default_value`, `option_values`, `clabels`, `sort_order`, `is_active`, `is_delete`, `is_edit`, `is_require`, `show_on_page`, `show_on_listing`, `show_on_detail`, `field_require_desc`, `style_class`, `extra_parameter`, `validation_type`, `extrafield1`, `extrafield2`) VALUES
+	(1, 'place', 'Listing Title', '$pids', 'property_name', 'Enter listing title.', 'Listing Title', 'text', '', '', 'Listing Title', 1, 1, 0, 1, 1, 'user_side', 0, 0, 'Please Enter Listing Title', '', '', 'require', '', ''),
+	(2, 'both', 'Address', '$ids', 'geo_address', 'Please enter listing address. eg. : <b>230 Vine Street And locations throughout Old City, Philadelphia, PA 19106</b>', 'Address', 'geo_map', '', '', 'Address', 2, 1, 0, 1, 1, 'both_side', 0, 0, 'Please enter address to locate your location on map.', '', '', ' ', '', ''),
+	(3, 'both', 'Address Latitude', '$ids', 'geo_latitude', '', 'Address Latitude', 'text', '', '', 'Address Latitude', 3, 1, 0, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(4, 'both', 'Address Longitude', '$ids', 'geo_longitude', '', 'Address Longitude', 'text', '', '', 'Address Longitude', 4, 1, 0, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(5, 'both', 'Google Map View', '$ids', 'map_view', '', 'Google Map View', 'radio', 'Default Map', 'Default Map,Satellite Map,Hybrid Map', 'Google Map View', 7, 1, 0, 1, 1, 'both_side', 0, 0, '0', '', '', ' ', '', ''),
+	(6, 'place', 'Listing Description', '$pids', 'proprty_desc', 'Note : Basic HTML tags are allowed', 'Listing Description', 'texteditor', 'Enter description for your listing.', '', 'Listing Description', 5, 1, 0, 1, 1, 'user_side', 0, 0, 'Enter place description.', 'mce', '', 'require', '', ''),
+
+	(7, 'place', 'Special Offers', '$pids', 'proprty_feature', 'Note: List out any special offers (optional)', 'Special Offers', 'texteditor', '', '', 'Special Offers', 7, 1, 1, '1', 0, 'both_side', 0, 0, '', 'mce', '', ' ', '', ''),
+	(8, 'place', 'Time', '$pids', 'timing', 'Enter Business or Listing Timing Information. <br> eg. : <b>10.00 am to 6 pm every day</b>', 'Time', 'text', '', '', 'Time', 8, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(9, 'both', 'Phone', '$ids', 'contact', 'You can enter phone number,cell phone number etc.', 'Phone', 'text', '', '', 'Phone', 10, 1, 1, '1', 1, 'both_side', 0, 0, 'Please enter phone number', '', '', 'phone_no', '', ''),
+	(10, 'both', 'Email', '$ids', 'email', 'Enter your email address.', 'Email', 'text', '', '', 'Email', 11, 1, 0, 1, 1, 'both_side', 0, 0, 'Please enter your email address.', '', '', 'email', '', ''),
+	(11, 'both', 'Website', '$ids', 'website', 'Enter website URL. eg. : <b>http://myplace.com</b>', 'Website', 'text', '', '', 'Website', 11, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(12, 'both', 'Twitter', '$ids', 'twitter', 'Enter twitter URL. eg. : <b>http://twitter.com/myplace</b>', 'Twitter', 'text', '', '', 'Twitter', 12, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(13, 'both', 'Facebook', '$ids', 'facebook', 'Enter facebook URL. eg. : <b>http://facebook.com/myplace</b>', 'Facebook', 'text', '', '', 'Facebook', 13, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(14, 'place', 'Tag Keyword', '$pids', 'kw_tags', 'Tags are short keywords, with no space within. Up to 40 characters only.', 'Tag Keyword', 'text', '', '', 'Tag Keyword', 14, 1, 1, 1, 0, 'user_side', 0, 0, '', '', '', ' ', '', ''),
+	(15, 'place', 'Select Images', '$pids', 'listing_image', 'Note : You can sort images from Dashboard and then clicking on &quot; Edit&quot;  in the listing', 'Select Images', 'image_uploader', '', '', 'Select Images', 15, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(16, 'event', 'Event Title', '$eids', 'property_name', 'Enter event title.', 'Event Title', 'text', '', '', 'Event Title', 1, 1, 0, 1, 1, 'user_side', 0, 0, 'Please enter event title', '', '', 'require', '', ''),
+
+	(21, 'event', 'Event Start Date', '$eids', 'st_date', 'Enter Event Start Date. eg. : <b>2011-09-05</b>', 'Event Start Date', 'date', '', '', 'Event Start Date', 8, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter start date of an avent.', '', '', ' ', '', ''),
+	(22, 'event', 'Start Time', '$eids', 'st_time', 'Enter Event Start Time. eg. : <b>10:14</b>', 'Start Time', 'text', '', '', 'Start Time', 8, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter start time of an event.', '', '', ' ', '', ''),
+	(23, 'event', 'Event End Date', '$eids', 'end_date', 'Enter Event End Date. eg. : <b>2011-09-05</b>', 'Event End Date', 'date', '', '', 'Event End Date', 9, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter end date of event.', '', '', ' ', '', ''),
+	(24, 'event', 'End Time', '$eids', 'end_time', 'Enter Event End Time. eg. : <b>10:14</b>', 'End Time', 'text', '', '', 'End Time', 9, 1, 0, 1, 1, 'both_side', 0, 1, 'Please enter event end time.', '', '', ' ', '', ''),
+	(25, 'event', 'Event Description', '$eids', 'event_desc', 'Note : Basic HTML tags are allowed', 'Event Description', 'texteditor', 'You should enter description content for your listing.', '', 'Event Description', 5, 1, 0, 1, 1, 'user_side', 0, 0, 'Please enter description of an event.', '', '', 'require', '', ''),
+	(26, 'event', 'How to Register', '$eids', 'reg_desc', 'Enter how to register details ', 'How to Register', 'texteditor', '<h3>How to Register</h3><p>Click on the below link to register by going to our website. Just enter your detail and pay the registration fees.</p><p><a href &equiv; &acute;javascript:void(0)&acute; mce_href &equiv; &acute;javascript:void(0)&acute; class &equiv; &acute;button&acute;>Register Now</a></p>', '', 'How to Register', 11, 1, 1, 1, 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(27, 'event', 'Registration Fees', '$eids', 'reg_fees', 'Enter Registration Fees, in USD eg. : <b>$50</b>', 'Registration Fees', 'text', '', '', 'Registration Fees', 12, 1, 1, '1', 0, 'both_side', 0, 1, '', '', '', ' ', '', ''),
+	(33, 'event', 'Select Images', '$eids', 'listing_image', 'Note : You can sort images from Dashboard and then clicking on &quot; Edit&quot; in the lisitng', 'Select Images', 'image_uploader', '', '', 'Select Images', 18, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),
+	(35, 'both', 'Excerpt', '$ids', 'excerpt', 'Note : Basic HTML tags are allowed', 'Excerpt', 'texteditor', 'Enter excerpt for your listing.', '', 'Excerpt', 6, 1, 0, 1, 1, 'user_side', 0, 0, 'Enter excerpt for this listing.', 'mce', '', '', '', ''),
+	(34, 'both', 'Video code', '$ids', 'video', 'Add video code here', 'Video code', 'textarea', '', '', 'Video code', 18, 1, 1, '1', 0, 'both_side', 0, 0, '', '', '', ' ', '', ''),(37, 'event', 'Registration URL', '0', 'register_link', '', 'Registration URL', 'text', '', '', 'Registration URL', 12, 1, 0, 0, 0, 'both_side', 0, 0, 'Enter URL for the &acute;Register&acute; button', '', '', '', '', '')"); 
+	}	
 }
 
 /* $field_check1 = $wpdb->get_row("SELECT * FROM  $custom_post_meta_db_table_name where htmlvar_name LIKE  '%register_link%'");
@@ -339,7 +403,7 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$price_db_table_name\"") != $price_db_tabl
 	  `price_post_type` varchar(100) NOT NULL,
 	  `price_post_cat` varchar(100) NOT NULL,
 	  `is_show` varchar(10) NOT NULL,
-	  `package_cost` int(10) NOT NULL,
+	  `package_cost` float(10,2) NOT NULL,
 	  `validity` int(10) NOT NULL,
 	  `validity_per` varchar(10) NOT NULL,
 	  `status` int(10) NOT NULL ,
@@ -348,8 +412,8 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$price_db_table_name\"") != $price_db_tabl
 	  `billing_per` varchar(10) NOT NULL,
 	  `billing_cycle` varchar(10) NOT NULL,
 	  `is_featured` int(10) NOT NULL,
-	  `feature_amount` int(10) NOT NULL,
-	  `feature_cat_amount` int(10) NOT NULL,
+	  `feature_amount` float(10,2) NOT NULL,
+	  `feature_cat_amount` float(10,2) NOT NULL,
 	  PRIMARY KEY (`pid`)
 	)'; 
 	$wpdb->query($price_table);
@@ -362,6 +426,11 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$price_db_table_name\"") != $price_db_tabl
 $price_title = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'title'");
 if(isset($price_title))	{
 $wpdb->query("ALTER TABLE $price_db_table_name CHANGE `title` `price_title` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
+}
+
+$price_post_cat = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'price_post_cat'");
+if(isset($price_post_cat))	{
+$wpdb->query("ALTER TABLE $price_db_table_name CHANGE `price_post_cat` `price_post_cat` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
 }
 
 $price_desc = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'price_desc'");
@@ -383,10 +452,7 @@ $is_show = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'is_show'
 if(!isset($is_show))	{
 $wpdb->query("ALTER TABLE $price_db_table_name  ADD `is_show` VARCHAR(1000) NOT NULL AFTER `price_post_cat`");
 }
-$price_amount = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'amount'");
-if(isset($price_amount))	{
-$wpdb->query("ALTER TABLE $price_db_table_name CHANGE `amount` `package_cost` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
-}
+
 $price_days = $wpdb->get_var("SHOW COLUMNS FROM $price_db_table_name LIKE 'days'");
 if(isset($price_days))	{
 $wpdb->query("ALTER TABLE $price_db_table_name CHANGE `days` `validity` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
@@ -428,9 +494,9 @@ $wpdb->query("ALTER TABLE $price_db_table_name  ADD `feature_cat_amount` VARCHAR
 
 
 /* Price TABLE Creation EOF */
-
-$ip_db_table_name= strtolower($table_prefix . "ip_settings");
 global $ip_db_table_name;
+$ip_db_table_name= $table_prefix . "ip_settings";
+
 //$wpdb->query("drop table $ip_db_table_name");
 if($wpdb->get_var("SHOW TABLES LIKE \"$ip_db_table_name\"") != $ip_db_table_name){
 	$ip_table = 'CREATE TABLE IF NOT EXISTS `'.$ip_db_table_name.'` (
@@ -520,20 +586,20 @@ if($wpdb->get_var("SHOW TABLES LIKE \"$transection_db_table_name\"") != $transec
 	$payOpts[] = array(
 					"title"			=>	CANCEL_URL_TEXT,
 					"fieldname"		=>	"cancel_return",
-					"value"			=>	site_url("/?ptype=cancel_return&pmethod=paypal"),
-					"description"	=>	sprintf(__("Example : %s",'templatic'),site_url("/?ptype=cancel_return&pmethod=paypal")),
+					"value"			=>	home_url("/?ptype=cancel_return&pmethod=paypal"),
+					"description"	=>	sprintf(__("Example : %s",'templatic'),home_url("/?ptype=cancel_return&pmethod=paypal")),
 					);
 	$payOpts[] = array(
 					"title"			=>	RETURN_URL_TEXT,
 					"fieldname"		=>	"returnUrl",
-					"value"			=>	site_url("/?ptype=return&pmethod=paypal"),
-					"description"	=>	sprintf(__("Example : %s",'templatic'),site_url("/?ptype=return&pmethod=paypal")),
+					"value"			=>	home_url("/?ptype=return&pmethod=paypal"),
+					"description"	=>	sprintf(__("Example : %s",'templatic'),home_url("/?ptype=return&pmethod=paypal")),
 					);
 	$payOpts[] = array(
 					"title"			=>	NOTIFY_URL_TEXT,
 					"fieldname"		=>	"notify_url",
-					"value"			=>	site_url("/?ptype=notifyurl&pmethod=paypal"),
-					"description"	=>	sprintf(__("Example : %s",'templatic'),site_url("/?ptype=notifyurl&pmethod=paypal")),
+					"value"			=>	home_url("/?ptype=notifyurl&pmethod=paypal"),
+					"description"	=>	sprintf(__("Example : %s",'templatic'),home_url("/?ptype=notifyurl&pmethod=paypal")),
 					);
 								
 	$paymethodinfo[] = array(
@@ -624,8 +690,8 @@ $payOpts = array();
 	$payOpts[] = array(
 					"title"			=>	NOTIFY_URL_TEXT,
 					"fieldname"		=>	"ipnfilepath",
-					"value"			=>	site_url("/?ptype=notifyurl&pmethod=2co"),
-					"description"	=>	sprintf(__("Example : %s",'templatic'),site_url("/?ptype=notifyurl&pmethod=2co")),
+					"value"			=>	home_url("/?ptype=notifyurl&pmethod=2co"),
+					"description"	=>	sprintf(__("Example : %s",'templatic'),home_url("/?ptype=notifyurl&pmethod=2co")),
 					);
 					
 	$paymethodinfo[] = array(

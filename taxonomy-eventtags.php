@@ -6,8 +6,8 @@ if(!isset($_REQUEST['etype'])) {
 get_header(); ?>
 <?php 
 if(get_option('ptthemes_category_map_event') == 'yes' || get_option('ptthemes_category_map_event') == ''){
-	if(file_exists(TEMPLATEPATH . '/library/map/category_listing_map.php')){
-		include_once (TEMPLATEPATH . '/library/map/category_listing_map.php');
+	if(file_exists(get_template_directory() . '/library/map/category_listing_map.php')){
+		include_once (get_template_directory() . '/library/map/category_listing_map.php');
 	}
 	$map_display_category = 'no';
 	global $map_display_category;
@@ -41,7 +41,7 @@ if(get_option('ptthemes_category_map_event') == 'yes' || get_option('ptthemes_ca
 <?php templ_page_title_below(); //page title below action hook 
 $deptID = $current_term->term_id;
 if(isset($deptID) && $deptID !=""){
-$childCatID = $wpdb->get_col("SELECT term_id FROM $wpdb->term_taxonomy WHERE parent=$deptID");
+$childCatID = $wpdb->get_col("SELECT $wpdb->term_taxonomy.term_id,$wpdb->terms.name FROM $wpdb->term_taxonomy,$wpdb->terms WHERE 1=1 and $wpdb->term_taxonomy.term_id = $wpdb->terms.term_id and parent=$deptID order by $wpdb->terms.name ASC");
 if ($childCatID){
 	echo '<div class="subcate_list">';
 	foreach ($childCatID as $kid) {
@@ -59,8 +59,8 @@ $category_main_link = get_term_link($current_term->slug, CUSTOM_TAG_TYPE2);
 <ul class="sort_by">
     	<li class="title"> <?php _e('Events','templatic');?> :</li>
 			<li class="<?php if($_REQUEST['etype']==''){ echo 'current'; }?>"> <a href="<?php echo $category_main_link; ?>">  <?php echo ALL_TEXT; ?> </a></li>
-			<li class="<?php if($_REQUEST['etype']=='upcoming'){ echo 'current';}?>"> <a href="<?php if(strstr($category_main_link,'?')){ echo $cat_url = $category_main_link."&amp;etype=upcoming";}else{ echo $cat_url = $category_main_link."?etype=upcoming";}?>">  <?php _e('Upcoming');?> </a></li>
-			<li class="<?php if($_REQUEST['etype']=='past'){ echo 'current'; }?>"> <a href="<?php if(strstr($category_main_link,'?')){ echo $cat_url = $category_main_link."&amp;etype=past"; }else{ echo $cat_url = $category_main_link."?etype=past";}?>">  <?php _e('Past');?> </a></li>
+			<li class="<?php if($_REQUEST['etype']=='upcoming'){ echo 'current';}?>"> <a href="<?php if(strstr($category_main_link,'?')){ echo $cat_url = $category_main_link."&amp;etype=upcoming";}else{ echo $cat_url = $category_main_link."?etype=upcoming";}?>">  <?php _e('Upcoming','templatic');?> </a></li>
+			<li class="<?php if($_REQUEST['etype']=='past'){ echo 'current'; }?>"> <a href="<?php if(strstr($category_main_link,'?')){ echo $cat_url = $category_main_link."&amp;etype=past"; }else{ echo $cat_url = $category_main_link."?etype=past";}?>">  <?php _e('Past','templatic');?> </a></li>
          
            <li class="i_next"> <?php next_posts_link(__(NEXT_TITLE)) ?>  </li>
             <li class="i_previous"><?php previous_posts_link(__(PREVIOUS)) ?> </li>
@@ -174,7 +174,7 @@ global $wp_query;
 		if($post_images[0]['file']){  
 				$crop_image = vt_resize($attachment_id, $post_images[0]['file'], $width, $height, $crop = $is_crop );
 					?>
-						<a class="post_img" href="<?php the_permalink(); ?>"><img  src="<?php echo $crop_image['url'];?>" alt="<?php $alt; ?>" title="<?php echo $title; ?>"  /> </a>
+						<a class="post_img" href="<?php the_permalink(); ?>"><img  src="<?php echo $crop_image['url'];?>" alt="<?php echo $alt; ?>" title="<?php echo $title; ?>"  /> </a>
 		<?php 	}else{ ?>
 						<a class="img_no_available" href="<?php the_permalink(); ?>"> <?php echo IMAGE_NOT_AVAILABLE_TEXT;?> </a>
 
@@ -187,7 +187,7 @@ global $wp_query;
      <!--  Post Title Condition for Post Format-->
 				 <div class="post-meta listing_meta">
 							<?php if(templ_is_show_listing_author()){ ?>
-							<?php echo By;?> <span class="post-author"> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>">
+							<?php echo By;?> <span class="post-author"> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>">
 							<?php the_author(); ?>
 							</a> </span>
 							<?php }  ?>
@@ -197,8 +197,8 @@ global $wp_query;
 							</span>
 							<?php } 
 							if(templ_is_show_listing_views()){
-							echo '<span class="post-total-view"> '.VIEW_LIST_TEXT.user_post_visit_count($post->ID).'</span>';
-							echo '<span class="post-daily-view"> '.VIEW_LIST_TEXT_DAILY.user_post_visit_count_daily($post->ID).'</span>';
+							echo '<span class="post-total-view"> '.VIEW_LIST_TEXT.": ".user_post_visit_count($post->ID).'</span>';
+							echo '<span class="post-daily-view"> '.VIEW_LIST_TEXT_DAILY.": ".user_post_visit_count_daily($post->ID).'</span>';
 							}
 							if(get_post_format( $post->ID )){
 							$format = get_post_format( $post->ID );
@@ -212,30 +212,30 @@ global $wp_query;
 		<?php
 				if (get_option('ptthemes_cat_listing')=='Listing'){ ?>
 					<div class="post_right">
-					<?php if(get_option('default_comment_status') == 'open'){ ?>
-					<a href="<?php the_permalink(); ?>#commentarea" class="pcomments" ><?php comments_number(__('0 '.REVIEW.''), __('1 '.REVIEW.''), __('% '.REVIEW.'')); ?> </a>
+					<?php 	if(trim(get_option('ptthemes_listing_comment')) == trim('Yes') || !get_option('ptthemes_listing_comment') ){ ?>
+					<a href="<?php the_permalink(); ?>#commentarea" class="pcomments" ><?php comments_number(__('0 '.REVIEWS.'','templatic'), __('1 '.REVIEW.'','templatic'), __('% '.REVIEWS.'','templatic')); ?> </a>
 					<?php } ?>
 					<?php if(get_option('ptthemes_disable_rating') == 'no') { 	?>	
 					<span class="rating"><?php echo get_post_rating_star($post->ID);?></span>
 					<?php }				
 							if(get_post_meta($post->ID,'geo_address',true) != '') { ?>
-							<a href="#map_canvas"  class="ping" id="pinpoint_<?php echo $post->ID; ?>"><?php _e('Pinpoint');?></a> <?php } ?>
+							<a href="#map_canvas"  class="ping" id="pinpoint_<?php echo $post->ID; ?>"><?php _e('Pinpoint','templatic');?></a> <?php } ?>
 							<?php favourite_html($post->post_author,$post->ID); ?>
                    
 				</div>
-				<p class="timing"> <span><?php _e('Date :','templatic');?></span> <?php echo date('M d, Y',strtotime(get_post_meta($post->ID,'st_date',true))).' to '.date('M d, Y',strtotime(get_post_meta($post->ID,'end_date',true)));?><br> <span><?php _e('Timing :','templatic');?></span> <?php echo get_post_meta($post->ID,'st_time',true).' to '.get_post_meta($post->ID,'end_time',true);?> </p>
+				<p class="timing"> <span><?php _e('Date :','templatic');?></span> <?php echo date(get_option('date_format'),strtotime(get_post_meta($post->ID,'st_date',true))).' to '.date(get_option('date_format'),strtotime(get_post_meta($post->ID,'end_date',true)));?><br> <span><?php _e('Timing :','templatic');?></span> <?php echo get_post_meta($post->ID,'st_time',true).' to '.get_post_meta($post->ID,'end_time',true);?> </p>
 				
 				
 				
                 <?php if(get_post_meta($post->ID,'geo_address',true) != '') { echo '<p class="address"><span>'.LOCATION.'</span> '.get_post_meta($post->ID,'geo_address',true).'</p>'; } ?>
-				<?php echo get_post_custom_for_listing_page($post->ID,'<p><span>{#TITLE#} : </span>{#VALUE#}</p>','',CUSTOM_POST_TYPE2);?>
+				<?php echo get_post_custom_for_listing_page($post->ID,'<p><span>{#TITLE#}: </span>{#VALUE#}</p>','',CUSTOM_POST_TYPE2);?>
 				<?php  echo '<p>';
 					echo excerpt(get_option('ptthemes_content_excerpt_count'));
 					  echo '</p>'; ?>
 				<?php }
 				else{ ?>
 					
-					<p class="timing"> <span><?php _e('Date :','templatic');?></span> <?php echo date('M d, Y',strtotime(get_post_meta($post->ID,'st_date',true))).' to '.date('M d, Y',strtotime(get_post_meta($post->ID,'end_date',true)));?><br> <span><?php _e('Timing :','templatic');?></span> <?php echo get_post_meta($post->ID,'st_time',true).' to '.get_post_meta($post->ID,'end_time',true);?> </p>
+					<p class="timing"> <span><?php _e('Date :','templatic');?></span> <?php echo date(get_option('date_format'),strtotime(get_post_meta($post->ID,'st_date',true))).' to '.date(get_option('date_format'),strtotime(get_post_meta($post->ID,'end_date',true)));?><br> <span><?php _e('Timing :','templatic');?></span> <?php echo get_post_meta($post->ID,'st_time',true).' to '.get_post_meta($post->ID,'end_time',true);?> </p>
 					<span class="rating"><?php echo get_post_rating_star($post->ID);?></span>
 					
                    
@@ -246,10 +246,10 @@ global $wp_query;
 					  echo '</p>';
 		
 						if(get_post_meta($post->ID,'geo_address',true) != '') { ?>
-							<span class="ping"><a href="#map_canvas" id="pinpoint_<?php echo $post->ID; ?>"><?php _e('Pinpoint');?></a></span> <?php } ?>
+							<span class="ping"><a href="#map_canvas" id="pinpoint_<?php echo $post->ID; ?>"><?php _e('Pinpoint','templatic');?></a></span> <?php } ?>
 						<?php favourite_html($post->post_author,$post->ID); ?>
 						<p class="review clearfix">    
-							<a href="<?php the_permalink(); ?>#commentarea" class="pcomments" ><?php comments_number(__('0'), __('1'), __('%')); ?> </a>
+							<a href="<?php the_permalink(); ?>#commentarea" class="pcomments" ><?php comments_number(__('0','templatic'), __('1','templatic'), __('%','templatic')); ?> </a>
 							<span class="readmore"> <a href="<?php the_permalink(); ?>"><?php echo READ_MORE_LABEL; ?> </a> </span>
 						</p>
 				<?php	

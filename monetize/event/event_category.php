@@ -1,45 +1,13 @@
 <?php
 global $wpdb;
-$blog_cat = get_option('ptthemes_blogcategory');
-if(is_array($blog_cat) && $blog_cat[0]!='')
-{
-	$blog_cat = get_blog_sub_cats_str($type='string');
-}else
-{
-	$blog_cat = '';	
-}
-if($blog_cat)
-{
-	$blog_cat .= ",1";
-}else
-{
-	$blog_cat .= "1";
-}
+
 global $price_db_table_name;
-$package_cats = $wpdb->get_var("select group_concat(cat) from $price_db_table_name where cat>0 and amount>0");
-if($package_cats)
-{
-	if($blog_cat){
-	$blog_cat .= ",".$package_cats;
-	}else
-	{
-	$blog_cat .= $package_cats;
-	}
-}
-if($blog_cat)
-{
-	//$substr = " and c.term_id not in ($blog_cat)";	
-	$substr = "";
-}
-
-$catsql = "select * from $wpdb->terms c,$wpdb->term_taxonomy tt  where tt.term_id=c.term_id and tt.taxonomy='".CUSTOM_CATEGORY_TYPE2."' and tt.parent=0 and c.name != 'Uncategorized' and c.name != 'Blog'  $substr order by c.name";
-
-$catinfo = $wpdb->get_results($catsql);
+$catinfo = get_terms(CUSTOM_CATEGORY_TYPE2,array('hide_empty'=>0,'parent'=>0));
 global $cat_array,$category_renew;
 
-if($_REQUEST['backandedit'] != ''){
+if(@$_REQUEST['backandedit'] != ''){
 	$place_cat_arr = $cat_array;
-}else if($_REQUEST['renew'] != ''){
+}else if(@$_REQUEST['renew'] != ''){
 	$place_cat_arr = $category_renew;
 
 }else {
@@ -48,7 +16,7 @@ for($i=0; $i < count($cat_array); $i++){
 }
 }
 $total_cp_price = 0;
-$total_price_sql = $wpdb->get_results("select * from $wpdb->terms c,$wpdb->term_taxonomy tt  where tt.term_id=c.term_id and tt.taxonomy='".CUSTOM_CATEGORY_TYPE2."' and c.name != 'Uncategorized' and c.name != 'Blog' $substr order by c.name");
+$total_price_sql = $wpdb->get_results("select * from $wpdb->terms c,$wpdb->term_taxonomy tt  where tt.term_id=c.term_id and tt.taxonomy='".CUSTOM_CATEGORY_TYPE2."' and c.name != 'Uncategorized' and c.name != 'Blog' order by c.name");
 foreach($total_price_sql as $objtotal_price_sql){
 	$total_cp_price += $objtotal_price_sql->term_price;
 }
@@ -71,13 +39,13 @@ if($catinfo) {
 		$term_tax_id = $catinfo_obj->term_id;
 		$name = $catinfo_obj->name;
 		if($cat_display=='checkbox'){
-		$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where tt.term_taxonomy_id='".$termid."' and t.term_id = tt.term_id");
+		$catprice = $catinfo_obj->term_price;
 
-		$cp = $catprice->term_price; 
+		$cp = @$catinfo_obj->term_price; 
 
 		?>
 
-		 <div class="form_cat" ><label><input type="checkbox" name="category[]" id="category_<?php echo $counter; ?>" value="<?php if($cp != ""){ echo $termid.",".$catprice->term_price; }else{ echo $termid.",".'0'; }?>" class="checkbox" <?php if(isset($place_cat_arr) && in_array($termid,$place_cat_arr)){echo 'checked="checked"'; }?>  onclick="event_packages('<?php echo $catinfo_obj->term_id; ?>',this.form,'<?php echo $cp; ?>')"/>&nbsp;<?php if($cp > 0){ echo $name."<span style='color:#990000;'> (".display_amount_with_currency($cp).")</span> "; }else{ echo $name; } ?></label></div>
+		 <div class="form_cat" ><label><input type="checkbox" name="category[]" id="category_<?php echo $counter; ?>" value="<?php if($cp != ""){ echo $termid.",".$catinfo_obj->term_price; }else{ echo $termid.",".'0'; }?>" class="checkbox" <?php if(isset($place_cat_arr) && in_array($termid,$place_cat_arr)){echo 'checked="checked"'; }?>  onclick="event_packages('<?php echo $catinfo_obj->term_id; ?>',this.form,'<?php echo $cp; ?>')"/>&nbsp;<?php if($cp > 0){ echo $name."<span style='color:#990000;'> (".display_amount_with_currency($cp).")</span> "; }else{ echo $name; } ?></label></div>
 		
 		<?php
 		 $child = get_term_children( $term_tax_id ,CUSTOM_CATEGORY_TYPE2);
@@ -97,6 +65,7 @@ if($catinfo) {
 			$termid = $term->term_taxonomy_id;
 			$term_tax_id = $term->term_id;
 			$name = $term->name;
+			$cp = $term->term_price; 
 			if($child_of)
 			{
 				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."'");
@@ -116,7 +85,7 @@ if($catinfo) {
 				}
 			}
 			$p = $p*15;
-			$cp = $catprice->term_price; 
+			
 		 ?>
 			<div class="form_cat" style="margin-left:<?php echo $p; ?>px;"><label><input type="checkbox" name="category[]" id="category_<?php echo $counter; ?>" value="<?php if($cp != ""){ echo $termid.",".$catprice->term_price; }else{ echo $termid.",".'0'; }?>" class="checkbox" <?php if(isset($place_cat_arr) && in_array($termid,$place_cat_arr)){echo 'checked="checked"'; }?>  onclick="event_packages('<?php echo $catprice->term_id; ?>',this.form,'<?php echo $catprice->term_price; ?>')"/>&nbsp;<?php if($cp > 0){ echo $name."<span style='color:#990000;'> (".display_amount_with_currency($cp).")</span>"; }else{ echo $name; } ?></label></div>
 		<?php }
@@ -128,7 +97,7 @@ if($catinfo) {
 		}elseif($cat_display=='select')
 		{ 
 		$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$catinfo_obj->term_id."' and t.term_id = tt.term_id");
-		$cp = $catprice->term_price; 
+		$cp = $catinfo_obj->term_price;
 			if((isset($_REQUEST['category']) && $_REQUEST['category'] != '') || (isset($_SESSION['event_info']['category']) && $_SESSION['event_info']['category'] != '') || (isset($_REQUEST['renew']) && $_REQUEST['renew']!= '') ) { 
 				if($_REQUEST['category'] !=""){
 				$cat_term = explode(',',$_REQUEST['category']); 
@@ -139,9 +108,9 @@ if($catinfo) {
 				}
 				if(is_array($cat_term)){ $cat_term = $cat_term[0]; }else{ $cat_term =$cat_term; }
 				if($cat_term == $termid){ ?>
-					<option <?php if($cat_term == $termid){echo 'selected=selected'; }?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $name."(".display_amount_with_currency($cp).") "; }else{ echo $name."(".display_amount_with_currency('0').") "; } ?></option>
+					<option <?php if($cat_term == $termid){echo 'selected=selected'; }?> value="<?php if($cp != "" && $cp != "0"){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $name."(".display_amount_with_currency($cp).") "; }else{ echo $name; } ?></option>
 				<?php } else { ?>
-					<option <?php if(isset($_SESSION['event_info']['category']) && $_SESSION['event_info']['category'] == $termid){echo 'selected="selected"'; }?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $name." (".display_amount_with_currency($cp).")"; }else{ echo $name."(".display_amount_with_currency('0').") "; } ?></option>
+					<option <?php if(isset($_SESSION['event_info']['category']) && $_SESSION['event_info']['category'] == $termid){echo 'selected="selected"'; }?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $name." (".display_amount_with_currency($cp).")"; }else{ echo $name; } ?></option>
 					<?php
 				 $child = get_term_children( $term_tax_id ,CUSTOM_CATEGORY_TYPE2);
 				  $args = array(
@@ -160,6 +129,7 @@ if($catinfo) {
 					$termid = $term->term_taxonomy_id;
 					$term_tax_id = $term->term_id;
 					$name = $term->name;
+					$cp = $term->term_price; 
 					if($child_of)
 			{
 				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."'");
@@ -179,15 +149,15 @@ if($catinfo) {
 				}
 			}
 			//$p = $p*15;
-			$cp = $catprice->term_price; 
+		
 		 ?>
-					<option <?php  if($cat_term == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $p.$name."(".display_amount_with_currency($cp).")"; }else{ echo $p.$name."(".display_amount_with_currency('0').")"; } ?></option>
+					<option <?php  if($cat_term == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $p.$name."(".display_amount_with_currency($cp).")"; }else{ echo $p.$name; } ?></option>
 				<?php }
 			 }
 				?>
 				
 			<?php } else if($_REQUEST['pid'] != ''){ ?>
-				<option <?php  if($cat_array[0]->term_taxonomy_id == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $name."(".display_amount_with_currency($cp).")"; }else{ echo $name."(".display_amount_with_currency('0').")"; } ?></option>
+				<option <?php  if($cat_array[0]->term_taxonomy_id == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $name."(".display_amount_with_currency($cp).")"; }else{ echo $name; } ?></option>
 				<?php
 				 $child = get_term_children( $term_tax_id ,CUSTOM_CATEGORY_TYPE2);
 				 $args = array(
@@ -206,6 +176,7 @@ if($catinfo) {
 					$termid = $term->term_taxonomy_id;
 					$term_tax_id = $term->term_id;
 					$name = $term->name;
+					$cp = $term->term_price; 
 					if($child_of)
 			{
 				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."'");
@@ -225,9 +196,9 @@ if($catinfo) {
 				}
 			}
 			//$p = $p*15;
-			$cp = $catprice->term_price; 
+
 		 ?>
-					<option <?php  if($cat_term == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $p.$name."(".display_amount_with_currency($cp).")"; }else{ echo $p.$name."(".display_amount_with_currency('0').")"; } ?></option>
+					<option <?php  if($cat_term == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != "" && $cp != "0"){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $p.$name."(".display_amount_with_currency($cp).")"; }else{ echo $p.$name; } ?></option>
 				<?php }
 		 } else {
          
@@ -244,7 +215,7 @@ if($catinfo) {
 		$amt_display = $amount.' '.$currency;
 		}
       ?>   
-				<option  value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != ""){ echo $name."(".display_amount_with_currency($cp).")"; }else{ echo $name."(".$amt_display.")"; } ?></option>
+				<option  value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp != "" && $cp != "0"){ echo $name."(".display_amount_with_currency($cp).")"; }else{ echo $name; } ?></option>
 				<?php
 				 $child = get_term_children( $term_tax_id ,CUSTOM_CATEGORY_TYPE2);
 			
@@ -264,6 +235,7 @@ if($catinfo) {
 					$termid = $term->term_taxonomy_id;
 					$term_tax_id = $term->term_id;
 					$name = $term->name;
+					$cp = $term->term_price; 
 					if($child_of)
 			{
 				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."'");
@@ -283,7 +255,7 @@ if($catinfo) {
 				}
 			}
 			//$p = $p*15;
-			$cp = $catprice->term_price; 
+
 		 ?><option <?php  if($cat_term[0]  == $termid){ echo 'selected="selected"'; } ?> value="<?php if($cp != ""){ echo $termid.",".$term_tax_id.",".$catprice->term_price; }else{ echo $termid.",".$term_tax_id.","."0"; }?>"><?php if($cp > 0){ echo $p.$name."(".display_amount_with_currency($cp).")"; }else{ echo $p.$name; } ?></option>
 				<?php }
 		}

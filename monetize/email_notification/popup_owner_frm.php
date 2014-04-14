@@ -1,5 +1,5 @@
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/basic.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/basic.js'></script>
 <?php if(get_option('ptthemes_email_on_detailpage') == 'No' && get_option('ptthemes_inquiry_on_detailpage') == 'No') { ?>
  <div id="myrecap" style="display:none;">
 		   <?php $display = get_option('ptthemes_captcha_dislay');
@@ -37,26 +37,24 @@
 	<input type="hidden" name="claimer_id" id="claimer_id" value="<?php _e($current_user->ID,'templatic');?>" />
 	<input type="hidden" id="author_id" name="author_id" value="<?php echo $post->post_author; ?>" /><input type="hidden" id="author_id" name="author_id" value="<?php echo $post->post_author; ?>" /><input type="hidden" id="post_title" name="post_title" value="<?php echo $post->post_title; ?>" />
 	<h3><?php _e('Do you own this business?','templatic'); ?></h3>
-	<h4><?php _e('Verify your ownership for '.$post->post_title,'templatic');?></h4><br />
+	<h4><?php _e('Verify your ownership for ','templatic'); echo $post->post_title; ?></h4><br />
 	
 			<p id="reply_send_success" class="success_msg" style="display:none;"></p>
 
-			<div class="row  clearfix" ><label><?php _e('Full name');?> : <span>*</span></label> <input name="owner_full_name" id="owner_full_name" type="text"  /><span id="owner_full_nameInfo"></span></div>
+			<div class="row  clearfix" ><label><?php _e('Full name','templatic');?> : <span>*</span></label> <input name="owner_full_name" id="owner_full_name" type="text"  /><span id="owner_full_nameInfo"></span></div>
 		
-		 	<div class="row  clearfix" ><label> <?php _e('Your email');?> : <span>*</span></label> <input name="owner_email" id="owner_email" type="text"  /><span id="owner_emailInfo"></span></div>
+		 	<div class="row  clearfix" ><label> <?php _e('Your email','templatic');?> : <span>*</span></label> <input name="owner_email" id="owner_email" type="text"  /><span id="owner_emailInfo"></span></div>
 			
-			<div class="row  clearfix" ><label> <?php _e('Contact number');?> :</label> <input name="your_contact_number" id="your_contact_number" type="text"  /></div>	
+			<div class="row  clearfix" ><label> <?php _e('Contact number','templatic');?> :</label> <input name="your_contact_number" id="your_contact_number" type="text"  /></div>	
 				
-			<div class="row textarea_row  clearfix" ><label><?php _e('Your claim');?> : <span>*</span></label> <textarea name="your_claim" id="your_claim" cols="10" rows="5" ><?php _e('Hello,
-			
-I would like to notify you that I am the owner of this listing. I would like to verify it&lsquo;s authenticity.','templatic'); ?></textarea><span id="your_claimInfo"></span></div>
+			<div class="row textarea_row  clearfix" ><label><?php _e('Your claim','templatic');?> : <span>*</span></label> <textarea name="your_claim" id="your_claim" cols="10" rows="5" ><?php _e('Hello,I would like to notify you that I am the owner of this listing. I would like to verify it&lsquo;s authenticity.','templatic'); ?></textarea><span id="your_claimInfo"></span></div>
 			<div id="owner_frm"></div>
 			<div class="row  clearfix" >
-			<input name="Send" type="submit" value="<?php _e('Submit')?> " class="button " /></div>
+			<input name="Send" type="submit" value="<?php _e('Submit','templatic')?> " class="button " /></div>
 </form>
 </div>
 <?php
-if($_POST['owner_email'] != "")
+if(@$_POST['owner_email'] != "")
 {
 	$display = get_option('ptthemes_captcha_dislay');
 	if(file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') && $display != 'None of them'){ 
@@ -69,7 +67,7 @@ if($_POST['owner_email'] != "")
                                 $_POST["recaptcha_response_field"]);
 								
 		if (!$resp->is_valid ) { 
-		echo "<script>alert('Invalid captcha');</script>";
+		echo "<script type='text/javascript'>alert('Invalid captcha');</script>";
 		return false;	
 		} 
 	}
@@ -107,6 +105,7 @@ if($_POST['owner_email'] != "")
 		<p>Dear admin,</p>
 		<p>[#$message#]</p>
 		<p>Link : <b>[#$post_title#]</b> </p>
+		<p>Phone Number : [#$phone#]</p>
 		<p>From, [#$your_name#]</p>','templatic');
 		$filecontent_arr1 =$message1;
 		$filecontent_arr2 =$filecontent_arr1;
@@ -117,17 +116,17 @@ if($_POST['owner_email'] != "")
 	
 	$post_url_link = '<a href="'.$_REQUEST['link_url1'].'">'.$post_title.'</a>';
 	/////////////customer email//////////////
-	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('siteurl').'">'.get_option('blogname').'</a></b>.','templatic');
-	$search_array = array('[#$to_name#]','[#$post_title#]','[#$message#]','[#$your_name#]','[#$post_url_link#]');
-	$replace_array = array($to_name,$post_url_link,$message,$yourname_link,$post_url_link);
+	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('home').'">'.get_option('blogname').'</a></b>.','templatic');
+	$search_array = array('[#$to_name#]','[#$post_title#]','[#$message#]','[#$your_name#]','[#$phone#]','[#$post_url_link#]');
+	$replace_array = array($to_name,$post_url_link,$message,$yourname_link,$c_number,$post_url_link);
 	$client_message = str_replace($search_array,$replace_array,$client_message); 
-
+	$client_message = stripslashes($client_message);
 	templ_sendEmail($youremail,$yourname,$to_email,$to_name,$subject,$client_message,$extra='');///To clidne email
 	//////Inquiry EMAIL END////////	
-	if(get_option('siteurl').'/' == $_REQUEST['request_uri']){
-			echo "<script>alert('Request has been sent successfully');</script>";
+	if(get_option('home').'/' == $_REQUEST['request_uri']){
+			echo "<script type='text/javascript'>alert('Request has been sent successfully');</script>";
 	} else {
-		echo "<script>alert('Request has been sent successfully');</script>";
+		echo "<script type='text/javascript'>alert('Request has been sent successfully');</script>";
 	}
 
 }?>

@@ -76,7 +76,7 @@ function retrieve_password() {
 	$message  = __('<p><b>Your login Information :</b></p>','templatic');
 	$message  .= '<p>'.sprintf(__('Username: ','templatic').'%s', $user->user_login) . "</p>";
 	$message .= '<p>'.sprintf(__('Password: ','templatic').'%s', $new_pass) . "</p>";
-	$message .= __('<p>You can login to : <a href="'.site_url().'/?ptype=login">Login</a> or the URL is :  '.site_url().'/?ptype=login</p>','templatic');
+	$message .= __('<p>You can login to : <a href="'.home_url().'/?ptype=login">Login</a> or the URL is :  '.home_url().'/?ptype=login</p>','templatic');
 	$message .= __('<p>Thank You,<br> '.get_option('blogname').'</p>','templatic');
 	$user_email = $user_data->user_email;
 	$user_name = $user_data->user_nicename;
@@ -85,6 +85,7 @@ function retrieve_password() {
 	$title = sprintf('[%s]'.__(' Your new password','templatic'), get_option('blogname'));
 	$title = apply_filters('password_reset_title', $title);
 	$message = apply_filters('password_reset_message', $message, $new_pass);
+	$message = stripslashes($message);
 	templ_sendEmail($fromEmail,$fromEmailName,$user_email,$user_name,$title,$message,$extra='');///forgot password email
 	return true;
 }
@@ -96,9 +97,11 @@ function retrieve_password() {
  * @param string $user_email User's email address to send password and add
  * @return int|WP_Error Either user's ID or error on failure.
  */
-function register_new_user($user_login, $user_email) {
-	global $wpdb;
+function templ_register_new_user($user_login, $user_email) {
+	global $wpdb,$site_url;
 	$errors = new WP_Error();
+	$pcd = explode(',',get_option('ptthemes_captcha_dislay'));
+		
 	
 	$user_login = sanitize_user( $user_login );
 	$user_email = apply_filters( 'user_registration_email', $user_email );
@@ -120,12 +123,40 @@ function register_new_user($user_login, $user_email) {
 		$user_email = '';
 	} elseif ( email_exists( $user_email ) )
 		$errors->add('email_exists', __('<strong>ERROR</strong>: This email is already registered, please choose another one.','templatic'));
-
+	
 	do_action('register_post', $user_login, $user_email, $errors);
 
+    // captcha validation
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	require_once( ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php');
+	$a = get_option("recaptcha_options");
+	$show_in_registration = $a['show_in_registration']; // get option for captcha is enable for registration page
+	
+	if((in_array('User registration page',$pcd) || in_array('Both',$pcd)) && is_plugin_active('wp-recaptcha/wp-recaptcha.php') && is_multisite() && $show_in_registration){
+				$privatekey = $a['private_key'];
+				
+				/* blank field validation */
+				if (empty($_POST['recaptcha_response_field']) || $_POST['recaptcha_response_field'] == '') {
+						$errors->add('blank_captcha',  __('<strong>ERROR</strong>: Please fill in the reCAPTCHA form.','templatic'));
+						return $errors;
+					}
+					
+				/* get response for entered captcha */
+					$resp = recaptcha_check_answer ($privatekey,
+							getenv("REMOTE_ADDR"),
+							$_POST["recaptcha_challenge_field"],
+							$_POST["recaptcha_response_field"]);						
+							
+			/* if captcha is not matched then add an error message */							
+				if (!$resp->is_valid ) {
+					$errors->add('captcha_wrong', __('<strong>ERROR</strong>: That reCAPTCHA response was incorrect.','templatic'));
+				}
+		}
+		
 	$errors = apply_filters( 'registration_errors', $errors );
 
 	if ( $errors->get_error_code() )
+
 		return $errors;
 
 	$user_pass = wp_generate_password(12,false);
@@ -187,38 +218,42 @@ function register_new_user($user_login, $user_email) {
 		$store_name = get_option('blogname');
 		if($subject=="" && $client_message=="")
 		{
-			//registration_email($user_id);
-			$client_message = __('[SUBJECT-STR]Registration Email[SUBJECT-END]<p>Dear [#user_name#],</p>
+			$subject = __('Registration Email','templatic');
+			$client_message = __('<p>Dear [#user_name#],</p>
 			<p>Your login information:</p>
 			<p>Username: [#user_login#]</p>
 			<p>Password: [#user_password#]</p>
 			<p>You can login from [#site_login_url#] or</p><p> the URL is : [#site_login_url_link#].</p>
 			<p>We hope you enjoy. Thanks!</p>
 			<p>[#site_name#]</p>','templatic');
-			$filecontent_arr1 = explode('[SUBJECT-STR]',$client_message);
-			$filecontent_arr2 = explode('[SUBJECT-END]',$filecontent_arr1[1]);
-			$subject = $filecontent_arr2[0];
+		
+			
 			if($subject == '')
 			{
 				$subject = __("Registration Email",'templatic');
 			}
 			
-			$client_message = $filecontent_arr2[1];
+			$client_message = $client_message;
 		}
-		$store_login_link = '<a href="'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'</a>';
-		$store_login = sprintf(__('<a href="'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.'Click Login'.'</a>','templatic'));
+		$store_login_link = '<a href="'.$site_url.'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.$site_url.'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'</a>';
+		$store_login = sprintf(__('<a href="'.$site_url.'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.__('Click Login','templatic').'</a>','templatic'));
 	
 		/////////////customer email//////////////
 		$search_array = array('[#user_name#]','[#user_login#]','[#user_password#]','[#site_name#]','[#site_login_url#]','[#site_login_url_link#]');
 		$replace_array = array($user_login,$user_login,$user_pass,$store_name,$store_login,$store_login_link);
 		$client_message = str_replace($search_array,$replace_array,$client_message);
+		$client_message = stripslashes($client_message);
 		templ_sendEmail($fromEmail,$fromEmailName,$user_email,$userName,$subject,$client_message,$extra='');
+		$admin_subject = __('New User Registration','templatic');
+		$admin_user_registration_message = __('New User : ','templatic');
+		$admin_user_registration_message .= $userName.__(' has been registered to your site ','templatic').$store_name;
+		templ_sendEmail($fromEmail,$fromEmailName,$fromEmail,$fromEmailName,$admin_subject,$admin_user_registration_message,$extra='');
 	}
 	if ( !$user_id ) {
 		$errors->add('registerfail', sprintf(__('<strong>ERROR</strong>: Couldn&#8217;t register you... please contact the ','templatic').'<a href="mailto:%s">webmaster</a> !', get_option('admin_email')));
 		return $errors;
 	}else{
-			$redirect_to = wp_redirect(site_url().'/?reg=1&ptype=login');
+			$redirect_to = wp_redirect($site_url.'/?reg=1&ptype=login');
 	}	
 	
 	return array($user_id,$user_pass);
@@ -244,8 +279,8 @@ if ( defined('RELOCATE') ) { // Move flag is set
 		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
 
 	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	if ( dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) != site_url() )
-		update_option('siteurl', dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) );
+	if ( dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) != $site_url )
+		update_option('home', dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) );
 }
 
 //Set a cookie now to see if they are supported by the browser.
@@ -265,10 +300,10 @@ case 'logout' :
 	wp_logout();
 
 	$redirect_to =  $_SERVER['HTTP_REFERER']."/";
-	//echo $redirect_to = site_url().'/?ptype=login&loggedout=true'; exit;
+	//echo $redirect_to = home_url().'/?ptype=login&loggedout=true'; exit;
 	if ( isset( $_REQUEST['redirect_to'] ) ){
 		$redirect_to = $_REQUEST['redirect_to']."/";
-		$redirect_to = site_url();
+		$redirect_to = $site_url;
 		wp_safe_redirect($redirect_to);
 		exit();
 	}
@@ -282,11 +317,11 @@ case 'retrievepassword' :
 		$errors = retrieve_password();
 		$error_message = $errors->errors['invalid_email'][0];
 		if ( !is_wp_error($errors) ) {
-			wp_redirect(site_url().'/?ptype=login&page1=sign_in&checkemail=confirm');
+			wp_redirect($site_url.'/?ptype=login&page1=sign_in&checkemail=confirm');
 			exit();
 		}else
 		{
-			wp_redirect(site_url().'/?ptype=login&page1=sign_in&emsg=fw');
+			wp_redirect($site_url.'/?ptype=login&page1=sign_in&emsg=fw');
 			exit();
 		}
 	}
@@ -302,11 +337,11 @@ case 'rp' :
 	$errors = reset_password($_GET['key'], $_GET['login']);
 
 	if ( ! is_wp_error($errors) ) {
-		wp_redirect(site_url().'/?ptype=login&action=login&checkemail=newpass');
+		wp_redirect($site_url.'/?ptype=login&action=login&checkemail=newpass');
 		exit();
 	}
 
-	wp_redirect(site_url().'/?ptype=login&action=lostpassword&page1=sign_in&error=invalidkey');
+	wp_redirect($site_url.'/?ptype=login&action=lostpassword&page1=sign_in&error=invalidkey');
 	exit();
 
 break;
@@ -316,15 +351,15 @@ case 'register' :
 	$user_login = '';
 	$user_email = '';
 	if ( !get_option('users_can_register') ) {
-		wp_redirect(site_url().'?ptype=login&page1=sign_up&emsg=regnewusr');
+		wp_redirect($site_url.'?ptype=login&page1=sign_up&emsg=regnewusr');
 		exit();
 	}
-	if ( $http_post ) {
+	if ( $http_post && (isset($_POST['new_user_registration']) && wp_verify_nonce($_POST['new_user_registration'],'user_registration'))) {
 		$user_login = $_POST['user_fname'];
 		$user_email = $_POST['user_email'];
 		$user_fname = $_POST['user_fname'];
 		
-		$errors = register_new_user($user_login, $user_email);
+		$errors = templ_register_new_user($user_login, $user_email);
 		
 		if ( !is_wp_error($errors) ) 
 		{
@@ -354,10 +389,13 @@ case 'register' :
 			
 			if ( !$secure_cookie && is_ssl() && force_ssl_login() && !force_ssl_admin() && ( 0 !== strpos($redirect_to, 'https') ) && ( 0 === strpos($redirect_to, 'http') ) )
 				$secure_cookie = false;
-				$user = wp_signon('', $secure_cookie);
-				if ( !is_wp_error($user) ) 	{
-					wp_safe_redirect($redirect_to);
-					exit();
+				if(get_option('allow_autologin_after_reg') == 'Yes')
+				{
+					$user = wp_signon('', $secure_cookie);
+					if ( !is_wp_error($user) ) 	{
+						wp_safe_redirect($redirect_to);
+						exit();
+					}
 				}
 				exit();
 		}
@@ -383,10 +421,12 @@ default:
 
 	if ( isset( $_REQUEST['redirect_to'] ) || $_REQUEST['redirect_to'] != "") {
 		$redirect_to = $_REQUEST['redirect_to']; 
-
 		
-		if($_REQUEST['ptype1'] != '') {
-			$redirect_to = site_url()."/?ptype=".$_REQUEST['ptype1'];
+		if($_REQUEST['ptype1'] != '' ) {
+			if( isset($_REQUEST['redirect_to']) && $_REQUEST['redirect_to'] != '')
+				$redirect_to = $_REQUEST['redirect_to']; 
+			else
+				$redirect_to = $site_url."/?ptype=".$_REQUEST['ptype1'];
 		}else{
 			$redirect_to = 	get_author_posts_url($user->data->ID);
 		}
@@ -417,12 +457,16 @@ default:
 	if(!strstr($_SERVER['HTTP_REFERER'],'ptype=submition'))
 	{  
 		if($_REQUEST['ptype1'] != '') {
-		$redirect_to = site_url()."/?ptype=".$_REQUEST['ptype1'];
+		if( isset($_REQUEST['redirect_to']) && $_REQUEST['redirect_to'] != '')
+				$redirect_to = $_REQUEST['redirect_to']; 
+			else
+				$redirect_to = $site_url."/?ptype=".$_REQUEST['ptype1'];		
 
 		}else{
 		//$redirect_to = 	get_author_posts_url($user->data->ID);
 		}
 	}
+
 	$redirect_to = apply_filters('templ_login_redirect_filter',$redirect_to);
 	wp_redirect($redirect_to);
 	exit();
@@ -468,7 +512,7 @@ default:
 		
 		}else
 		{ 
-			wp_redirect(site_url().'?ptype=login&page1=sign_in&emsg=1');
+			wp_redirect($site_url.'?ptype=login&page1=sign_in&emsg=1');
 		}
 		exit;
 	}
@@ -508,7 +552,7 @@ try{document.getElementById('user_login').focus();}catch(e){}
       <div class="post-meta">
 		  <?php if ( get_option('ptthemes_breadcrumbs' ) == 'Yes' ) {  ?>
 			<div class="breadcrumb clearfix">
-				<div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php _e(SIGN_IN_PAGE_TITLE,'templatic'); ?> </div>
+				<div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php _e(SIGN_IN_PAGE_TITLE,'templatic'); ?> </div>
 			</div>
 		<?php } ?>
         <?php //templ_page_title_above(); //page title above action hook?>
@@ -521,7 +565,7 @@ try{document.getElementById('user_login').focus();}catch(e){}
 	  <?php
 	  if($_REQUEST['akey'] != "" && $_REQUEST['uid'] != "")
 	  {
-	    echo $uid = $_REQUEST['uid'];
+	    $uid = $_REQUEST['uid'];
 		$activation_key = get_user_meta($uid,'activation_key',true);
 		$user_info = get_userdata($uid);
 		$user_info->ID."uid=".$uid;
@@ -590,7 +634,7 @@ if($errors->errors['invalidcombo'] || $errors->errors['empty_username'])
 <div class="sidebar right">
 <?php if (function_exists('dynamic_sidebar') && dynamic_sidebar('login_page')){?><?php } else {?>  <?php }?> 
 </div>
-<?php if($_REQUEST['ptype'] == 'register'): ?>
+<?php if($_REQUEST['ptype'] == 'register' && is_stringonly()): ?>
 	<script type="text/javascript">
     document.getElementById('user_email').focus();
     </script>

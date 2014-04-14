@@ -15,9 +15,9 @@ function ptthemes_meta_box_content($post, $metabox ) {
     $output = '';
     if($pt_metaboxes){
    $output .= '<div class="pt_metaboxes_table">'."\n";
-   $output .= '<script>var rootfolderpath = "'.get_template_directory_uri().'/images/";</script>'."\n";
-   $output .= '<script type="text/javascript" src="'.get_template_directory_uri().'/js/dhtmlgoodies_calendar.js"></script>'."\n";
-   $output .= ' <link href="'.get_template_directory_uri().'/library/css/dhtmlgoodies_calendar.css" rel="stylesheet" type="text/css" />'."\n";
+   $output .= '<script type="text/javascript">var rootfolderpath = "'.get_template_directory_uri().'/images/";</script>'."\n";
+   //$output .= '<script type="text/javascript" src="'.get_template_directory_uri().'/js/dhtmlgoodies_calendar.js"></script>'."\n";
+   //$output .= ' <link href="'.get_template_directory_uri().'/library/css/dhtmlgoodies_calendar.css" rel="stylesheet" type="text/css" />'."\n";
    $output .='<input type="hidden" name="templatic_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />';
    foreach ($pt_metaboxes as $pt_id => $pt_metabox) {
     if($pt_metabox['type'] == 'text' OR $pt_metabox['type'] == 'select' OR $pt_metabox['type'] == 'radio' OR $pt_metabox['type'] == 'checkbox' OR $pt_metabox['type'] == 'textarea' OR $pt_metabox['type'] == 'upload' OR $pt_metabox['type'] == 'date' OR $pt_metabox['type'] == 'multicheckbox' OR $pt_metabox['type'] == 'texteditor')
@@ -60,7 +60,7 @@ function ptthemes_meta_box_content($post, $metabox ) {
                 $output .= "\t".'<div>';
                 $output .= "\t\t".'<br/><p><strong><label for="'.$pt_id.'">'.$pt_metabox['label'].'</label></strong></p>'."\n";
                 $output .= "\t\t".'<p><select class="pt_input_select" id="'.$pt_id.'" name="ptthemes_'. $pt_metabox["name"] .'"></p>'."\n";
-                $output .= '<option>Select a '.$pt_metabox['label'].'</option>';
+                $output .= '<option value="">Select a '.$pt_metabox['label'].'</option>';
                 
                 $array = $pt_metabox['options'];
                 
@@ -97,11 +97,19 @@ function ptthemes_meta_box_content($post, $metabox ) {
 					$output .= ''.$pt_metabox['desc'].'</p>'."\n";
 					$output .= "\t".'</div>'."\n";
 			}
-			 elseif ($pt_metabox['type'] == 'date'){
-            			
+			 elseif ($pt_metabox['type'] == 'date'){ ?>
+					<script type="text/javascript">
+						jQuery.noConflict();
+						jQuery(function() {
+							jQuery( "#<?php echo 'ptthemes_'.$pt_metabox["name"];?>" ).datepicker( {
+								firstDay: firstDay,
+							} );
+						});
+					</script>
+			<?php		
 				$output .= "\t".'<div>';
                 $output .= "\t\t".'<br/><p><strong><label for="'.$pt_id.'">'.$pt_metabox['label'].'</label></strong></p>'."\n";
-                $output .= "\t\t".'<p><input size="40" class="pt_input_text" type="text" value="'.$pt_metaboxvalue.'" name="ptthemes_'.$pt_metabox["name"].'" /><img src="'.get_template_directory_uri().'/images/cal.gif" alt="Calendar"  onclick="displayCalendar(document.post.ptthemes_'.$pt_metabox["name"].',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" /></p>'."\n";
+                $output .= "\t\t".'<p><input size="40" class="pt_input_text" type="text" value="'.$pt_metaboxvalue.'" name="ptthemes_'.$pt_metabox["name"].'" id="ptthemes_'.$pt_metabox["name"].'" /></p>'."\n";
                 $output .= "\t\t".'<p><span style="font-size:11px">'.$pt_metabox['desc'].'</span></p>'."\n";
                 $output .= "\t".'</div>'."\n";
                               

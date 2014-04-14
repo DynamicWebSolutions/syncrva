@@ -18,13 +18,11 @@ update_post_meta($post->ID,'daily_date',date('Y-m-d'));
 ?>
 <div  class="<?php templ_content_css();?>" >
 <?php if ( get_option( 'ptthemes_breadcrumbs' ) == 'Yes') { ?>
-   <div class="breadcrumb clearfix">
+    <div class="breadcrumb clearfix">
                
-                	<div class="breadcrumb_in"><?php yoast_breadcrumb('','');  ?></div>
+        <div class="breadcrumb_in"><?php yoast_breadcrumb('','');  ?></div>
                
-             </div><?php } ?>
-
-
+    </div><?php } ?>
 <!--  CONTENT AREA START. -->
 	<?php templ_before_single_entry(); // before single entry  hooks?>
     <?php if ( have_posts() ) : ?>
@@ -52,9 +50,9 @@ update_post_meta($post->ID,'daily_date',date('Y-m-d'));
             
            <?php  echo templ_page_title_filter(get_the_title()); //page title filter?>
            
-            <?php }elseif(has_post_format( 'video' )){?>
+           <?php }elseif(has_post_format( 'video' )){?>
             
-             <?php  echo templ_page_title_filter(get_the_title()); //page title filter?>
+           <?php  echo templ_page_title_filter(get_the_title()); //page title filter?>
              
             <?php }elseif(has_post_format( 'audio' )){?>
             
@@ -69,19 +67,19 @@ update_post_meta($post->ID,'daily_date',date('Y-m-d'));
             
           <?php templ_page_title_below(); //page title below action hook?>
           <?php if(templ_is_show_post_author()){?>
-          <span class="post-author"><label> <?php echo By ;?> </label>  <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>">
+          <span class="post-author"><label> <?php _e('By','templatic');?> </label>  <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>">
           <?php the_author(); ?>
           </a> </span>
           <?php } ?>
           <?php if(templ_is_show_post_date()){?>
           <span class="post-date">
-		  <label><?php echo on ;?></label> 
-          <?php the_time(templ_get_date_format()) ?>
+		  <label><?php _e('on','templatic') ;?></label> 
+          <?php the_time(get_option('date_format')) ?>
           </span>
           <?php } 
 			if(templ_is_show_listing_views()){
-			echo '<span class="post-total-view">'. VIEW_LIST_TEXT. user_post_visit_count($post->ID).'</span>';
-			echo '&nbsp; <span class="post-daily-view">'.VIEW_LIST_TEXT_DAILY.user_post_visit_count_daily($post->ID).'</span>&nbsp;';
+			echo '<span class="post-total-view">'. VIEW_LIST_TEXT.": ". user_post_visit_count($post->ID).'</span>';
+			echo '&nbsp; <span class="post-daily-view">'.VIEW_LIST_TEXT_DAILY.": ".user_post_visit_count_daily($post->ID).'</span>&nbsp;';
 			}
 			
 			if(templ_is_show_post_comment()){
@@ -213,10 +211,10 @@ update_post_meta($post->ID,'daily_date',date('Y-m-d'));
       </div>
     </div>
     <?php endwhile; ?>
-    <?php endif; ?>
-	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('place_detail_content_banner'); } ?>
+    <?php endif; ?>	
      <?php templ_after_single_entry(); // after single entry  hooks?>
     <?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('single_post_below'); }?>
+	<?php if (function_exists('dynamic_sidebar')){ dynamic_sidebar('blog_detail_content_banner'); } ?>
     <?php comments_template(); ?>
 
 <!--  CONTENT AREA END -->    

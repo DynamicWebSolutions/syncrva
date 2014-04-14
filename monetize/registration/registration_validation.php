@@ -30,7 +30,7 @@ for($i=0;$i<count($validation_info);$i++)
 		$msg = sprintf(__("Please Enter %s",'templatic'),$text);
 	}
 	
-	if($type=='multicheckbox' || $type=='catcheckbox')
+	if($type=='multicheckbox' || $type=='catcheckbox' || $type=='radio')
 	{
 		$js_code .= '
 		function validate_'.$name.'()
@@ -50,9 +50,15 @@ for($i=0;$i<count($validation_info);$i++)
 					}
 				}
 			}
+			if("'.$type.'" =="radio")
+			  {
+				if (jQuery("input:radio[name='.$name.']:checked").val()) {
+					flag = 1;
+				}
+			  }
 			if(flag == false)
 			{
-				'.$espan.'.text("'.$msg.'");
+				'.$espan.'.text("'.__($msg,DOMAIN).'");
 				'.$espan.'.addClass("message_error2");
 				return false;
 			}
@@ -82,7 +88,7 @@ for($i=0;$i<count($validation_info);$i++)
 		$js_code .= '
 			{
 				'.$name.'.addClass("error");
-				'.$espan.'.text("'.$msg.'");
+				'.$espan.'.text("'.__($msg,DOMAIN).'");
 				'.$espan.'.addClass("message_error2");
 				return false;
 			}
@@ -98,7 +104,7 @@ for($i=0;$i<count($validation_info);$i++)
 				if(jQuery("#'.$name.'").val() == "") { ';
 				$msg = __("Please provide your email address","templatic");
 				$js_code .= $name.'.addClass("error");
-					'.$espan.'.text("'.$msg.'");
+					'.$espan.'.text("'.__($msg,DOMAIN).'");
 					'.$espan.'.addClass("message_error2");
 				return false;';
 					
@@ -125,7 +131,7 @@ for($i=0;$i<count($validation_info);$i++)
 			if(jQuery("#pwd").val() != jQuery("#cpwd").val()){
 				$msg = __("Password could not be match","templatic");
 				$js_code .= $name.'.addClass("error");
-					'.$espan.'.text("'.$msg.'");
+					'.$espan.'.text("'.__($msg,DOMAIN).'");
 					'.$espan.'.addClass("message_error2");
 				return false;';
 			}
@@ -157,7 +163,7 @@ $js_code .='var pwd = jQuery("#pwd");
 			
 			{
 				pwd.addClass("error");
-				pwd_error.text("Please enter password");
+				pwd_error.text("'.__("Please enter password",DOMAIN).'");
 				pwd_error.addClass("message_error2");
 				return false;
 			}
@@ -180,12 +186,12 @@ $js_code .='var pwd = jQuery("#pwd");
 			
 			{
 				cpwd.addClass("error");
-				cpwd_error.text("Please enter confirm password");
+				cpwd_error.text("'.__("Please enter confirm password",DOMAIN).'");
 				cpwd_error.addClass("message_error2");
 				return false;
 			} else if(jQuery("#cpwd").val() != jQuery("#pwd").val()) {
 				cpwd.addClass("error");
-				cpwd_error.text("Please confirm your password");
+				cpwd_error.text("'.__("Please confirm your password",DOMAIN).'");
 				cpwd_error.addClass("message_error2");
 				return false;
 			}

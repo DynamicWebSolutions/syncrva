@@ -45,12 +45,22 @@ $custom_metaboxes = templ_get_usermeta('registration');
 foreach($custom_metaboxes as $key=>$val)
 { 
 	$name = $val['name'];
-	$site_title = $val['site_title'];
+	
 	$type = $val['type'];
 	$default_value = $val['default'];
 	$is_require = $val['is_require'];
-	$admin_desc = $val['desc'];
+	
+	
+	if(function_exists('icl_t')){
+		$context = get_option('blogname');
+		$admin_desc = icl_t($context,$val['desc'],$val['desc']);
+		$site_title = icl_t($context,$val['site_title'],$val['site_title']);
+	}else{
+		$admin_desc = $val['desc'];
+		$site_title = $val['site_title'];
+	}
 	$option_values = $val['option_values'];
+	
 	$on_registration = $val['on_registration'];
 	$on_profile = $val['on_profile'];
 	if($type=='text'){
@@ -124,7 +134,7 @@ foreach($custom_metaboxes as $key=>$val)
 		"outer_st"	=>	'<div class="form_row clear">',
 		"outer_end"	=>	'</div>',
 		"tag_st"	=>	'',
-		"tag_end"	=>	'',
+		"tag_end"	=>	'<span class="message_note">'.$admin_desc.'</span>',
 		"on_registration"	=>	$on_registration,
 		"on_profile"	=>	$on_profile,
 		);
@@ -174,7 +184,6 @@ foreach($custom_metaboxes as $key=>$val)
 		"is_require"	=>	$is_require,
 		"outer_st"	=>	'<div class="form_row clearfix">',
 		"outer_end"	=>	'</div>',
-		//"tag_st"	=>	'<img src="'.get_template_directory_uri().'/images/cal.gif" alt="Calendar"  onclick="displayCalendar(document.userform.'.$name.',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" class="calendar_img" />',
 		"tag_end"	=>	'<span class="message_note">'.$admin_desc.'</span>',
 		"on_registration"	=>	$on_registration,
 		"on_profile"	=>	$on_profile,
@@ -235,22 +244,22 @@ foreach($custom_metaboxes as $key=>$val)
 add_action('templ_page_title_below','get_usermeta_author_page');
 function get_usermeta_author_page()
 {
+	global $wpdb,$custom_usermeta_db_table_name,$table_prefix;
 	$custom_usermeta_db_table_name = $table_prefix . "templatic_custom_usermeta";
-	global $wpdb,$custom_usermeta_db_table_name;
 	$return_str = '';
 	$paten_str = '<div class="{#CSS#}"> {#TITLE#} - {#VALUE#}</div>';
 	global $current_user;
 	if(isset($_GET['author_name'])) :
 		$curauth = get_userdatabylogin($author_name);
 	else :
-		$curauth = get_userdata(intval($_GET['author']));
+		$curauth = get_userdata(intval(@$_GET['author']));
 	endif;
-	$uid = $curauth->ID;
-	if($curauth->user_description){
+	$uid = @$curauth->ID;
+	if(@$curauth->user_description){
 		$return_str = '<p>'.$curauth->user_description.'</p>';
 	}
 	$sql = "select * from $custom_usermeta_db_table_name where is_active=1";
-	if($fields_name)
+	if(@$fields_name)
 	{
 		$fields_name = '"'.str_replace(',','","',$fields_name).'"';
 		$sql .= " and htmlvar_name in ($fields_name) ";

@@ -1,4 +1,4 @@
-<?php
+<?php global $site_url,$wcode;
 if(isset($_REQUEST['s']) && $_REQUEST['s'] != ""){
 	if($_REQUEST['s'] =='cal_event'){
 	$s ='';
@@ -8,21 +8,24 @@ if(isset($_REQUEST['s']) && $_REQUEST['s'] != ""){
 }
 if(isset($_REQUEST['sn']) && $_REQUEST['sn'] != ""){
 	$sn = $_REQUEST['sn'];
-}
+} 
 ?>
 
 <div class="searchform">
-  <form method="get" id="searchform2" action="<?php echo bloginfo('home')."/"; ?>">
+  <form method="get" id="searchform2" action="<?php echo $site_url; ?>"> 
    <input type="hidden" name="t" value="1" />
     <span class="searchfor"><input type="text" name="s" id="sr" class="s" PLACEHOLDER="<?php echo SEARCH;?>" value="<?php echo $s; ?>" />
-     <small class="text">Technology groups &amp; events </small>
+     <small class="text"><?php echo SEARCH_FOR_MSG;?> </small>
      </span>
   	 <span class="near">
-	 <input name="sn" id="sn" type="text" class="s" PLACEHOLDER="<?php echo NEAR_TEXT;?>" value="<?php echo $sn; ?>" />
-	 <input name="as" id="as" type="hidden" class="s" PLACEHOLDER="<?php echo NEAR_TEXT;?>" value="1" />
+	 <input name="sn" id="sn" type="text" class="s" PLACEHOLDER="<?php echo NEAR_TEXT;?>" value="<?php echo @$sn; ?>" /> 
+	 <input name="as" id="as" type="hidden" class="s" PLACEHOLDER="<?php echo NEAR_TEXT;?>" value="1" /> 
+	 <?php if($wcode == 1){ ?>
+	 <input name="lang" id="lang" type="hidden" class="s" PLACEHOLDER="<?php echo $wcode;?>" value="<?php echo ICL_LANGUAGE_CODE; ?>" /> 
+	 <?php } ?>
       <small class="text"><?php echo SEARCH_NEAR_MSG;?></small>
      </span>
-    <input type="image" class="search_btn" src="<?php bloginfo('template_url'); ?>/images/search_icon.png" alt="Submit button" onclick="set_srch();" />
+    <input type="image" class="search_btn" src="<?php echo get_bloginfo('template_url'); ?>/images/search_icon.png" alt="Submit button" onclick="set_srch();" />
   </form>
 </div>
 <script type="text/javascript">
@@ -30,11 +33,11 @@ function set_srch()
 {
 	if(document.getElementById('sr').value=='<?php echo get_option('ptthemes_search_name'); ?>')
 	{
-		document.getElementById('sr').value = ' ';
+		document.getElementById('sr').value = ' ';	
 	}
 	if(document.getElementById('sn').value=='<?php echo NEAR_TEXT; ?>')
 	{
-		document.getElementById('sn').value = '';
+		document.getElementById('sn').value = '';	
 	}
 }
 </script>

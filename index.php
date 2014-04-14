@@ -1,39 +1,20 @@
 <?php /* set multicity is in session */
-if (isset($_POST['multi_city']) && $_POST['multi_city'] != '') {
-    $_SESSION['multi_city'] = $_POST['multi_city'];
-    $_SESSION['multi_city1'] = $_POST['multi_city'];
-} else if (isset($_REQUEST['front_post_city_id']) && $_REQUEST['front_post_city_id'] != "" ) {
-    setcookie("multi_city1", $_REQUEST['front_post_city_id'],time()+3600*24*30*12);
-    $_COOKIE['multi_city1'] = $_REQUEST['front_post_city_id'];
-    $_SESSION['multi_city1'] = $_COOKIE['multi_city1'];
-    $_SESSION['multi_city'] = $_COOKIE['multi_city1'];
-} else if ($_SESSION['multi_city'] == "" && $_POST['multi_city'] == "") {
-    if ($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
-        include_once("tpl_splash.php");
-        exit;
-    } else {
-        global $multicity_db_table_name;
-        $my_city =$wpdb->get_row("select city_id from $multicity_db_table_name where is_default='1'");
-        $_SESSION['multi_city'] = $my_city->city_id;
-    }
-} else {
-    $_SESSION['multi_city'] = $_SESSION['multi_city'];
-    $_SESSION['multi_city1'] = $_SESSION['multi_city'];
-}
 if (isset($_REQUEST['pid']) && $_REQUEST['pid'] !='') {
     $cur_post_id = $_REQUEST['pid'];
     $postdata = get_post($cur_post_id );
     $post_author_id = $postdata->post_author;
 }
-if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "" && $_SESSION['multi_city1'] == "" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
+if (isset($_REQUEST['front_post_city_id']) =="" && function_exists('get_option') && get_option('splash_page') != "" && $_SESSION['multi_city1'] == "" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "" && $_REQUEST['ptype'] != 'csvdl') {
     /* show slash page if selected slash page from backend */
     include_once("tpl_splash.php");
     exit;
 } else {
+	global $site_url;
+	if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; } 
     if ($_SESSION['multi_city'] == "") {
         $_SESSION['multi_city']= $_COOKIE['multi_city1'];
     }
-    if (isset($_REQUEST['ptype']) && $_REQUEST['ptype']!="") {
+    if (isset($_REQUEST['ptype']) && $_REQUEST['ptype']!="" && is_stringonly()) {
         if ($_REQUEST['ptype'] == 'favorite') {
             if ($_REQUEST['action']=='add') {
                 add_to_favorite($_REQUEST['pid']);
@@ -41,9 +22,9 @@ if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != 
                 remove_from_favorite($_REQUEST['pid']);
             }
         } else if ($_REQUEST['ptype']=='profile') {
-            global $current_user;
+            global $current_user,$site_url;
             if (!$current_user->ID) {
-                wp_redirect(site_url().'/?ptype=login');
+                wp_redirect($site_url.$op.'ptype=login');
                 exit;
             }
             include_once(TT_MODULES_FOLDER_PATH . "registration/registration.php");
@@ -52,26 +33,26 @@ if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != 
             echo phpinfo();
             exit;
         } else if ($_REQUEST['ptype'] == 'csvdl') {
-            include(TEMPLATEPATH. "/library/includes/csvdl.php");
+            include(get_template_directory(). "/library/includes/csvdl.php");
         } else if ($_REQUEST['ptype'] == 'register' || $_REQUEST['ptype'] == 'login') {
             include(TT_MODULES_FOLDER_PATH . "registration/registration.php");
-        } else if ($_REQUEST['ptype']=='post_listing') {
+        } else if ($_REQUEST['ptype']=='post_listing' && is_stringonly()) {
             include_once(TT_MODULES_FOLDER_PATH.'place/submit_place.php');
             exit;
-        } else if ($_REQUEST['ptype']=='post_event') {
+        } else if ($_REQUEST['ptype']=='post_event' && is_stringonly()) {
             include_once(TT_MODULES_FOLDER_PATH.'event/submit_event.php');
             exit;
-        } else if ($_REQUEST['ptype'] == 'preview') {
+        } else if ($_REQUEST['ptype'] == 'preview' && is_stringonly()) {
             include(TT_MODULES_FOLDER_PATH . "place/preview.php");
             exit;
         } else if ($_REQUEST['ptype'] == 'preview_event') {
             include(TT_MODULES_FOLDER_PATH . "event/preview_event.php");
             exit;
-        } else if ($_REQUEST['ptype'] == 'paynow') {
+        } else if ($_REQUEST['ptype'] == 'paynow' && is_stringonly()) {
             include(TT_MODULES_FOLDER_PATH . "place/paynow.php");
-        } else if ($_REQUEST['ptype'] == 'paynow_event') {
+        } else if ($_REQUEST['ptype'] == 'paynow_event' && is_stringonly()) {
             include(TT_MODULES_FOLDER_PATH . "event/paynow_event.php");
-        } else if ($_REQUEST['ptype'] == 'cancel_return') {
+        } else if ($_REQUEST['ptype'] == 'cancel_return' && is_stringonly()) {
             include_once(TT_MODULES_FOLDER_PATH . 'general/cancel.php');
             if ($post_author_id == $current_user->ID) {
                 set_property_status($_REQUEST['pid'],'trash');
@@ -85,19 +66,19 @@ if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != 
                 include_once(TT_MODULES_FOLDER_PATH . 'general/return.php');
             }
             exit;
-        } else if($_GET['ptype'] == 'success')  // PAYMENT GATEWAY RETURN
+        } else if($_GET['ptype'] == 'success' && is_stringonly())  // PAYMENT GATEWAY RETURN
         {
             include_once(TT_MODULES_FOLDER_PATH . "general/success.php");
             exit;
-        } else if($_GET['ptype'] == 'notifyurl')  // PAYMENT GATEWAY NOTIFY URL
+        } else if($_GET['ptype'] == 'notifyurl' && is_stringonly())  // PAYMENT GATEWAY NOTIFY URL
         {
-            if ($_GET['pmethod'] == 'paypal') {
+            if ($_GET['pmethod'] == 'paypal' && is_stringonly()) {
                 include_once(TT_MODULES_FOLDER_PATH . 'general/ipn_process.php');
             } else if ($_GET['pmethod'] == '2co') {
                 include_once(TT_MODULES_FOLDER_PATH . 'general/ipn_process_2co.php');
             }
             exit;
-        } else if ($_REQUEST['ptype'] == 'sort_image') {
+        } else if ($_REQUEST['ptype'] == 'sort_image' && is_stringonly()) {
             global $wpdb;
             $arr_pid = explode(',',$_REQUEST['pid']);
             for ($j=0; $j<count($arr_pid); $j++) {
@@ -108,13 +89,13 @@ if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != 
                 $wpdb->query('update '.$wpdb->posts.' set  menu_order = "'.$j.'" where ID = "'.$media_id.'" ');
             }
             echo 'Image order saved successfully';
-        } else if ($_REQUEST['ptype'] == 'delete') {
+        } else if ($_REQUEST['ptype'] == 'delete' && is_stringonly()) {
             global $current_user;
             if ($post_author_id == $current_user->ID) {
                 wp_delete_post($_REQUEST['pid']);
                 wp_redirect(get_author_link($echo = false, $current_user->ID));
             }
-        } else if ($_REQUEST['ptype'] == 'att_delete') {
+        } else if ($_REQUEST['ptype'] == 'att_delete' && is_stringonly()) {
             if ($_REQUEST['remove'] == 'temp') {
                 if ($_SESSION["file_info"]) {
                     $tmp_file_info = array();
@@ -137,12 +118,15 @@ if (isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != 
         get_header();
         ?>
         <div  class="<?php templ_content_css();?>" >
-        <!--  CONTENT AREA START -->
-        <?php if (function_exists('dynamic_sidebar') && dynamic_sidebar('front_content')) {
-        ?><?php } else {
-        ?>  <?php }
-        ?>
-        <!--  CONTENT AREA END -->
+			<!--  CONTENT AREA START -->
+			<?php 
+			if(get_option('show_on_front')=='page' && get_option('page_for_posts')!=0 && (is_home() || is_front_page())){
+				get_template_part('loop');
+			}else{
+				dynamic_sidebar('front_content');
+			}
+			?>
+			<!--  CONTENT AREA END -->
         </div>
         <?php include_once('library/includes/sidebar_front_page.php');
         ?>

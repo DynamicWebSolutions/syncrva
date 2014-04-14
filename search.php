@@ -1,6 +1,6 @@
 <?php get_header(); ?>
-
-
+<div  class="<?php templ_content_css();?>" >
+<!-- TITLE START -->
 <div class="content-title">
   <?php ob_start(); // don't remove this code?>
    <?php if($_REQUEST['s']=='cal_event'){
@@ -11,35 +11,30 @@
 						$pd = substr($m,6,2);
 						$the_req_date = "$py-$pm-$pd";
 					   ?>
-                   <h1><?php _e('Browsing Day','templatic');?> "<?php echo date('F jS, Y',strtotime($the_req_date)); ?>"</h1>
-                   <?php } else {
+    <h1><?php _e('Browsing Day','templatic');?> "<?php echo date_i18n(get_option('date_format'),strtotime($the_req_date)); ?>"</h1>
+    <?php } else {
 				   
    if($_REQUEST['catdrop']) echo SEARCH_CATEGORY_TITLE; elseif($_REQUEST['todate'] || $_REQUEST['frmdate']) echo SEARCH_DATE_TITLE; elseif($_REQUEST['articleauthor']) echo SEARCH_AUTHOR_TITLE; else SEARCH_TITLE;?>
-  <?php the_search_query(); ?>
-  <?php
-        $page_title = ob_get_contents(); // don't remove this code
+  <?php  
+        echo $page_title = get_search_query(); // don't remove this code
 		ob_end_clean(); // don't remove this code
 		
 		 $page_title_near = $_REQUEST['sn'];
-	
-		?>
-  <h1><?php 
-  if($_REQUEST['sn'] ==""){
-  _e("You searched for:".$page_title,"templatic"); //page tilte filter 
+	?>
+	<h1><?php 
+	if($_REQUEST['sn'] ==""){
+	 echo  sprintf(__('You search %s ','templatic'),$page_title);
   }else{
-  _e("You searched for:".$page_title." near ".$page_title_near,"templatic"); //page tilte filter 
+   	echo sprintf(__('You search %s near %s','templatic'),$page_title,$page_title_near);
   }?> </h1>
-  <?php } ?>
-   <?php templ_page_title_above(); //page title above action hook?>
-      <?php templ_page_title_below(); //page title below action hook?>
-  
-  </div>
-
-
-<div  class="<?php templ_content_css();?>" >
+  <?php } 
+  templ_page_title_above(); //page title above action hook
+  templ_page_title_below(); //page title below action hook?>
+</div>
+<!-- TITLE ENd -->
 <!--  CONTENT AREA START -->
 
-<?php 
+<?php global $site_url;
 if ( have_posts() ) : ?>
 <?php get_template_part('loop'); ?>
 <?php else : ?>
@@ -49,7 +44,7 @@ if ( have_posts() ) : ?>
   <div class="single clear">
     <div class="post-content">
        		<div class="searchbox">
-				<form action="<?php echo home_url(); ?>  " id="searchform2" method="get">
+				<form action="<?php echo $site_url; ?>  " id="searchform2" method="get">
 					<fieldset>
 						<input type="text" value="Search" onblur="if(this.value=='') this.value='Search';" onfocus="if(this.value=='Search') this.value='';" name="s" />
 						<button type="submit"></button>

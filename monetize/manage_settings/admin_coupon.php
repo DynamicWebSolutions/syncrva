@@ -17,42 +17,44 @@ if($_POST['couponact'] == 'addcoupon')
 		{
 			foreach($couponinfo as $couponinfoObj)
 			{
-				$option_value = unserialize($couponinfoObj->option_value);
+				$option_value = json_decode($couponinfoObj->option_value,true);
 			}
 			if($_POST['code'] != '')
 			{
 				$option_value[$_POST['code']]  = $discount_coupons;
 			}else
 			{
+				$option_value = (array)$option_value;
+				$array_insert = max(array_keys($option_value)) + 1;
 				for($i=0;$i<count($option_value);$i++)
 				{
-					if($option_value[$i]['couponcode'] == $couponcode)
+					if($option_value[$i]->couponcode == $couponcode)
 					{
-						echo $location = site_url()."/wp-admin/admin.php";
+						echo $location = home_url()."/wp-admin/admin.php";
 						echo '<form action="'.$location.'#option_add_coupon" method=get name="coupon_success">
 						<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="exist"></form>';
-						echo '<script>document.coupon_success.submit();</script>';
+						echo '<script type="text/javascript">document.coupon_success.submit();</script>';
 						//wp_redirect($location);
 						exit;
 					}
 				}
-				$option_value[count($option_value)]  = $discount_coupons;
+				$option_value[$array_insert]  = $discount_coupons;
 			}			
-			$option_value_str = serialize($option_value);
+			$option_value_str = json_encode($option_value);
 			$updatestatus = "update $wpdb->options set option_value= '$option_value_str' where option_name='discount_coupons'";
 			$wpdb->query($updatestatus);
 			$msg_type = 'update';
 		}else		{
 			$option_value[] = $discount_coupons;
-			$option_value_str = serialize($option_value);
+			$option_value_str = json_encode($option_value);
 			$insertcoupon = "insert into $wpdb->options (option_name,option_value) values ('discount_coupons','$option_value_str')";
 			$wpdb->query($insertcoupon);
 			$msg_type = 'create';
 		}
-		$location = site_url()."/wp-admin/admin.php";
+		$location = home_url()."/wp-admin/admin.php";
 		echo '<form action="'.$location.'#option_display_coupon" method=get name="coupon_success">
 		<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="success"><input type=hidden name="msg_type" value="'.$msg_type.'"></form>';
-		echo '<script>document.coupon_success.submit();</script>';
+		echo '<script type="text/javascript">document.coupon_success.submit();</script>';
 		//wp_redirect($location);
 		exit;
 	}
@@ -65,9 +67,9 @@ if($_REQUEST['code']!='')
 	{
 		foreach($couponinfo as $couponinfoObj)
 		{
-			$option_value = unserialize($couponinfoObj->option_value);
+			$option_value = json_decode($couponinfoObj->option_value,true);
 		}
-		$coupon = $option_value[$_REQUEST['code']];
+		$coupon = (object) $option_value[$_REQUEST['code']];
 	}	
 	$coupon_title = 'Edit coupon details';
 	$coupon_msg = 'Here you can edit coupon details.';
@@ -78,9 +80,9 @@ if($_REQUEST['code']!='')
 }
 ?>
 
-<form action="<?php echo site_url()?>/wp-admin/admin.php?page=manage_settings&mod=coupon&pagetype=addedit&code=<?php echo $_REQUEST['code'];?>" method="post" name="coupon_frm">
+<form action="<?php echo home_url()?>/wp-admin/admin.php?page=manage_settings&mod=coupon&pagetype=addedit&code=<?php echo $_REQUEST['code'];?>" method="post" name="coupon_frm">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp right position_top" onclick="return check_frm();">
-<h4><?php _e($coupon_title,'templatic');?><a title="Back to manage coupons" class="l_back" name="btnviewlisting" href="<?php echo site_url()?>/wp-admin/admin.php?page=manage_settings#option_display_coupon"><?php _e('&laquo; Back to manage coupons','templatic'); ?></a></h4>
+<h4><?php _e($coupon_title,'templatic');?><a title="Back to manage coupons" class="l_back" name="btnviewlisting" href="<?php echo home_url()?>/wp-admin/admin.php?page=manage_settings#option_display_coupon"><?php _e('&laquo; Back to manage coupons','templatic'); ?></a></h4>
  <p class="notes_spec"><?php _e($coupon_msg,'templatic');?></p>
 
 	<input type="hidden" name="couponact" value="addcoupon">
@@ -96,7 +98,7 @@ if($_REQUEST['code']!='')
     <h3><?php _e('Coupon Code : ','templatic');?></h3>
     <div class="section">
       <div class="element">
-         <input type="text" name="couponcode" id="couponcode" value="<?php echo $coupon['couponcode']?>">
+         <input type="text" name="couponcode" id="couponcode" value="<?php echo $coupon->couponcode;?>">
    		</div>
       <div class="description"><?php _e('Enter Coupon code','templatic');?></div>
     </div>
@@ -106,9 +108,9 @@ if($_REQUEST['code']!='')
     <h3><?php _e('Discount Type : ','templatic');?></h3>
     <div class="section">
       <div class="element">
-         <div class="input_wrap"> <input type="radio" id="coupondiscper" name="coupondisc" value="per" <?php if($coupon['dis_per'] == 'per' || $coupon['dis_per']==''){?>checked="checked"<?php }?> /> <?php _e('Percentage','templatic');?>(%) </div>
+         <div class="input_wrap"> <input type="radio" id="coupondiscper" name="coupondisc" value="per" <?php if($coupon->dis_per == 'per' || $coupon->dis_per==''){?>checked="checked"<?php }?> /> <?php _e('Percentage','templatic');?>(%) </div>
          
-         <div class="input_wrap"> <input type="radio" id="coupondiscamt" name="coupondisc" <?php if($coupon['dis_per'] == 'amt'){?> checked="checked"<?php }?> value="amt" /> <?php _e('Amount','templatic');?> </div>
+         <div class="input_wrap"> <input type="radio" id="coupondiscamt" name="coupondisc" <?php if($coupon->dis_per == 'amt'){?> checked="checked"<?php }?> value="amt" /> <?php _e('Amount','templatic');?> </div>
    		</div>
       <div class="description"><?php _e('Select Discount Type','templatic');?></div>
     </div>
@@ -118,7 +120,7 @@ if($_REQUEST['code']!='')
     <h3><?php _e('Discount amount : ','templatic');?></h3>
     <div class="section">
       <div class="element">
-         <input type="text" name="couponamt" id="couponamt" value="<?php echo $coupon['dis_amt']?>">
+         <input type="text" name="couponamt" id="couponamt" value="<?php echo $coupon->dis_amt; ?>">
    		</div>
       <div class="description"><?php _e('Enter Discount Amount','templatic');?></div>
     </div>
@@ -126,7 +128,7 @@ if($_REQUEST['code']!='')
   
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp right position_bottom" onclick="return check_coupon_frm();">
 </form>
-<script>
+<script type="text/javascript">
 function check_coupon_frm()
 {
 	if(document.getElementById('coupondiscper').checked)

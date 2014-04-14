@@ -32,10 +32,10 @@ if($_POST)
 	
 	$updatestatus = "update $wpdb->options set option_value= '$option_value_str' where option_id='".$_GET['id']."'";
 	$wpdb->query($updatestatus);
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form method=get name="payment_setting_frm" acton="'.$location.'#option_payment">
 	<input type="hidden" name="id" value="'.$_GET['id'].'"><input type="hidden" name="page" value="manage_settings"><input type="hidden" name="payact" value="setting"><input type="hidden" name="msg" value="success"></form>
-	<script>document.payment_setting_frm.submit();</script>
+	<script type="text/javascript">document.payment_setting_frm.submit();</script>
 	';
 	
 }
@@ -54,11 +54,11 @@ if($_GET['status']!= '')
 		}
 	}
 ?>
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings&payact=setting&id=<?php echo $_GET['id'];?>#option_payment" method="post" name="payoptsetting_frm">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings&payact=setting&id=<?php echo $_GET['id'];?>#option_payment" method="post" name="payoptsetting_frm">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic'); ?>" onclick="return chk_form();" class="button-framework-imp right position_top" />
 <h4><?php echo $option_value['name'];?> <?php _e('Settings','templatic'); ?> 
 
-<a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_payment" name="btnviewlisting" class="l_back" title="<?php _e('Back to Payment Options List','templatic');?>"/><?php _e('&laquo; Back to Payment Options List','templatic'); ?></a>
+<a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_payment" name="btnviewlisting" class="l_back" title="<?php _e('Back to Payment Options List','templatic');?>"/><?php _e('&laquo; Back to Payment Options List','templatic'); ?></a>
 </h4>
 <p class="notes_spec"><?php _e('Here you can edit the payment option settings. Double check the values you enter here to avoid payment related problems.','templatic');?></p>
 
@@ -127,7 +127,7 @@ for($i=0;$i<count($paymentOpts);$i++)
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic'); ?>" onclick="return chk_form();" class="button-framework-imp right position_bottom" />
 		
 </form>
-<script>
+<script type="text/javascript">
 function chk_form()
 {
 	if(document.getElementById('payment_method').value == '')

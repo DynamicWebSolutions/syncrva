@@ -6,10 +6,10 @@ if(isset($_REQUEST['peract']) && $_REQUEST['peract'] == 'true'){
 	} else {
 		set_option_selling('set_permission','administrator');
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#option_set_role" method=get name="per_success">
 		<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="per_success"></form>';
-		echo '<script>document.per_success.submit();</script>';
+		echo '<script type="text/javascript">document.per_success.submit();</script>';
 		exit;
 }
 ?>
@@ -26,7 +26,7 @@ if(isset($_REQUEST['peract']) && $_REQUEST['peract'] == 'true'){
 </div>
 <?php }?>
 
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_set_role" name="manage_permission" method="post">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_set_role" name="manage_permission" method="post">
 <input type="submit" name="submit" value="<?php echo SAVE_ALL_CHANGES_TEXT; ?>" class="button-framework-imp position_top">
 <input type="hidden" name="peract" value="true" />
 <div class="option option-radio">

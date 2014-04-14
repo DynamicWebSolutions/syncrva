@@ -6,10 +6,10 @@ This code to include registration, login and edit profile page.
 This file is included in functions.php of theme root at very last php coding line.
 
 You can call registration, login and edit profile page  by the link 
-edit profile : http://mydomain.com/?ptype=profile  => echo site_url().'/?ptype=profile';
-registration : http://mydomain.com/?ptype=register => echo site_url().'/?ptype=register';
-login : http://mydomain.com/?ptype=login => echo site_url().'/?ptype=login';
-logout : http://mydomain.com/?ptype=login&action=logout => echo site_url().'/?ptype=login&action=logout';
+edit profile : http://mydomain.com/?ptype=profile  => echo home_url().'/?ptype=profile';
+registration : http://mydomain.com/?ptype=register => echo home_url().'/?ptype=register';
+login : http://mydomain.com/?ptype=login => echo home_url().'/?ptype=login';
+logout : http://mydomain.com/?ptype=login&action=logout => echo home_url().'/?ptype=login&action=logout';
 ********************************************************************/
 
 define('TEMPL_REGISTRATION_FOLDER',TT_MODULES_FOLDER_PATH . "registration/");
@@ -20,13 +20,15 @@ include_once(TEMPL_REGISTRATION_FOLDER.'registration_language.php'); // language
 add_filter('templ_add_template_page_filter','templ_add_template_reg_page');
 function templ_add_template_reg_page($template)
 {
-		if(isset($_REQUEST['ptype']) && $_REQUEST['ptype']!=""){
-	if($_REQUEST['ptype']=='profile')
+	global $site_url;
+	if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
+		if(isset($_REQUEST['ptype']) && $_REQUEST['ptype']!="" && is_stringonly()){
+	if($_REQUEST['ptype']=='profile' && is_stringonly())
 	{
-		global $current_user;
+		global $current_user,$site_url;
 		if(!$current_user->ID)
 		{
-			wp_redirect(get_option('siteurl').'/?ptype=login');
+			wp_redirect(get_option('home').$op.'ptype=login');
 			exit;
 		}
 		$template = TEMPL_REGISTRATION_FOLDER.'profile.php';

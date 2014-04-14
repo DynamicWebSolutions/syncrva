@@ -3,8 +3,13 @@ $file = dirname(__FILE__);
 $file = substr($file,0,stripos($file, "wp-content"));
 require($file . "/wp-load.php");
 global $post,$wpdb;
+if(is_plugin_active('wpml-translation-management/plugin.php'))
+{
+	global $sitepress;
+	$sitepress->switch_lang($_REQUEST['language']);
+}
 
-	$monthNames = Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+	$monthNames = array(__('January','templatic'), __('February','templatic'), __('March','templatic'), __('April','templatic'), __('May','templatic'), __('June','templatic'), __('July','templatic'), __('August','templatic'), __('September','templatic'), __('October','templatic'), __('November','templatic'), __('December','templatic'));
 	
 	if (!isset($_REQUEST["mnth"])) $_REQUEST["mnth"] = date("n");
 	if (!isset($_REQUEST["yr"])) $_REQUEST["yr"] = date("Y");
@@ -73,15 +78,16 @@ global $post,$wpdb;
 	<table width="100%" border="0" cellpadding="2" cellspacing="2"  class="calendar_widget">
 	
 	<tr>
-	<td align="center" class="days" ><strong>S</strong></td>
-	<td align="center" class="days" ><strong>M</strong></td>
-	<td align="center"  class="days" ><strong>T</strong></td>
-	<td align="center" class="days" ><strong>W</strong></td>
-	<td align="center" class="days" ><strong>T</strong></td>
-	<td align="center" class="days" ><strong>F</strong></td>
-	<td align="center" class="days" ><strong>S</strong></td>
+	<td align="center" class="days"><?php _e('Sun','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Mon','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Tue','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Wed','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Thu','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Fri','templatic'); ?></td>
+	<td align="center" class="days"><?php _e('Sat','templatic'); ?></td>
 	</tr> 
 	<?php
+	add_filter('posts_where', 'searching_filter_where');	
 	$timestamp = mktime(0,0,0,$cMonth,1,$cYear);
 	$maxday = date("t",$timestamp);
 	$thismonth = getdate ($timestamp);
@@ -117,14 +123,16 @@ global $post,$wpdb;
 			if(strlen($cMonth_date)==1){$cMonth_date = '0'.$cMonth_date;}
 			global $post,$wpdb;
 			$urlddate = "$cYear$cMonth_date$calday";
-			$thelink = get_option('siteurl')."/?s=Calender-Event&amp;m=$urlddate";
+			$thelink = get_option('home')."/?s=cal_event&amp;m=$urlddate";
 			/* create todat date - pass in query for fetching evnets day in calendar */
 			$todaydate = "$cYear-$cMonth_date-$the_cal_date";
+			
+			/* Set the style left as per par calendar */
 			global $todaydate;
 				$args=
 				array( 'post_type' => 'event',
 				'posts_per_page' => -1	,
-				'post_status' => array('publish','private')	,
+				'post_status' => array('publish','private'),
 				'meta_query' => array(
 					'relation' => 'AND',
 					array(
@@ -142,20 +150,56 @@ global $post,$wpdb;
 				)
 				);
 
+			set_query_var( 'orderby','meta_value' );
+			set_query_var( 'meta_key', 'st_date' );
+
 				$my_query1 = null;
 				$my_query1 = new WP_Query($args);
 		
 				$post_info = '';
-				
+				$test = get_post_meta($post->ID,'address',true);
 				if( $my_query1->have_posts() )
 				{
+					$location_str = "Location:";
+					if(function_exists('icl_register_string')){
+						$location = icl_register_string('templatic',$location_str,$location_str);
+					}
+
+					if(function_exists('icl_t')){
+						$location1 = icl_t('templatic',$location_str,$location_str);
+					}else{
+						$location1 = __($location_str,'templatic'); 
+					}
+					
+					$st_date_str = "Start Date:";
+					if(function_exists('icl_register_string')){
+						$st_date = icl_register_string('templatic',$st_date_str,$st_date_str);
+					}
+
+					if(function_exists('icl_t')){
+						$st_date1 = icl_t('templatic',$st_date_str,$st_date_str);
+					}else{
+						$st_date1 = __($st_date_str,'templatic'); 
+					}
+					
+					$end_date_str = "End Date:";
+					if(function_exists('icl_register_string')){
+						$end_date = icl_register_string('templatic',$end_date_str,$end_date_str);
+					}
+
+					if(function_exists('icl_t')){
+						$end_date1 = icl_t('templatic',$end_date_str,$end_date_str);
+					}else{
+						$end_date1 = __($end_date_str,'templatic'); 
+					}
+					
 					$post_info .='<span class="popup_event">';
 					while ($my_query1->have_posts()) : $my_query1->the_post();
 						$post_info .=' 
-						   <a class="event_title" href="'.get_permalink($post->ID).'">'.$post->post_title.'</a><small>'.
-						  __('<b>Location : </b>').get_post_meta($post->ID,'address',true) .'<br>'.
-						   __('<b>Start Date : </b>').get_formated_date(get_post_meta($post->ID,'st_date',true)).' '.get_formated_time(get_post_meta($post->ID,'st_time',true)) .'<br />'. 
-						   __('<b>End Date : </b>').get_formated_date(get_post_meta($post->ID,'end_date',true)).' '.get_formated_time(get_post_meta($post->ID,'end_time',true)) .'</small>';
+						   <a class="event_title" href="'.get_permalink($post->ID).'">'.$post->post_title.'</a><small><b>'.
+						  $location1.' </b>'.get_post_meta($post->ID,'geo_address',true) .'<br><b>'.
+						  $st_date1.' </b>'.get_formated_date(get_post_meta($post->ID,'st_date',true)).' '.get_formated_time(get_post_meta($post->ID,'st_time',true)) .'<br /><b>'. 
+						  $end_date1.' </b>'.get_formated_date(get_post_meta($post->ID,'end_date',true)).' '.get_formated_time(get_post_meta($post->ID,'end_time',true)) .'</small>';
 					endwhile;
 					$post_info .='</span>';
 				}

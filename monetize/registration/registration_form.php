@@ -1,7 +1,7 @@
-<script>var rootfolderpath = '<?php echo bloginfo('template_directory');?>/images/';</script>
-<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script>
+<script type="text/javascript">var rootfolderpath = '<?php echo get_bloginfo('template_directory');?>/images/';</script>
+<?php /* <script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script> */?>
 <!-- TinyMCE -->
-<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 	tinyMCE.init({
 		// General options
@@ -37,12 +37,15 @@
 	});
 </script>
 <!-- /TinyMCE -->
-<?php if ( get_option('users_can_register') ) { ?>
+<?php 
+global $site_url;
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
+if ( get_option('users_can_register') ) { ?>
 <div id="sign_up">
   <div class="login_content"> <?php echo stripslashes(get_option('ptthemes_reg_page_content'));?> </div>
   <div class="registration_form_box">
     <h4>
-      <?php  include(TEMPLATEPATH."/monetize/registration/registration_language.php");
+      <?php  include(get_template_directory()."/monetize/registration/registration_language.php");
 			 if($_REQUEST['page']=='login' && $_REQUEST['page1']=='sign_up')
 			{
 				echo REGISTRATION_NOW_TEXT;
@@ -52,6 +55,12 @@
 			}
 			 ?>
     </h4>
+	<?php  if(isset($_REQUEST['ecptcha']) == 'captch') {
+	$a = get_option("recaptcha_options");
+	$blank_field = $a['no_response_error'];
+	$incorrect_field = $a['incorrect_response_error'];
+	echo '<div class="error_msg">'.$incorrect_field.'</div>';
+	}?>
     <?php
 if ( $_REQUEST['emsg']==1)
 {
@@ -70,7 +79,7 @@ if ( $_REQUEST['emsg']==1)
 					theme : '<?php echo $a['registration_theme']; ?>'
 				 };
 				 </script>
-    <form name="userform" id="userform" action="<?php echo site_url().'/?ptype=login&amp;action=register'; ?>" method="post" enctype="multipart/form-data" >  
+    <form name="userform" id="userform" action="<?php echo $site_url.$op.'ptype=login&amp;action=register'; ?>" method="post" enctype="multipart/form-data" >  
       <input type="hidden" name="reg_redirect_link" value="<?php echo $_SERVER['HTTP_REFERER'];?>" />
       <?php do_action('templ_registration_form_start');?>
 		<?php
@@ -118,11 +127,11 @@ if ( $_REQUEST['emsg']==1)
         }else
         if($val['type']=='texteditor')
         {
-            $str = $val['tag_before'].'<textarea name="'.$key.'" '.$val['extra'].'>'.$fval.'</textarea>'.$val['tag_after'];
-            if($val['is_require'])
-            {
-                $str .= '<span id="'.$key.'_error"></span>';	
-            }
+			$str = $val['tag_before'].'<textarea name="'.$key.'" PLACEHOLDER="'.$val["default"].'" class="mce $val["extra_parameter"]">'.$fval.'</textarea>'.$val['tag_after'];
+			if($val['is_require'])
+			{
+				$str .= '<span id="'.$key.'_error"></span>';	
+			}
         }else
         if($val['type']=='file')
         {
@@ -141,10 +150,18 @@ if ( $_REQUEST['emsg']==1)
             $str = '';
         }else
         if($val['type']=='date')
-        {
-            $str = '<input name="'.$key.'" type="text" '.$val['extra'].' value="'.$fval.'">';	
-			$str .= '<img src="'.get_template_directory_uri().'/images/cal.gif" alt="Calendar"  onclick="displayCalendar(document.userform.'.$key.',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" class="calendar_img" />';
-            if($val['is_require'])
+        {?>
+			<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery(function() {
+					jQuery( "#<?php echo $key;?>" ).datepicker( {
+						firstDay: firstDay,
+					} );
+				});
+			</script>
+		<?php
+            $str = '<input name="'.$key.'" id="'.$key.'" type="text" '.$val['extra'].' value="'.$fval.'">';	
+		    if($val['is_require'])
             {
                 $str .= '<span id="'.$key.'_error"></span>';	
             }
@@ -264,7 +281,7 @@ if ( $_REQUEST['emsg']==1)
             $options = $val['options'];
             if($options)
             {  $chkcounter = 0;
-                
+                 $str .='<div class="form_cat_right">';
                 $option_values_arr = explode(',',$options);
                 for($i=0;$i<count($option_values_arr);$i++)
                 {
@@ -272,12 +289,13 @@ if ( $_REQUEST['emsg']==1)
                     $seled='';
                     $fval_arr = explode(',',$fval);
                     if(in_array($option_values_arr[$i],$fval_arr)){ $seled='checked="checked"';}
-                    $str .= $val['tag_before'].'<input name="'.$key.'[]"  id="'.$key.'_'.$chkcounter.'" type="checkbox" '.$val['extra'].' value="'.$option_values_arr[$i].'" '.$seled.'> '.$option_values_arr[$i].$val['tag_after'];
+                    $str .= $val['tag_before'].'<label><input name="'.$key.'[]"  id="'.$key.'_'.$chkcounter.'" type="checkbox" '.$val['extra'].' value="'.$option_values_arr[$i].'" '.$seled.'> '.$option_values_arr[$i].'</label>'.$val['tag_after'];
                 }
                 if($val['is_require'])
                 {
                     $str .= '<span id="'.$key.'_error"></span>';	
                 }
+				$str.='</div>';
             }
         }
         else
@@ -315,15 +333,27 @@ if ( $_REQUEST['emsg']==1)
 		}
 		 $pcd = explode(',',get_option('ptthemes_captcha_dislay'));	
 				
-		if(in_array('User registration page',$pcd) || in_array('Both',$pcd) ){
-			$a = get_option("recaptcha_options");
-			if( file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') && $a['show_in_registration'] == '1' ){
-				echo '<label>'.WORD_VERIFICATION.'</label>';
-				$publickey = $a['public_key']; // you got this from the signup page
-				echo recaptcha_get_html($publickey); 
+		if(in_array('User registration page',$pcd) || in_array('Both',$pcd)){
+			if( file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') ){
+			 	$a = get_option("recaptcha_options");                // get all recaptcha options    
+				$show_in_registration = $a['show_in_registration'];	 // get option for captcha is enable for registration page
+						if($show_in_registration)
+							{
+								//echo '<label>'.WORD_VERIFICATION.'</label>'; // label is already comes from plugin
+								if(is_multisite()) // if site is multisite
+									{
+										do_action('signup_extra_fields',$errors); // added $errors for error message for sove the fattle error of non object
+									}
+								else
+									{
+										do_action('register_form');	
+									}
+							}
+				
 			}
 		}
-		do_action('templ_registration_form_end');?>
+		do_action('templ_registration_form_end');
+		wp_nonce_field( 'user_registration', 'new_user_registration' ); ?>
       <input type="submit" name="registernow" value="<?php echo REGISTER_NOW_TEXT;?>" class="b_registernow" />
     </form>
   </div>

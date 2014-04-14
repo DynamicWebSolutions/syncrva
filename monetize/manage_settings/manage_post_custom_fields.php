@@ -13,7 +13,7 @@ if(!function_exists('ptthemes_meta_box_content')){
 function ptthemes_meta_box_content($post, $metabox ) {
     global $post,$wpdb;
 	$city_id = get_post_meta($post->ID,'post_city_id',true);
-	$pt_metaboxes = get_post_custom_fields_templ($metabox['args']['post_types']);
+	$pt_metaboxes = get_post_custom_fields_templ($metabox['args']['post_types'],'admin','admin_side','');
     $output = '';
     if($pt_metaboxes){
 	if(get_post_meta($post->ID,'remote_ip',true)  != ""){
@@ -38,9 +38,9 @@ function ptthemes_meta_box_content($post, $metabox ) {
 		$output1 .= "<strong>".$mid->cityname." - ".$mid->city_id.", </strong>";
 	}
    echo '<div class="pt_metaboxes_table">'."\n";
-   echo '<script>var rootfolderpath = "'.get_template_directory_uri().'/images/";</script>'."\n";
-   echo '<script type="text/javascript" src="'.get_template_directory_uri().'/js/dhtmlgoodies_calendar.js"></script>'."\n";
-   echo ' <link href="'.get_template_directory_uri().'/library/css/dhtmlgoodies_calendar.css" rel="stylesheet" type="text/css" />'."\n";
+   echo '<script type="text/javascript">var rootfolderpath = "'.get_template_directory_uri().'/images/";</script>'."\n";
+   //echo '<script type="text/javascript" src="'.get_template_directory_uri().'/js/dhtmlgoodies_calendar.js"></script>'."\n";
+   //echo ' <link href="'.get_template_directory_uri().'/library/css/dhtmlgoodies_calendar.css" rel="stylesheet" type="text/css" />'."\n";
    echo '<input type="hidden" name="templatic_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />
    <input type="hidden" name="remote_ip" value="'.$remote_ip.'" />
     <input type="hidden" name="zooming_factor" id="zooming_factor" value="'.$zooming_factor.'" />
@@ -54,7 +54,7 @@ function ptthemes_meta_box_content($post, $metabox ) {
    foreach ($pt_metaboxes as $pt_id => $pt_metabox) {
     if($pt_metabox['type'] == 'text' OR $pt_metabox['type'] == 'select' OR $pt_metabox['type'] == 'radio' OR $pt_metabox['type'] == 'checkbox' OR $pt_metabox['type'] == 'textarea' OR $pt_metabox['type'] == 'upload' OR $pt_metabox['type'] == 'date' OR $pt_metabox['type'] == 'multicheckbox' OR $pt_metabox['type'] == 'texteditor')
             $pt_metaboxvalue = get_post_meta($post->ID,$pt_metabox["name"],true);
-            if ($pt_metaboxvalue == "" || !isset($pt_metaboxvalue)) {
+            if (@$pt_metaboxvalue == "" || !isset($pt_metaboxvalue)) {
 			if($pt_metabox['type'] != 'multicheckbox'){
                 $pt_metaboxvalue = $pt_metabox['default']; }
             }
@@ -98,7 +98,7 @@ function ptthemes_meta_box_content($post, $metabox ) {
                 echo  "\t".'<div class="row">';
                 echo  "\t\t".'<p><label for="'.$pt_id.'">'.$pt_metabox['label'].'</label></p>'."\n";
                 echo  "\t\t".'<p><select class="pt_input_select" id="'.$pt_id.'" name="ptthemes_'. $pt_metabox["name"] .'"></p>'."\n";
-                echo  '<option>Select a '.$pt_metabox['label'].'</option>';
+                echo  '<option value="">Select a '.$pt_metabox['label'].'</option>';
                 
                 $array = $pt_metabox['options'];
                 
@@ -135,11 +135,19 @@ function ptthemes_meta_box_content($post, $metabox ) {
 					echo  '<p class="note">'.$pt_metabox['desc'].'</p>'."\n";
 					echo  "\t".'</div>'."\n";
 			}
-			 elseif ($pt_metabox['type'] == 'date'){
-            			
+			 elseif ($pt_metabox['type'] == 'date'){?>
+            	<script type="text/javascript">
+					jQuery.noConflict();
+					jQuery(function() {
+						jQuery( "#<?php echo 'ptthemes_'.$pt_metabox["name"];?>" ).datepicker( {
+							firstDay: firstDay,
+						} );
+					});
+				</script>
+			<?php	
 				echo  "\t".'<div class="row">';
                 echo  "\t\t".'<p><label for="'.$pt_id.'">'.$pt_metabox['label'].'</label></p>'."\n";
-                echo  "\t\t".'<p><input size="40" class="pt_input_text" type="text" value="'.$pt_metaboxvalue.'" name="ptthemes_'.$pt_metabox["name"].'" /><img src="'.get_template_directory_uri().'/images/cal.gif" class="calendar_img" alt="Calendar"  onclick="displayCalendar(document.post.ptthemes_'.$pt_metabox["name"].',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" /></p>'."\n";
+                echo  "\t\t".'<p><input size="40" class="pt_input_text" type="text" value="'.$pt_metaboxvalue.'" name="ptthemes_'.$pt_metabox["name"].'" id="ptthemes_'.$pt_metabox["name"].'" /></p>'."\n";
                 echo  "\t\t".'<p class="note">'.$pt_metabox['desc'].'</p>'."\n";
                 echo  "\t".'</div>'."\n";
                               
@@ -209,11 +217,11 @@ function ptthemes_meta_box_content($post, $metabox ) {
                 echo  "\t".'<div class="row">';
                 echo  "\t\t".'<p><label for="geo_address">'.__('Geo Address','templatic').'</label></p>'."\n";
                 echo  "\t\t".'<p><input size="100" class="pt_input_text" type="text" value="'.$geo_address.'" name="ptthemes_geo_address" id="geo_address"/></p>'."\n";
-                echo  "\t\t".'<p class="note">'.$pt_metabox['admin_desc'].'</p>'."\n";
+                echo  "\t\t".'<p class="note">'.@$pt_metabox['admin_desc'].'</p>'."\n";
                 echo  "\t".'</div>'."\n";
 				
 				echo  "\t\t".'<div class="row">';
-				include_once(TEMPLATEPATH . "/library/map/location_add_map.php");
+				include_once(get_template_directory() . "/library/map/location_add_map.php");
 				echo  "\t\t".'<p class="note">'.GET_MAP_MSG.'</p>'."\n";
 				 echo  "\t".'</div>'."\n";
 				
@@ -223,11 +231,15 @@ function ptthemes_meta_box_content($post, $metabox ) {
         }
 		
 	if(get_post_meta($post->ID,'featured_type',true) == "h"){ $checked = "checked=checked"; }
-		elseif(get_post_meta($post->ID,'featured_type',true) == "c"){ $checked1 = "checked=checked"; }
-		elseif(get_post_meta($post->ID,'featured_type',true) == "both"){ $checked2 = "checked=checked"; }
-		elseif(get_post_meta($post->ID,'featured_type',true) == "none" || get_post_meta($post->ID,'featured_type',true) == "n"){ $checked3 = "checked=checked"; }else{
-		if(get_post_meta($post->ID,'featured_type',true)==''){
-		$checked3 = "checked=checked"; }
+		elseif(get_post_meta($post->ID,'featured_type',true) == "c"){ $checked1 = "checked=checked";  $checked2=''; $checked3='';}
+		elseif(get_post_meta($post->ID,'featured_type',true) == "both"){ $checked2 = "checked=checked"; $checked1='';  $checked3='';}
+		elseif(get_post_meta($post->ID,'featured_type',true) == "none" || get_post_meta($post->ID,'featured_type',true) == "n"){ $checked3 = "checked=checked"; $checked1=''; $checked2='';  }
+		else{
+		if(get_post_meta($post->ID,'featured_type',true)=='')
+		 {
+			$checked3 = "checked=checked"; 
+		  }
+		$checked1=''; $checked2=''; 
 		}
 
 	

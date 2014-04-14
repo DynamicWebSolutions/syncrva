@@ -8,21 +8,6 @@ $dummy_image_path = get_template_directory_uri().'/images/dummy/';
 //====================================================================================//
 /////////////// TERMS START ///////////////
 //=============================CUSTOM TAXONOMY=======================================================//
-if($_REQUEST['dummy_insert'] == 1){
-	$multicity_db_table_name = $table_prefix . "multicity";
-	global $multicity_db_table_name;
-	if($wpdb->get_var("SHOW TABLES LIKE \"$multicity_db_table_name\"") == $multicity_db_table_name) {
-		if($_REQUEST['dump'] ==1){
-		$insert_muticity = $wpdb->query("INSERT INTO $multicity_db_table_name (country_id,zones_id,cityname,lat,lng,scall_factor,sortorder,is_zoom_home,categories,is_default) VALUES
-('1','3748','New York','40.714321', '-74.00579', 13, 7, 'No', '', 1),
-('2','3740','Philadelphia', '39.952473', '-75.164106', 13, 1, 'Yes', '', 0),('3','1485','San Fransisco', '37.774936', '-122.4194229', 13, 4, 'Yes', '', 0)");
-	
-$newyork = $wpdb->get_var("select city_id from $multicity_db_table_name where cityname = 'New York'");
-$philadelphia = $wpdb->get_var("select city_id from $multicity_db_table_name where cityname = 'Philadelphia'");
-$sanfransisco = $wpdb->get_var("select city_id from $multicity_db_table_name where cityname = 'San Fransisco'");
-	}
-	}
-}
 
 $category_array = array('Blog');
 insert_taxonomy_category($category_array);
@@ -384,7 +369,7 @@ The Peter Wentz Farmstead was built in 1758 and served as George Washington&acut
 ////post start 10///
 $image_array = array();
 $post_meta = array();
-$image_array[] = "dummy/img10.jpg" ;
+$image_array[] = "dummy/Templatic-Theme-Gallery.png" ;
 $post_meta = array(
 				   "templ_seo_page_title" =>'',
 				   "templ_seo_page_kw"	  => '',
@@ -392,14 +377,54 @@ $post_meta = array(
 				   "templ_seo_page_desc"  => '',
 				);
 $post_info[] = array(
-					"post_title"		 =>	'A Weekend on the Parkway',
-					"post_content" 		 =>	'The Benjamin Franklin Parkway, or simply "the Parkway," is in many ways the cultural heart of Philadelphia. Designed in 1917 to emulate the Champs-Elysées, the Parkway has been host to the nation&acute;s oldest Thanksgiving Parade, Live 8, a free Bruce Springsteen concert and Sunoco Welcome America!, Philadelphia&acute;s July 4th party.
+					"post_title"		 =>	'WordPress Themes Club',
+					"post_content" 		 =>	'The Templatic <a href="http://templatic.com/premium-themes-club/">Wordpress Themes Club</a> membership is ideal for any WordPress developer and freelancer that needs access to a wide variety of Wordpress themes. This themes collection saves you hundreds of dollars and also gives you the fantastic deal of allowing you to install any of our themes on unlimited domains.
 
-Lined with flags from around the world, the Parkway begins at City Hall and ends dramatically at the Philadelphia Museum of Art. Between these two points, you&acute;ll discover 4,000-year-old books, 120 sculptures by Auguste Rodin, America&acute;s most historic prison and much, much more.
+You can see below just a few of our WordPress themes that are included in the club membership
 
-Since water is the theme, seafood is especially apt for ordering — we recommend the Mediterranean-influenced grilled octopus. Thirsty? You&acute;re at the right place. In addition to a generous wine list, the restaurant offers an international list of waters to try.
+&nbsp;
+<img src="http://templatic.com/_data/images/Business-Directory-Theme-For-Wordpress_GeoPlaces.png" class="alignleft" /><strong>GeoPlaces</strong> - <a href="http://templatic.com/app-themes/geo-places-city-directory-wordpress-theme">Business Directory Theme</a>
+The popular business directory theme that lets you have your very own local business listings directory or an international companies pages directory. This elegant and responsive design theme gives you powerful admin features to run a free or paid local business directory or both. GeoPlaces even has its own integrated events section so you not only get a business directory but an events directory too.
 
-After dinner, step outside to enjoy the promenade along the river, the sculptural gardens and the illuminated Philadelphia skyline.  
+
+<img src="http://templatic.com/_data/images/Car-Classifieds-Wordpress-Theme_Automotive.png" class="alignleft"/><strong>Automotive</strong> - <a href="http://templatic.com/cms-themes/automotive-responsive-vehicle-directory">Car Classifieds Theme</a>
+A responsive auto classifieds theme that gives you the ability of allowing vehicles submission on free or paid listing packages which you decide on the price and duration. This sleek auto classifieds and car directory theme is also WooCommerce compatible so you can even use part of your site to run as a car spares online store. Details
+
+
+<img src="http://templatic.com/_data/images/Daily-Deal-Wordpress-Deals-Theme_DailyDeal.png" class="alignleft"/><strong>Daily Deal</strong> - <a href="http://templatic.com/app-themes/daily-deal-premium-wordpress-app-theme">Deals Theme</a>
+A powerful Deals theme for WordPress which lets your visitors buy or sell deals on your deals website. Daily Deal is by far the easiest and cheapest way to create a deals site where you can earn money by creating different deals submission price packages but you can also allow free deal submissions. Details
+
+
+<img src="http://templatic.com/_data/images/Events-Directory-Wordpress-Theme_Events.png" class="alignleft"/><strong>Events V2</strong> - <a href="http://templatic.com/app-themes/events">Events Directory Theme</a>
+Launch a successful Events directory portal with this elegant responsive events theme. The theme has many powerful admin features including allowing event organizers to submit events on free or paid payment packages. This theme is simple to setup and you can get your events site up in no time.
+
+
+<img src="http://templatic.com/_data/images/Events-Manager-Wordpress-Theme_NightLife.png" class="alignleft"/><strong>NightLife</strong> - <a href="http://templatic.com/cms-themes/nightlife-events-directory-wordpress-theme">Events Directory Theme</a>
+A beautifully designed events management theme which is responsive and allows you to run an events website. Allow event organizers free or paid event listing submissions and offer online event registrations. Nightlife is feature-packed with all the features you can expect from an events directory theme.
+
+
+<img src="http://templatic.com/_data/images/Hotel-Bookings-WordPress-Theme_5Star.png" class="alignleft"/><strong>5 Star</strong> - <a href="http://templatic.com/app-themes/5-star-responsive-hotel-theme">Online Hotel Booking and Reservations Theme</a>
+A well designed hotel booking theme which is ideal for showcasing and promoting a hotel online in style. This responsive design hotel reservation Wordpress theme will surely impress your guests and is also a theme that gives you a lot of powerful features including an advanced online booking system and a booking calendar.
+
+
+<img src="http://templatic.com/_data/images/Job-Classifieds-Wordpress-Theme_JobBoard.png" class="alignleft"/><strong>Job Board</strong> - <a href="http://templatic.com/app-themes/job-board">Job Classifieds Theme</a>
+Start your job classifieds or job board site with this responsive premium jobs board theme. Allow employers to submit job listings for free, paid or both and also allow job seekers to apply for jobs or submit their resumes. Packed with great features you would expect from a premium jobs board theme. Details
+
+
+<img src="http://templatic.com/_data/images/News-Magazine-Blog-WordPress-Theme_TechNews.png" class="alignleft"/><strong>TechNews</strong> - <a href="http://templatic.com/magazine-themes/technews-advanced-blog-theme">Blogging and News Theme</a>
+A news theme that is an ideal solution for your a news blog. An elegant theme which is ideal for news blogs, magazine or newspaper sites. This mobile friendly theme is both responsive and WooCommerce compatible. Impress your visitors with the stylish layout and available color schemes. Details
+
+
+<img src="http://templatic.com/_data/images/Property-Classifieds-Listings-WordPress-Theme_RealEstate.png" class="alignleft"/><strong>Real Estate V2</strong> - <a href="http://templatic.com/app-themes/real-estate-wordpress-theme-templatic">Property Classifieds Listings Theme</a>
+This powerful IDX/MLS compatible real estate classifieds theme is both unique and powerful in the features it provides. With this real estate listings theme for WordPress, you can allow estate agencies and home sellers an opportunity to submit properties to your site. This real estate theme comes with many features including powerful search filter.
+
+
+<img src="http://templatic.com/_data/images/Online-Store-Wordpress-Theme_ECommerce.png" class="alignleft"/><strong>e-Commerece</strong> - <a href="http://templatic.com/ecommerce-themes/e-commerce">Online Store Theme</a>
+A powerful and elegant WooCoomerce compatible e-commerce WordPress theme with many features advanced features. This online store theme offers various modes of product display such as a shopping Cart, digital Shop or catalog mode. This theme for e-commerce offers multiple payment gateways, coupon codes. Details
+
+
+
+See the full collection of the <a href="http://templatic.com/premium-themes-club/">WordPress Themes Club Membership</a>.  
 ',
 					"post_meta" =>	$post_meta,
 					"post_image" =>	$image_array,
@@ -467,7 +492,7 @@ function insert_posts($post_info)
 					$img_name_arr = explode('.',$img_name);
 					$post_img = array();
 					$post_img['post_title'] = $img_name_arr[0];
-					$post_img['post_status'] = 'attachment';
+					$post_img['post_status'] = 'inherit';
 					$post_img['post_parent'] = $last_postid;
 					$post_img['post_type'] = 'attachment';
 					$post_img['post_mime_type'] = 'image/jpeg';
@@ -1691,7 +1716,7 @@ function insert_taxonomy_posts($post_info)
 					$img_name_arr = explode('.',$img_name);
 					$post_img = array();
 					$post_img['post_title'] = $img_name_arr[0];
-					$post_img['post_status'] = 'attachment';
+					$post_img['post_status'] = 'inherit';
 					$post_img['post_parent'] = $last_postid;
 					$post_img['post_type'] = 'attachment';
 					$post_img['post_mime_type'] = 'image/jpeg';
@@ -2438,7 +2463,7 @@ function insert_taxonomy_posts_event($post_info)
 					$img_name_arr = explode('.',$img_name);
 					$post_img = array();
 					$post_img['post_title'] = $img_name_arr[0];
-					$post_img['post_status'] = 'attachment';
+					$post_img['post_status'] = 'inherit';
 					$post_img['post_parent'] = $last_postid;
 					$post_img['post_type'] = 'attachment';
 					$post_img['post_mime_type'] = 'image/jpeg';
@@ -2462,7 +2487,7 @@ function insert_taxonomy_posts_event($post_info)
 
 //====================================================================================//
 /////////////////////////////////////////////////
-$pages_array = array(array('Page Templates','Advanced Search','Archives','Full Width','Left Sidebar Page','Sitemap','Contact Us'),'Shortcodes',
+$pages_array = array(array('Page Templates','Advanced Search','Archives','Full Width','Left Sidebar Page','Sitemap','Contact Us'),'Shortcodes','WordPress Business Directory Theme And City Guide',
 array('Dropdowns','Sub Page 1','Sub Page 2'));
 $page_info_arr = array();
 $page_info_arr['Page Templates'] = '
@@ -2728,6 +2753,19 @@ See, how easy is to use page templates. Just add a new page and select <strong>S
 $page_info_arr['Contact Us'] = '
 What do you think about this Contact page template ? Have anything to say, any suggestions or any queries ? Feel free to contact us, we&rsquo;re here to help you. You can write any text in this page and use the Contact Us page template. Its very easy to use page templates.
 ';
+$page_info_arr['WordPress Business Directory Theme And City Guide'] = '
+The GeoPlaces WordPress business directory theme is ideal for almost any kind of directory, for example you can use it as a directory for hotels, motels, local businesses, restaurants, cafes, bars, clubs, travel agencies, local attractions or as a city guide. With each business listing, GeoPlaces displays a location Google map of the business along with an image gallery, business or products description and Youtube videos too if you like.
+
+To help you create a powerful <strong>business directory or city guide</strong>, GeoPlaces offers great features such searchable custom fields, advanced search, claim listings, unlimited free or paid listing packages, Google maps to pinpoint business or events, unlimited categories or sub-categories, various payment gateways such as Paypal, Google Checkout, Authorize.net, Worldpay, 2CO (2Checkout), Pre Bank Transfer or Pay Cash On Arrival. This popular business listings theme also comes with a send inquiry to business form, a homepage slider, bulk import/export, ratings and reviews, frontend listings submissions and many more great tools.
+
+The <strong>GeoPlaces</strong> theme can also be used as an <strong>events directory</strong> alongside the business directory since an events system has also been integrated into the theme. The events directory functions of the GeoPlaces theme include an events calendar, event start and end date and an image gallery, sort events by all, upcoming or past and a multitude of powerful features.
+
+You can purchase this theme on a standard license for 1 domain or on the developer license for unlimited number of domains installations.
+<h3 style="text-align: center;"><img class="aligncenter" style="border: 0px none;" alt="WordPress Business Directory Theme" src="http://templatic.com/wp-themes/uploads/files/2013/07/geoplaces-responsive-city-directory.png?44d1ac" width="689" height="449" /></h3>
+<h3 style="text-align: center;"><span style="color: #00a3d3;">The GeoPlaces WordPress business directory theme</span></h3>
+<p style="text-align: center;">The popular<strong> GeoPlaces Business Directory theme for WordPress </strong>is the natural choice if you are looking for a flexible theme to work with. GeoPlaces has all the admin features and options to help you take full control of your directory website and offer both visitors and business/event listing owners a great user-friendly interface.</p>
+<p style="text-align: center;"><a href="http://templatic.com/app-themes/geo-places-city-directory-wordpress-theme"><img class="aligncenter" style="border: 0px none;" alt="WordPress Business Directory Theme - GeoPlaces, Templatic" src="http://templatic.com/wp-themes/uploads/files/2013/07/templatic-wordpress-themes-club-details.png" width="200" height="51" /></a></p>
+';
 $page_info_arr['Dropdowns'] = '
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent aliquam,  justo convallis luctus rutrum, erat nulla fermentum diam, at nonummy quam  ante ac quam. Maecenas urna purus, fermentum id, molestie in, commodo  porttitor, felis. Nam blandit quam ut lacus. Quisque ornare risus quis  ligula. Phasellus tristique purus a augue condimentum adipiscing. Aenean  sagittis. Etiam leo pede, rhoncus venenatis, tristique in, vulputate at,  odio. Donec et ipsum et sapien vehicula nonummy. Suspendisse potenti. Fusce  varius urna id quam. Sed neque mi, varius eget, tincidunt nec, suscipit id,  libero. In eget purus. Vestibulum ut nisl. Donec eu mi sed turpis feugiat  feugiat. Integer turpis arcu, pellentesque eget, cursus et, fermentum ut,  sapien. Fusce metus mi, eleifend sollicitudin, molestie id, varius et, nibh.  Donec nec libero.</p>
 <p>Praesent aliquam,  justo convallis luctus rutrum, erat nulla fermentum diam, at nonummy quam  ante ac quam. Maecenas urna purus, fermentum id, molestie in, commodo  porttitor, felis. Nam blandit quam ut lacus. Quisque ornare risus quis  ligula. Phasellus tristique purus a augue condimentum adipiscing. Aenean  sagittis. Etiam leo pede, rhoncus venenatis, tristique in, vulputate at,  odio. Donec et ipsum et sapien vehicula nonummy. Suspendisse potenti. Fusce  varius urna id quam. Sed neque mi, varius eget, tincidunt nec, suscipit id,  libero. In eget purus. Vestibulum ut nisl. Donec eu mi sed turpis feugiat  feugiat. Integer turpis arcu, pellentesque eget, cursus et, fermentum ut,  sapien. Fusce metus mi, eleifend sollicitudin, molestie id, varius et, nibh.  Donec nec libero.</p>
@@ -2806,7 +2844,7 @@ function set_page_info_autorun($pages_array,$page_info_arr_arg)
 					$post_sql = "insert into $wpdb->posts (post_author,post_date,post_date_gmt,post_title,post_content,post_name,post_parent,post_type) values (\"$post_author\", \"$post_date\", \"$post_date\",  \"$post_title\", \"$post_content\", \"$post_name\",\"$post_parent_id\",'page')";
 					$wpdb->query($post_sql);
 					$last_post_id = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts");
-					$guid = get_option('siteurl')."/?p=$last_post_id";
+					$guid = get_option('home')."/?p=$last_post_id";
 					$guid_sql = "update $wpdb->posts set guid=\"$guid\" where ID=\"$last_post_id\"";
 					$wpdb->query($guid_sql);
 					$ter_relation_sql = "insert into $wpdb->term_relationships (object_id,term_taxonomy_id) values (\"$last_post_id\",\"$last_tt_id\")";
@@ -2842,26 +2880,32 @@ update_post_meta( $photo_page_id, '_wp_page_template', 'tpl_sitemap.php' );
 $photo_page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts where post_title like 'Contact Us' and post_type='page'");
 update_post_meta( $photo_page_id, '_wp_page_template', 'tpl_contact.php' );
 
-$wp_upload_dir = wp_upload_dir();
-$basedir = $wp_upload_dir['basedir'];
-$baseurl = $wp_upload_dir['baseurl'];
-$folderpath = $basedir."/dummy/";
+global $upload_folder_path;
+global $blog_id;
+if(get_option('upload_path') && !strstr(get_option('upload_path'),'wp-content/uploads'))
+{
+	$upload_folder_path = "wp-content/blogs.dir/$blog_id/files/";
+}else
+{
+	$upload_folder_path = "wp-content/uploads/";
+}
+global $blog_id;
+if($blog_id){ $thumb_url = "&amp;bid=$blog_id";}
+$folderpath = $upload_folder_path . "dummy/";
+$strpost = strpos(get_template_directory(),'wp-content');
+$dirinfo = wp_upload_dir();
+$target =$dirinfo['basedir']."/dummy"; 
+full_copy( get_template_directory()."/images/dummy/", $target );
  
-full_copy( TEMPLATEPATH."/images/dummy/", $folderpath );
 function full_copy( $source, $target ) 
 {
-/* 	echo ABSPATH."==".$target;
-	print_r($imagepatharr);
-	
-	echo "==".str_replace(ABSPATH,'',$target);
-	 */
 	$imagepatharr = explode('/',str_replace(ABSPATH,'',$target));
 	for($i=0;$i<count($imagepatharr);$i++)
 	{
 	  if($imagepatharr[$i])
 	  {
 		  $year_path = ABSPATH.$imagepatharr[$i]."/";
-		  if (!file_exists($year_path)){
+		  if (!file_exists($year_path) && strstr($year_path,"wp-content")){
 			 @mkdir($year_path, 0777);
 		  }     
 		}
@@ -2921,7 +2965,7 @@ foreach($listing_link as $key1=>$val1)
 $sidebars_widgets["header_logo_right_side"] = array("listing_link-$listing_link_key");
 
 //////////////// Main Navigation //////////////////////
-/*$widget_multi_city = array();
+$widget_multi_city = array();
 $widget_multi_city[1] = array(
 					"title"			=>	'',
 					"desc1"		=>	'',					
@@ -2939,7 +2983,7 @@ foreach($widget_multi_city as $key1=>$val1)
 	}
 }
 
-$sidebars_widgets["main_navigation"] = array("widget_multi_city-$widget_multi_city_key");*/
+$sidebars_widgets["main_navigation"] = array("widget_multi_city-$widget_multi_city_key");
 
 //////////////// Front Top Banner //////////////////////
 $googlemmapwidget_home = array();
@@ -4115,11 +4159,6 @@ update_option("ptthemes_bottom_options",'Three Column');
 update_option("ptthemes_enable_claimownership",'Yes');
 // Page Layout
 
-if($_REQUEST['dump']==1){
-echo "<script>";
-echo "window.location.href='".get_option('siteurl')."/wp-admin/themes.php?dummy_insert=1'";
-echo "</script>";
-}
 /////////////// Design Settings END ///////////////
 if(get_option('set_permission') == '') {
  set_option_selling('set_permission','administrator');

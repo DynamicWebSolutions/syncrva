@@ -8,7 +8,7 @@ global $payable_amount,$post_title,$last_postid,$current_user;
 $display_name = $current_user->display_name;
 $user_email = $current_user->user_email;
 ?>
-<form action="https://select.worldpay.com/wcc/purchase" method="post" target="_top" name="frm_payment_method">	
+<form action="https://secure.rbs.worldpay.com/wcc/purchase" method="post" target="_top" name="frm_payment_method">	
 <input type="hidden" value="<?php echo $payable_amount;?>" name="amount"/>
 <input type="hidden" value="<?php echo $instId;?>" name="instId"/>
 <input type="hidden" value="<?php echo $accId1;?>" name="accId1"/>
@@ -24,6 +24,6 @@ $user_email = $current_user->user_email;
             <h1 class="head2"><?php echo WORLD_PAY_MSG?></h1>
     </div>
 
-<script>
+<script type="text/javascript">
 setTimeout("document.frm_payment_method.submit()",50);
 </script>

@@ -1,4 +1,5 @@
 <?php
+	if(isset($_GET['img']) && $_GET['img'] !='' && $_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['my_file_'])){
 	$file = dirname(__FILE__);
 	$file = substr($file,0,stripos($file, "wp-content"));
 	require($file . "/wp-load.php");
@@ -34,14 +35,19 @@
    		$target_path = $destination_path. $iname;
 		$user_path = $destination_url.$iname;
    }
-
-   if(@move_uploaded_file($_FILES["myfile"]["tmp_name"],$target_path)) {
-      $result = 1;
+	$extension_file=array('.jpg','.JPG','jpeg','JPEG','.png','.PNG','.gif','.GIF','.jpe','.JPE');  
+	$file_ext= substr($target_path, -4, 4);
+	if(in_array($file_ext,$extension_file))
+	{
+		if(@move_uploaded_file($_FILES["myfile"]["tmp_name"],$target_path)) {
+			$result = 1;
+		}else{	
+			$result = 0;
+		}
 	}else{
-	
 		$result = 0;
 	}
- 
    $imgNumb = "image".$_GET['img'];
+   }
 ?>
 <script language="javascript" type="text/javascript">window.parent.window.noUpload(<?php echo $result.", '". $user_path."', '".$_GET['img']."', '".$filesize."'"; ?>);</script>

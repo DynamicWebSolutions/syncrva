@@ -185,14 +185,21 @@ function get_multicity_dl_options($selected='',$default_option='',$att='')
 	{
 		foreach($city_info as $key=>$val)
 		{
+			$context = get_option('blogname');
 			$city_name = trim($val);
+			
 			$return_str .= '<option ';
 			if($selected==$key)
 			{
 				$return_str .= ' selected=selected ';		
 			}
+			
 			$return_str .= 'value="'.$key.'" '.$att.'>';
-			$return_str .= trim($val).'</option>';
+			if(function_exists('icl_register_string')){
+			$return_str .= icl_t($context, $city_name, $val).'</option>';
+			}else{
+			$return_str .= trim($val).'</option>';	
+			}
 		}
 	}
 	return $return_str;
@@ -225,16 +232,17 @@ function get_multicity_dl($dl_name,$dl_id='',$selected='',$extra='',$default_opt
 	{
 		$dl_id = $dl_name;	
 	}
+	global $site_url;
 	$dl_options = get_multicity_dl_options($selected,$default_option);
-	if($dl_options){
-		$return_str = '<form id="multicity_dl_frm_id" name="multicity_dl_frm_name" action="'.site_url().'/" method="post">';
+	if($dl_options){ 
+		$return_str = '<form id="multicity_dl_frm_id" name="multicity_dl_frm_name" action="'.$site_url.'" method="post">';
 		$return_str .= get_multicit_select_dl($dl_name,$dl_id,$selected,$extra,$default_option,$dl_options);
 		//$return_str .= '<input type="hidden" name="multicity" id= "multicity" />';
 		$return_str .= '</form>';
 	}
 	return $return_str;
 }
-/* function to get multicity select box */
+
 function get_multicit_select_dl($dl_name,$dl_id='',$selected='',$extra='',$default_option='',$dl_options='')
 {
 	if($dl_options=='')
@@ -252,7 +260,7 @@ function multicity_js_insert_to_header()
 ?>
 <script type="text/javascript">
 function set_selected_city(city)
-{	
+{
 	document.multicity_dl_frm_name.submit();
 }
 </script>

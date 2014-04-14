@@ -1,5 +1,5 @@
 <?php 
-
+if(!class_exists('dc_jqmegamenu_widget')){
 class dc_jqmegamenu_widget extends WP_Widget {
     /** constructor */
     function dc_jqmegamenu_widget() {
@@ -14,7 +14,7 @@ class dc_jqmegamenu_widget extends WP_Widget {
 			'classname' => $css_class,
 			'description' => __( $desc, 'dcjq-mega-menu' ),
 		);
-		parent::WP_Widget( 'nav_menu', __('Custom Menu'), $widget_ops );
+		parent::WP_Widget( 'nav_menu', __('Custom Menu','templatic'), $widget_ops );
 		
 		$this->WP_Widget($id_base, __($name, 'dcjqmegamenu'), $widget_ops);
 		$this->alt_option_name = $alt_option;
@@ -107,16 +107,16 @@ class dc_jqmegamenu_widget extends WP_Widget {
 
 		// If no menus exists, direct the user to go and create some.
 		if ( !$menus ) {
-			echo '<p>'. sprintf( __('No menus have been created yet. <a href="%s">Create some</a>.'), admin_url('nav-menus.php') ) .'</p>';
+			echo '<p>'. sprintf( __('No menus have been created yet. <a href="%s">Create some</a>.','templatic'), admin_url('nav-menus.php') ) .'</p>';
 			return;
 		}
 		?>
 	<p>
-		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
+		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title','templatic') ?>:</label>
 		<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
 	</p>
 	<p>
-		<label for="<?php echo $this->get_field_id('nav_menu'); ?>"><?php _e('Select Menu:'); ?></label>
+		<label for="<?php echo $this->get_field_id('nav_menu'); ?>"><?php _e('Select Menu','templatic'); ?>:</label>
 		<select id="<?php echo $this->get_field_id('nav_menu'); ?>" name="<?php echo $this->get_field_name('nav_menu'); ?>">
 		<?php
 			foreach ( $menus as $menu ) {
@@ -139,25 +139,19 @@ class dc_jqmegamenu_widget extends WP_Widget {
 			<option value='2' <?php selected( $rowItems, '2'); ?> >2</option>
 			<option value='3' <?php selected( $rowItems, '3'); ?> >3</option>
 			<option value='4' <?php selected( $rowItems, '4'); ?> >4</option>
-			<option value='5' <?php selected( $rowItems, '5'); ?> >5</option>
-			<option value='6' <?php selected( $rowItems, '6'); ?> >6</option>
-			<option value='7' <?php selected( $rowItems, '7'); ?> >7</option>
-			<option value='8' <?php selected( $rowItems, '8'); ?> >8</option>
-			<option value='9' <?php selected( $rowItems, '9'); ?> >9</option>
-			<option value='10' <?php selected( $rowItems, '10'); ?> >10</option>
 		</select>
 		</p>
 		
 	</p>
 	<input type="hidden" value="<?php echo $subMenuWidth; ?>" class="widefat" id="<?php echo $this->get_field_id('subMenuWidth'); ?>" name="<?php echo $this->get_field_name('subMenuWidth'); ?>" />
-	<p><label for="<?php echo $this->get_field_id('effect'); ?>"><?php _e('Animation Effect:', 'dcjq-mega-menu'); ?>
+	<p><label for="<?php echo $this->get_field_id('effect'); ?>"><?php _e('Animation Effect','templatic'); ?>:
 		<select name="<?php echo $this->get_field_name('effect'); ?>" id="<?php echo $this->get_field_id('effect'); ?>" >
 			<option value='fade' <?php selected( $effect, 'fade'); ?> ><?php _e('Fade In','templatic');?></option>
 			<option value='slide' <?php selected( $effect, 'slide'); ?> ><?php _e('Slide Down','templatic');?></option>
 		</select>
 		</label>
 	</p>
-	<p><label for="<?php echo $this->get_field_id('speed'); ?>"><?php _e('Animation Speed:', 'dcjq-mega-menu'); ?>
+	<p><label for="<?php echo $this->get_field_id('speed'); ?>"><?php _e('Animation Speed:','templatic'); ?>
 		<select name="<?php echo $this->get_field_name('speed'); ?>" id="<?php echo $this->get_field_id('speed'); ?>" >
 		    <option value='0' <?php selected( $speed, '0'); ?> ><?php _e('No Animation','templatic');?></option>
 			<option value='fast' <?php selected( $speed, 'fast'); ?> ><?php _e('Fast','templatic');?></option>
@@ -220,6 +214,7 @@ class dc_jqmegamenu_widget extends WP_Widget {
 		}
 		}
 	}
+}
 } // class dc_jqmegamenu_widget 
 register_widget('dc_jqmegamenu_widget'); 
 

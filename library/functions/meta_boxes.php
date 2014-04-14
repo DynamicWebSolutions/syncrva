@@ -25,9 +25,9 @@ You can add your metaboxes in this file and it will affected in post area.
 		if(mysql_affected_rows() > 0 || get_post_meta($post->ID,'is_verified',true) == '1')
 		{ ?>
 		<h4><img src="<?php echo get_template_directory_uri(); ?>/images/verified.png" alt="<?php echo YES_VERIFIED;?>" border="0" align="middle" style="position:relative; top:-4px; margin-right:5px;" /> <?php echo POST_VERIFIED_TEXT; ?></h4>
-		<a href="<?php echo site_url().'/wp-admin/post.php?post='.$post->ID.'&action=edit&verified=no&clid='.$claimreq->clid;?>" title="<?php echo REMOVE_CLAIM_REQUEST; ?>"><?php echo REMOVE_CLAIM_REQUEST; ?></a>
+		<a href="<?php echo home_url().'/wp-admin/post.php?post='.$post->ID.'&action=edit&verified=no&clid='.$claimreq->clid;?>" title="<?php echo REMOVE_CLAIM_REQUEST; ?>"><?php echo REMOVE_CLAIM_REQUEST; ?></a>
 	<?php }else{ echo "<p>" . NO_CLAIM . "<p/>"; ?>
-		<a href="<?php echo site_url().'/wp-admin/post.php?post='.$post->ID.'&action=edit&verified=yes&vpid=1';?>" title="<?php echo CLAIM_THIS; ?>">
+		<a href="<?php echo home_url().'/wp-admin/post.php?post='.$post->ID.'&action=edit&verified=yes&vpid=1';?>" title="<?php echo CLAIM_THIS; ?>">
         <img src="<?php echo get_template_directory_uri(); ?>/images/accept.png" alt="<?php echo VERIFY_THIS; ?>" border="0" style="position:relative; top:-4px; margin-right:10px; float:left;" />  <strong><?php echo VERIFY_THIS; ?></strong></a>
 	<?php	}
 	}
@@ -39,13 +39,19 @@ You can add your metaboxes in this file and it will affected in post area.
 	}
 	}
 	if(get_option('ptthemes_enable_claimownership') =='Yes'){
-	add_action("admin_init", "admin_init"); }
-
+		add_action("admin_init", "admin_init"); 
+	}
+	add_action("admin_init", "blockip_admin_init"); 
+	
+	if(!function_exists('blockip_admin_init')){
+		function blockip_admin_init(){
+			add_meta_box("Block IP", "Block IP", "blockip_options", CUSTOM_POST_TYPE1, "side", "high");
+			add_meta_box("Block IP", "Block IP", "blockip_options", CUSTOM_POST_TYPE2, "side", "high");
+		}
+	}
 	function admin_init(){
 		add_meta_box("Claim post", "Claim post", "meta_options", CUSTOM_POST_TYPE1, "side", "high");
 		add_meta_box("Claim post", "Claim post", "meta_options", CUSTOM_POST_TYPE2, "side", "high");
-		add_meta_box("Block IP", "Block IP", "blockip_options", CUSTOM_POST_TYPE1, "side", "high");
-		add_meta_box("Block IP", "Block IP", "blockip_options", CUSTOM_POST_TYPE2, "side", "high");
 	}
 	if(isset($_REQUEST['poid']) && $_REQUEST['poid'] != "")
 	{
@@ -90,11 +96,11 @@ You can add your metaboxes in this file and it will affected in post area.
 		/* <![CDATA[ */
 		function blockIp(postid)
 		{
-			window.location = "<?php echo site_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit&blockip="+postid;	
+			window.location = "<?php echo home_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit&blockip="+postid;	
 		}
 		function unblockIp(postid)
 		{
-			window.location = "<?php echo site_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit&unblockip="+postid;
+			window.location = "<?php echo home_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit&unblockip="+postid;
 		}
 		/* ]]> */
 		</script>
@@ -159,9 +165,9 @@ You can add your metaboxes in this file and it will affected in post area.
 			$ips = get_post_meta($parrayobj->post_id,'ip_status',true);
 			if($ips == 1)
 			{ ?>
-				<script> 
+				<script type="text/javascript"> 
 				alert("<?php echo IP_BLOCKED; ?>"); 
-				window.location = "<?php echo site_url(); ?>/wp-admin/post.php?post=<?php echo $post_id; ?>&action=edit";
+				window.location = "<?php echo home_url(); ?>/wp-admin/post.php?post=<?php echo $post_id; ?>&action=edit";
 				</script>	
 			<?php }
 			}
@@ -188,7 +194,7 @@ You can add your metaboxes in this file and it will affected in post area.
 				$wpdb->query("INSERT INTO $ip_db_table_name (`ipid`, `ipaddress`, `ipstatus`) VALUES (NULL, '".$rip."', '1')");
 			}
 		} ?>
-		<script>location.href = "<?php echo site_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit";</script>
+		<script type="text/javascript">location.href = "<?php echo home_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit";</script>
 	<?php }elseif(isset($_REQUEST['unblockip']) != "")
 	{
 		
@@ -224,7 +230,7 @@ You can add your metaboxes in this file and it will affected in post area.
 			}else{ 	update_post_meta($post_id ,'ip_status','0'); 
 			}
 		} ?>
-		<script>window.location = "<?php echo site_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit";</script>
+		<script type="text/javascript">window.location = "<?php echo home_url(); ?>/wp-admin/post.php?post="+postid+"&action=edit";</script>
 
 <?php	}
 function recent_events_dashboard_widgets() {
@@ -294,7 +300,7 @@ function change_poststatus(str)
 		foreach($recent_events as $event) {
 			echo '<tr>
 				<td valign="top" align="left">'.$event->ID.'</td>
-				<td valign="top" align="left"><a href="'.site_url().'/wp-admin/post.php?post='.$event->ID.'&action=edit">'.$event->post_title.'</a></td>
+				<td valign="top" align="left"><a href="'.home_url().'/wp-admin/post.php?post='.$event->ID.'&action=edit">'.$event->post_title.'</a></td>
 				<td valign="top" align="left">'.get_post_meta($event->ID,'geo_address',true).'</td>';
 			if(get_post_meta($event->ID,'st_date',true) !="" && get_post_meta($event->ID,'st_time',true) !="")	{
 			echo '<td valign="top" align="left">'.get_post_meta($event->ID,'st_date',true).' '.get_post_meta($event->ID,'st_time',true).' <strong>to</strong> '.get_post_meta($event->ID,'end_date',true).' '.get_post_meta($event->ID,'end_time',true).'</td>';
@@ -358,7 +364,7 @@ function recent_places_dashboard_widget() {
 		foreach($recent_place as $recent_places) {
 			echo '<tr>
 				<td valign="top" align="left">'.$recent_places->ID.'</td>
-				<td valign="top" align="left"><a href="'.site_url().'/wp-admin/post.php?post='.$recent_places->ID.'&action=edit">'.$recent_places->post_title.'</a></td>
+				<td valign="top" align="left"><a href="'.home_url().'/wp-admin/post.php?post='.$recent_places->ID.'&action=edit">'.$recent_places->post_title.'</a></td>
 				<td valign="top" align="left">';
 				if(get_post_meta($recent_places->ID,'geo_address',true)) { echo get_post_meta($recent_places->ID,'geo_address',true);} else { echo '-';} echo '</td>
 				<td valign="top" align="left">';

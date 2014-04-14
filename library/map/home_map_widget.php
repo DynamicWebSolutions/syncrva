@@ -3,22 +3,10 @@ function get_category_home()
 {
 	global $wpdb;
 	$blog_cats = get_blog_sub_cats_str('string');
-	
 	$map_cat_arr = get_current_city_category();
 	$map_cat_ids = trim($map_cat_arr);
-	$catsql = "select distinct  c.term_id, c.* from $wpdb->terms c,$wpdb->term_taxonomy tt where tt.term_id=c.term_id and c.term_id in ($map_cat_ids) and tt.taxonomy in ('category','".CUSTOM_CATEGORY_TYPE1."','".CUSTOM_CATEGORY_TYPE2."') order by c.term_id,c.name";	
-
-	if(trim($map_cat_arr))
-	{
-		$map_cat_ids = $map_cat_arr;
-		$catsql = "select distinct c.term_id, c.* from $wpdb->terms c,$wpdb->term_taxonomy tt where tt.term_id=c.term_id and c.term_id in ($map_cat_ids) and tt.taxonomy in ('category','".CUSTOM_CATEGORY_TYPE1."','".CUSTOM_CATEGORY_TYPE2."') order by c.term_id,c.name";			
-	}else
-	{
-		$catsql = "select distinct c.term_id, c.* from $wpdb->terms c,$wpdb->term_taxonomy tt  where tt.term_id=c.term_id and tt.taxonomy in ('category','".CUSTOM_CATEGORY_TYPE1."','".CUSTOM_CATEGORY_TYPE2."') and count > 0 ";
-		$catsql .= " order by c.term_id,c.name";	
-	}
-
-	$catinfo = $wpdb->get_results($catsql);
+	$args =array();
+	$catinfo = get_terms(array(CUSTOM_CATEGORY_TYPE1,CUSTOM_CATEGORY_TYPE2),$args);	
 	$cat_content_info = array();
 	$cat_name_info = array();
 	foreach ($catinfo as $catinfo_obj)
@@ -35,22 +23,34 @@ function get_category_home()
 		{
 			$term_icon = get_bloginfo('template_directory').'/library/map/icons/pin.png';
 		}
-		if($term_id)
+		if($map_cat_ids)
+		{
+			$map_cat_ids_arr = explode(",",$map_cat_ids);
+		}
+		else
+		{
+			$map_cat_ids_arr = array($term_id);
+		}
+		if(in_array($term_id,$map_cat_ids_arr))
 		{
 			$content_data = array();
 			$my_post_type = "'".CUSTOM_POST_TYPE1."','".CUSTOM_POST_TYPE2."'";
 			if($_SESSION['multi_city'])
 			{
-				$multi_city_id = $_SESSION['multi_city'];				
-				$sql = "select p.* from $wpdb->posts p join $wpdb->postmeta pm on pm.post_id=p.ID where p.post_status in ('publish') and p.post_type in ($my_post_type) and ((pm.meta_key='post_city_id') and (pm.meta_value like \"%,$multi_city_id,%\" or pm.meta_value like \"$multi_city_id,%\" or pm.meta_value like \"%,$multi_city_id\" or pm.meta_value = \"$multi_city_id\")) and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
+				$multi_city_id = $_SESSION['multi_city'];	
+				$icl_table = $wpdb->prefix."icl_translations";
+				if(isset($_COOKIE['_icl_current_language']) && $_COOKIE['_icl_current_language'] !=''){
+				$language = ICL_LANGUAGE_CODE;
+				}else{ $language=''; }
+
+				$sql = "select p.* from $wpdb->posts p join $wpdb->postmeta pm on pm.post_id=p.ID where p.post_status = 'publish' and p.post_type in ($my_post_type) and ((pm.meta_key='post_city_id') and (pm.meta_value like \"%,$multi_city_id,%\" or pm.meta_value like \"$multi_city_id,%\" or pm.meta_value like \"%,$multi_city_id\" or pm.meta_value = \"$multi_city_id\")) and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
 				if(count($wpdb->get_results($sql)) <= 0 && $map_cat_arr){
-				//$sql = "select p.ID from $wpdb->posts p where p.post_type in ($my_post_type) and p.post_status in ('publish') and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
+					$sql = "select p.*,pm.* from $wpdb->posts p , $wpdb->postmeta  pm where pm.post_id=p.ID and p.post_type in ($my_post_type) and p.post_status = 'publish' and ((pm.meta_key='post_city_id') and (pm.meta_value like \"%,$multi_city_id,%\" or pm.meta_value like \"$multi_city_id,%\" or pm.meta_value like \"%,$multi_city_id\" or pm.meta_value = \"$multi_city_id\")) and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
 				}
 			}else
 			{
-				$sql = "select * from $wpdb->posts p where p.post_type in ($my_post_type) and p.post_status in ('publish') and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
+				$sql = "select * from $wpdb->posts p where p.post_type in ($my_post_type) and p.post_status = 'publish' and p.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id=\"$term_id\" )";
 			}
-
 			$postinfo = $wpdb->get_results($sql);
 			
 			$data_arr = array();
@@ -76,7 +76,11 @@ function get_category_home()
 					$attachment_id = $pimgarr[0]['id'];
 					$alt = str_replace($srcharr,$replarr,get_post_meta($attachment_id, '_wp_attachment_image_alt', true));
 					$attach_data = get_post($attachment_id);
-					$ititle = str_replace($srcharr,$replarr,$attach_data->post_title);
+					if(isset($attach_data) && $attach_data !=''){
+						$ititle = str_replace($srcharr,$replarr,$attach_data->post_title);
+					}else{
+						$ititle='';
+					}
 					if($ititle ==''){ $ititle = str_replace($srcharr,$replarr,$postinfo_obj->post_title); }
 					if($alt ==''){ $alt = str_replace($srcharr,$replarr,$postinfo_obj->post_title); }
 	
@@ -125,8 +129,8 @@ function get_category_home()
 class googlemmap_homepage extends WP_Widget {
 	function googlemmap_homepage() {
 	//Constructor
-		$widget_ops = array('classname' => 'widget Google Map in Home page', 'description' => __('Google Map in Home page. It will show you google map V3 for Home page with category checkbox selection.') );		
-		$this->WP_Widget('googlemmapwidget_home', __('PT &rarr; Google Map V3 - Home page'), $widget_ops);
+		$widget_ops = array('classname' => 'widget Google Map in Home page', 'description' => __('Google Map in Home page. It will show you google map V3 for Home page with category checkbox selection.','templatic') );		
+		$this->WP_Widget('googlemmapwidget_home', __('PT &rarr; Google Map V3 - Home page','templatic'), $widget_ops);
 	}
 	function widget($args, $instance) {
 	// prints the widget
@@ -139,7 +143,7 @@ class googlemmap_homepage extends WP_Widget {
 
 	?>
 
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.5&sensor=false"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markermanager.js"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markerclusterer_packed.js"></script>
 <script type="text/javascript">
@@ -218,6 +222,7 @@ function initialize() {
    mgr = new MarkerManager( map );
    google.maps.event.addListener(mgr, 'loaded', function() {
       if (markers) {
+    	 var k = 0;
          for (var level in markers) {
             google.maps.event.addDomListener( document.getElementById( level ), 'click', function() {
                setCategoryVisiblity( this.id, this.checked );
@@ -229,6 +234,7 @@ function initialize() {
                var myLatLng = new google.maps.LatLng(details.location[0], details.location[1]);
 			   <?php if(get_current_city_set_zooming_opt() == '1') { ?>
 			     multimarkerdata[i]  = new google.maps.LatLng(details.location[0], details.location[1]);
+				 k++;
 			   <?php } ?>
                markers[level][i] = new google.maps.Marker({
                   title: details.name,
@@ -301,13 +307,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		$width = strip_tags($instance['width']);
 		$heigh = strip_tags($instance['heigh']);
 	?>
-   <?php /*?> <p>
-      <label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Map Width <small>(Default is : 940px)</small>');?>:
-      <input class="widefat" id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name('width'); ?>" type="text" value="<?php echo attribute_escape($width); ?>" />
-      </label>
-    </p><?php */?>
+
      <p>
-      <label for="<?php echo $this->get_field_id('heigh'); ?>"><?php _e('Map Height <small>(Default is : 425px)</small>');?>:
+      <label for="<?php echo $this->get_field_id('heigh'); ?>"><?php _e('Map Height <small>(Default is : 425px)</small>','templatic');?>:
       <input class="widefat" id="<?php echo $this->get_field_id('heigh'); ?>" name="<?php echo $this->get_field_name('heigh'); ?>" type="text" value="<?php echo attribute_escape($heigh); ?>" />
       </label>
     </p>

@@ -50,7 +50,7 @@ $trans_total_pages = count($transinfo_count);
 
 
 ?>
-<script>
+<script type="text/javascript">
 function change_transstatus(tid){
 		if (tid=="")
 	  {
@@ -77,16 +77,16 @@ function change_transstatus(tid){
 </script>
 <h4><?php _e('Transaction Report','templatic');?></h4>
 <div class="divright"><a href="<?php echo get_template_directory_uri().'/monetize/manage_settings/export_transaction.php';?>" title="Export To CSV" class="i_export"><?php _e('Export To CSV','templatic');?></a></div>
-    <form method="post" action="<?php echo site_url('/wp-admin/admin.php?page=manage_settings#option_transaction_settings');?>" name="ordersearch_frm">
+    <form method="post" action="<?php echo home_url('/wp-admin/admin.php?page=manage_settings#option_transaction_settings');?>" name="ordersearch_frm">
         <table cellspacing="1" cellpadding="4" border="0" width="100%" style="padding:5px;">
             <tr>
-				<td valign="top"><strong><?php _e('Search by transaction ID','templatic'); ?> :</strong></td>
+				<td valign="top"><?php _e('Search by transaction ID','templatic'); ?> :</td>
 				<td valign="top"><input type="text" value="" name="srch_orderno" id="srch_orderno" style="width:100px;" /><br /></td>
-				<td valign="top"><strong><?php _e('Payment Type','templatic'); ?> :</strong></td>
+				<td valign="top"><?php _e('Payment Type','templatic'); ?> :</td>
 				
 				<td valign="top">
 				<?php
-					$targetpage = site_url("/wp-admin/admin.php?page=manage_settings");
+					$targetpage = home_url("/wp-admin/admin.php?page=manage_settings");
 					$paymentsql = "select * from $wpdb->options where option_name like 'payment_method_%' order by option_id";
 					$paymentinfo = $wpdb->get_results($paymentsql);
 					if($paymentinfo)
@@ -108,12 +108,12 @@ function change_transstatus(tid){
 					</select></td>
 			</tr>
 			<tr>
-				<td  valign="top"><strong><?php _e('Name/Email','templatic'); ?> :</strong></td>
+				<td  valign="top"><?php _e('Name/Email','templatic'); ?> :</td>
 				<td valign="top" colspan="3"><input type="text" value="" name="srch_name" id="srch_name"  style="width:120px;" /><br /></td>
 				
 			</tr>
 			<tr>			
-				<td  valign="top"><strong><?php _e('Payment Transaction ID','templatic'); ?> :</strong></td>
+				<td  valign="top"><?php _e('Payment Transaction ID','templatic'); ?> :</td>
 				<td valign="top" colspan="2"> <input type="text" value="" name="srch_payid" id="srch_payid"  style="width:200px;"/><br /></td>
 				<td valign="top" >&nbsp;&nbsp;<input type="submit" name="Search" value="<?php _e('Search'); ?>" class="button-secondary action"  />&nbsp;<input type="reset" name="Default Reset" value="<?php _e('Reset'); ?>" onclick="window.location.href='<?php echo $targetpage;?>'" class="button-secondary action" /></td>
 				
@@ -186,7 +186,7 @@ if($trans_total_pages>$transrecordsperpage)
       <?php
 }
 ?>
-<script>
+<script type="text/javascript">
 function reportshowdetail(custom_id)
 {
 	if(document.getElementById('reprtdetail_'+custom_id).style.display=='none')

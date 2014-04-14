@@ -2,7 +2,7 @@
 global $page_title;?>
 <?php get_header(); ?>
 <?php if ( get_option( 'ptthemes_breadcrumbs' ) == 'Yes' ) {  ?>
-<div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
+<div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
 <div class="content-title"><?php echo $page_title; ?></div>
 <div  class="<?php templ_content_css();?>" >
 <div class="post-content">

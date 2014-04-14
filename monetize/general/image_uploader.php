@@ -17,28 +17,28 @@ jQuery(function()
 	var status=jQuery('#status');
 	new AjaxUpload(btnUpload, {
 	name: 'uploadfile[]',
-	action: '<?php echo bloginfo('template_url'); ?>/monetize/general/upload-file.php',
+	action: '<?php echo get_bloginfo('template_url'); ?>/monetize/general/uploadfile.php',
 
 	onSubmit: function(file, ext)
 	{
 	 if (! (ext && /^(jpg|png|jpeg|gif)$/.test(ext))){
      // extension is not allowed 
-	status.text('Only JPG, PNG or GIF files are allowed');
+	status.text('<?php _e('Only JPG, PNG or GIF files are allowed','templatic'); ?>');
 	return false;
-	}status.text('Uploading...');
+	}status.text('<?php _e('Uploading...','templatic'); ?>');
 	},
 	
 	onComplete: function(file, response)
 	{
 			/*Image size validation*/
 		 if(response == 'LIMIT'){
-			status.text('Your image size must be less then '+'<?php echo  get_option('ptthemes_max_image_size'); ?> bytes');
+			status.text('<?php _e('your image size must be less then','templatic'); ?>'+'<?php echo  get_option('ptthemes_max_image_size'); ?><?php _e('bytes','templatic'); ?>');
 			return false;
 		 }
 		// Start Limit Code
 		  if(response > 10 )
 		  {
-			status.text('You can upload maximum 10 images');
+			status.text('<?php _e('you can upload maximum 10 images','templatic'); ?>');
 			return false;
 		  }
 		
@@ -46,10 +46,10 @@ jQuery(function()
 		 jQuery('#files .success').each(function(){
 				counter = counter + 1;
 		 });
-		limit = (response.split(",").length + counter) - 1;
+		 limit = (response.split(",").length + counter) - 1;
 		if(parseFloat(limit) > 10)
 	   	  {
-			status.text('You can upload maximum 10 images');
+			status.text('<?php _e('You can upload maximum 10 images','templatic'); ?>');
 			return false;
 	   	  }
 
@@ -72,9 +72,9 @@ jQuery(function()
 			else
 			  {
 				  	
-				var img_name = '<?php echo bloginfo('template_url')."/images/tmp/"; ?>'+spl[i]+"";
+				var img_name = '<?php echo get_bloginfo('template_url')."/images/tmp/"; ?>'+spl[i]+"";
 
-				jQuery('<span id='+(i+counter)+'></span>').appendTo('#files').html('<span id=temp'+(i+counter)+' class="temp"><img src="'+img_name+'" name="'+spl[i]+'" alt="" style="margin:5px;" height="120" width="120" /></span><br><span id="del'+(i+counter)+'" ><img align="right" class="redcross" alt="delete" src="<?php echo bloginfo('template_url'); ?>/images/cross.png" onClick="deleteFile(\''+spl[i]+'\','+(i+counter)+');" id="cross'+(i+counter)+'" /></span><img align="middle" src="<?php echo bloginfo('template_url'); ?>/images/upload_left.gif" id="left'+(i+counter)+'" style="margin-left:10px;margin-right:10px;cursor:pointer;" onclick="moveleft('+(i+counter)+')" /><img align="middle" id="right'+(i+counter)+'" style="cursor:pointer;" onclick="moveright('+(i+counter)+')" src="<?php echo bloginfo('template_url'); ?>/images/upload_right.gif" />').addClass('success');
+				jQuery('<span id='+(i+counter)+'></span>').appendTo('#files').html('<span id=temp'+(i+counter)+' class="temp"><img src="'+img_name+'" name="'+spl[i]+'" alt="" style="margin:5px;" height="120" width="120" /></span><br><span id="del'+(i+counter)+'" ><img align="right" class="redcross" alt="delete" src="<?php echo get_bloginfo('template_url'); ?>/images/cross.png" onClick="deleteFile(\''+spl[i]+'\','+(i+counter)+');" id="cross'+(i+counter)+'" /></span><img align="middle" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_left.gif" id="left'+(i+counter)+'" style="margin-left:10px;margin-right:10px;cursor:pointer;" onclick="moveleft('+(i+counter)+')" /><img align="middle" id="right'+(i+counter)+'" style="cursor:pointer;" onclick="moveright('+(i+counter)+')" src="<?php echo bloginfo('template_url'); ?>/images/upload_right.gif" />').addClass('success');
 			  }
 		  }
 		
@@ -239,7 +239,7 @@ function moveleft(idb)
 }
 
 </script>
-<div id="uploadimage" class="upload" ><span>Upload Image</span></div><span id="status"></span>
+<div id="uploadimage" class="upload" ><span><?php _e("Upload Photo",'templatic'); ?></span></div><span id="status"></span>
 <table width="100%" align="center" border="0">
 <tr>
     <td>
@@ -252,16 +252,16 @@ function moveleft(idb)
         {
             foreach($_SESSION["file_info"] as $image_id=>$val)
             {
-                $thumb_src = get_template_directory_uri().'/thumb.php?src='.get_template_directory_uri().'/images/tmp/'.$val;
+                $thumb_src = get_template_directory_uri().'/images/tmp/'.$val;
            ?>
-                <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $thumb_src; ?>&w=120&h=120&zc=1&q=80&bid=1" name="<?php echo $val; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $val; ?>','<?php echo $i; ?>','');" src="<?php echo bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
+                <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $thumb_src; ?>" width="120" height="120" name="<?php echo $val; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $val; ?>','<?php echo $i; ?>','');" src="<?php echo get_bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
            <?php
              $i++;
             }
         }
        ?>
        <?php
-       if(isset($_REQUEST['pid']) && !$_REQUEST['backandedit']) :
+       if(isset($_REQUEST['pid']) && $_REQUEST['pid']!='' && !$_REQUEST['backandedit']) :
             global $thumb_img_arr;
             $i = 0;
             if($thumb_img_arr):
@@ -269,7 +269,7 @@ function moveleft(idb)
                 $name = end(explode("/",$val['file']));
                //$thumb_src = get_template_directory_uri().'/thumb.php?src='.$val['file'];
            ?>
-                    <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $val['file']; ?>" height = "120px" width = "120px" name="<?php echo $name; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $name; ?>','<?php echo $i; ?>','<?php echo $val['id']; ?>');" src="<?php echo bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
+                    <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $val['file']; ?>" height = "120px" width = "120px" name="<?php echo $name; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $name; ?>','<?php echo $i; ?>','<?php echo $val['id']; ?>');" src="<?php echo get_bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
             <?php
                  $i++;
                  endforeach;
@@ -281,7 +281,7 @@ function moveleft(idb)
                 global $upload_folder_path;
                 $i = 0;
                 foreach($_SESSION["file_info"] as $image_id=>$val):
-                    $src = TEMPLATEPATH.'/images/tmp/'.$val;
+                    $src = get_template_directory().'/images/tmp/'.$val;
                     //$thumb_src = get_template_directory_uri().'/thumb.php?src='.get_template_directory_uri().'/images/tmp/'.$val;
                     if($val):
                     if(file_exists($src)):
@@ -294,7 +294,7 @@ function moveleft(idb)
                             $name = end(explode("/",$value['file']));
                             if($name == $val):
                    ?>
-                        <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $value['file']; ?>" height = "120px" width = "120px" name="<?php echo $val; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $val; ?>','<?php echo $i; ?>','<?php echo $value['id']; ?>');" src="<?php echo bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
+                        <span id="<?php echo $i; ?>" class="success"><span class="temp" id="temp<?php echo $i; ?>"><img src="<?php echo $value['file']; ?>" height = "120px" width = "120px" name="<?php echo $val; ?>" style="margin:5px;" alt="" /></span><br><span id="del<?php echo $i; ?>"><img align="right" id="cross<?php echo $i; ?>" onclick="deleteFile('<?php echo $val; ?>','<?php echo $i; ?>','<?php echo $value['id']; ?>');" src="<?php echo bloginfo('template_url'); ?>/images/cross.png" alt="delete" class="redcross" /></span><img align="middle" onclick="moveleft('<?php echo $i; ?>')" style="margin-left: 10px; margin-right: 10px; cursor: pointer;" id="left<?php echo $i; ?>" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_left.gif"><img align="middle" src="<?php echo get_bloginfo('template_url'); ?>/images/upload_right.gif" onclick="moveright('<?php echo $i; ?>')" style="cursor: pointer;" id="right<?php echo $i; ?>"></span>
                     <?php
                             endif;
                        endforeach;

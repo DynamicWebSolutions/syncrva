@@ -1,5 +1,7 @@
 <?php 
 ob_start();
+global $site_url;
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 $payable_amount = 0;
 $current_user = wp_get_current_user(); 
 $property_price_info = get_property_price_info($_SESSION['event_info']['price_select'],$_SESSION['event_info']['total_price']);		
@@ -15,7 +17,7 @@ $payable_amount = get_payable_amount_with_coupon($payable_amount,$_SESSION['even
 
 if($_REQUEST['pid']=='' && $payable_amount>0 && $_REQUEST['paymentmethod']=='')
 {
-	wp_redirect(site_url().'/?ptype=preview_event&msg=nopaymethod');
+	wp_redirect($site_url.$op.'ptype=preview_event&msg=nopaymethod');
 	exit;
 }
 global $current_user;
@@ -30,15 +32,15 @@ if($_POST)
 	{
 		$event_info = $_SESSION['event_info'];
 		if($event_info){
-			if($event_info['website'] && !strstr($event_info['website'],'http://'))
+			if($event_info['website'] && (!strstr($event_info['website'],'http://') && !strstr($event_info['website'],'https://') ))
 			{
 				$event_info['website'] = 'http://'.$event_info['website'];
 			}
-			if($event_info['twitter'] && !strstr($event_info['twitter'],'http://'))
+			if($event_info['twitter'] && (!strstr($event_info['twitter'],'http://') && !strstr($event_info['twitter'],'https://')))
 			{
 				$event_info['twitter'] = 'http://'.$event_info['twitter'];
 			}
-			if($event_info['facebook'] && !strstr($event_info['facebook'],'http://'))
+			if($event_info['facebook'] && (!strstr($event_info['facebook'],'http://') && !strstr($event_info['facebook'],'https://')))
 			{
 				$event_info['facebook'] = 'http://'.$event_info['facebook'];
 			}
@@ -53,10 +55,10 @@ if($_POST)
 						"geo_longitude"	=> $event_info['geo_longitude'],
 						"map_view"		=> $event_info['map_view'],
 						"add_feature"	=> $event_info['proprty_add_feature'],
-						"st_date"		=> $event_info['stdate'],
-						"st_time"		=> $event_info['sttime'],
-						"end_date"		=> $event_info['enddate'],
-						"end_time"		=> $event_info['endtime'],
+						"st_date"		=> $event_info['st_date'],
+						"st_time"		=> $event_info['st_time'],
+						"end_date"		=> $event_info['end_date'],
+						"end_time"		=> $event_info['end_time'],
 						"reg_desc"		=> $event_info['reg_desc'],
 						"reg_fees"		=> $event_info['reg_fees'],						
 						"contact"		=> $event_info['contact'],
@@ -66,14 +68,9 @@ if($_POST)
 						"facebook"		=> $event_info['facebook'],
 						"proprty_feature"=> $event_info['proprty_feature'],
 						"post_city_id"	=> $event_info['post_city_id'],
+						"zooming_factor" => $place_info['zooming_factor'],
 					);
-		$category = str_replace('|',',',$_SESSION['event_info']['all_cta']);
-		$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE2,$category[0],'user_side');
-		foreach($custom_metaboxes as $key=>$val)
-		{
-			$name = $val['name'];
-			$custom[$name] = $event_info[$name];
-		}
+		$category = str_replace('|',',',$_SESSION['event_info']['all_cat']);
 		$post_title = $event_info['property_name'];
 		$description = $event_info['event_desc'];
 		$excerpt = $event_info['excerpt'];
@@ -141,6 +138,31 @@ if($_POST)
 		{
 			$post_category = $_SESSION['event_info']['category'];	
 		}
+		$cat_display=get_option('ptthemes_category_dislay');
+		if($cat_display==''){$cat_display='checkbox';}
+		if($price_capable_cat)
+		{ 
+			if($cat_display == 'checkbox'){
+			//$post_category[] = $price_capable_cat;
+			$post_category = $event_info['category'];
+			}else{
+			$post_category = $event_info['category'];
+			}
+		}
+		/*
+			save custom fields category wise for checkbox and select box.
+		*/
+		if($cat_display == 'checkbox'){
+			$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE2,'0','user_side');
+		}else{
+			$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE2,$post_category,'user_side');
+		}
+
+		foreach($custom_metaboxes as $key=>$val)
+		{
+			$name = $val['name'];
+			$custom[$name] = $event_info[$name];
+		}
 
 		$my_post['post_category'] = $post_category;
 		$my_post['tax_input'] = $post_category;
@@ -161,7 +183,7 @@ if($_POST)
 		{
 			if($event_info['renew'])
 			{ 
-				$post_status = get_option('ptthemes_listing_ex_status');
+				$post_status = strtolower(get_option('ptthemes_listing_ex_status'));
 				if($post_status==''){
 				$post_status ='publish';
 				}
@@ -170,6 +192,7 @@ if($_POST)
 				$custom['paid_amount'] = $payable_amount;
 				$custom['alive_days'] = $property_price_info['alive_days'];
 				$custom['paymentmethod'] = $_REQUEST['paymentmethod'];
+				$custom['featured_type'] = $_SESSION['event_info']['featured_type'];
 				$my_post['ID'] = $_REQUEST['pid'];
 				$last_postid = wp_update_post($my_post);
 				//wp_set_object_terms($last_postid, $post_category, $taxonomy=CUSTOM_CATEGORY_TYPE2);
@@ -191,8 +214,10 @@ if($_POST)
 			$postcode=$wpdb->prefix."postcodes";
 			$sql="insert into $postcode(post_id,post_type,latitude,longitude) values(".$last_postid.",'".CUSTOM_POST_TYPE2."','". $event_info['geo_latitude']."','". $event_info['geo_longitude']."')";
 			$wpdb->query($sql);
-
-			wp_set_post_terms($last_postid, $tagkw, $taxonomy=CUSTOM_TAG_TYPE2);
+			if(is_plugin_active('wpml-string-translation/plugin.php')){
+				gp4_wpml_insert_templ_post($last_postid,CUSTOM_POST_TYPE2); /* insert post in language */
+			}
+	
 		}
 		$custom["paid_amount"] = $payable_amount;
 		foreach($custom as $key=>$val)
@@ -240,53 +265,49 @@ if($_POST)
 		}
 		$wpdb->query($transaction_insert);
 		$trans_id = mysql_insert_id();
-		
-		/*BO post category*/
-		if($post_category != '' )	{ 
-			$termtable = $wpdb->prefix."term_relationships";
-			$post_id = $last_postid;
-				if(is_array($post_category)) {
-					$cat = implode("-",$post_category);
-					$category = explode("-",$cat);
-		
-					for($cat_cnt =0 ; $cat_cnt <= count($category) ; $cat_cnt ++){						
-						if($category[$cat_cnt] != "" && $post_id != "")	{ 	
-							$mycat = explode(',',$category[$cat_cnt]);						
-							if($_REQUEST['pid']){							
-								if($event_info['renew']) {
-									$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-								} else {
-									$selobj = $wpdb->get_row("select * from " . $termtable . " where object_id = '".$post_id."' and term_taxonomy_id = '".$mycat[0]."'");
-									if(mysql_affected_rows() > 0){
-										$cat_cntcat = $wpdb->query("UPADTE " . $termtable . " set object_id = '".$post_id."',term_taxonomy_id = '".$mycat[0]."',term_order = '0')");
-									}else{
-										$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-									}
-								}
-							} else {
-								$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-							} 
-						}
-					}
-				} else {
-					if($_REQUEST['pid']){
-						if($event_info['renew']) {
-							$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$event_info['category']."','0') ");
-						} else {
-							$cat_cntcat = $wpdb->query("UPADTE " . $termtable . " set object_id = '".$post_id."',term_taxonomy_id = '".$event_info['category']."',term_order = '0')");	
-						}
-					} else {
-						$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$event_info['category']."','0') ");
-					}
-				}
+		if(is_array($post_category) && $post_category!=""){
+			$del_cat_id = implode($post_category,",");
+			$del_cat=$wpdb->query("delete from $termtable where object_id = '".$last_postid."' and term_taxonomy_id NOT IN ( $del_cat_id )");
+		}else{
+			if($post_category!=""){
+				$del_cat=$wpdb->query("delete from $termtable where object_id = '".$last_postid."' and term_taxonomy_id!=$post_category");
+			}	
 		}
+		/*BO post category*/
+		if(is_array($post_category) && $post_category!="")
+		{
+			foreach($post_category as $_post_category)
+			{
+				wp_set_post_terms( $last_postid,$_post_category,'eventcategory',true);
+			}
+		}
+		else
+		{
+			wp_set_post_terms( $last_postid,$post_category,'eventcategory',true);
+		}
+		
 		/*EOF post category*/
+		
+		/* insert tags start */
+		$tagkw = explode(',',$tagkw);
+		
+			//wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1,true);
+			if(is_array($tagkw) && $tagkw!="")
+			{
+				foreach($tagkw as $_tagkw)
+				{ echo $_tagkw;
+					wp_set_post_terms( $last_postid,$_tagkw,$taxonomy = CUSTOM_TAG_TYPE2,true);
+				}
+			}else{
+					wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE2,true);
+			}
+		/* insert tags end */
 		if($_SESSION["file_info"])
 		{	
 			$menu_order = 0;
 			foreach($_SESSION["file_info"] as $image_id=>$val)
 			{
-				$src = TEMPLATEPATH."/images/tmp/".$val;
+				$src = get_template_directory()."/images/tmp/".$val;
 				if($val)
 				  {
 					if(file_exists($src))	{
@@ -296,7 +317,7 @@ if($_POST)
 						$thumb_info = image_resize_custom($src,$dest_path,get_option('thumbnail_size_w'),get_option('thumbnail_size_h'));
 						$medium_info = image_resize_custom($src,$dest_path,get_option('medium_size_w'),get_option('medium_size_h'));
 						$post_img = move_original_image_file($src,$dest_path);
-						$post_img['post_status'] = 'attachment';
+						$post_img['post_status'] = 'inherit';
 						$post_img['post_parent'] = $last_postid;
 						$post_img['post_type'] = 'attachment';
 						$post_img['post_mime_type'] = 'image/jpeg';
@@ -384,7 +405,7 @@ if($_POST)
 			}
 			if(!$email_content)
 			{
-				$email_content = __('<p>Dear [#to_name#],</p><p>A New event has been submitted on your site. Here is the information about the Event:</p>[#information_details#]<br><p>[#site_name#]</p>');
+				$email_content = __('<p>Dear [#to_name#],</p><p>A New event has been submitted on your site. Here is the information about the Event:</p>[#information_details#]<br><p>[#site_name#]</p>','templatic');
 			}
 			
 			if(!$email_subject_user)
@@ -393,17 +414,25 @@ if($_POST)
 			}
 			if(!$email_content_user)
 			{
-				$email_content_user = __('<p>Dear [#to_name#],</p><p>A New event has been submitted by you . Here is the information about the Event:</p>[#information_details#]<br><p>[#site_name#]</p>');
+				$email_content_user = __('<p>Dear [#to_name#],</p><p>A New event has been submitted by you . Here is the information about the Event:</p>[#information_details#]<br><p>[#site_name#]</p>','templatic');
 			}
 			
-			$information_details = "<p>".__('ID')." : ".$last_postid."</p>";
-			$information_details .= '<p>'.__('View more detail from').' <a href="'.get_permalink($last_postid).'">'.$my_post['post_title'].'</a></p>';
+			$information_details = "<p>".__('ID','templatic')." : ".$last_postid."</p>";
+			$information_details .= '<p>'.__('View more detail from','templatic').' <a href="'.get_permalink($last_postid).'">'.$my_post['post_title'].'</a></p>';
+			
+			$post_author1  = $wpdb->get_row("select * from $wpdb->posts where ID = '".$last_postid."'") ;
+			$post_author1  = $post_author1->post_author ;
+			
+			$uinfo1 = get_userdata($post_author1);
+			$user_fname = $uinfo1->display_name;
 			
 			$search_array = array('[#to_name#]','[#information_details#]','[#site_name#]');
-			$replace_array_admin = array($fromEmail,$information_details,$store_name);
-			$replace_array_client =  array($user_email,$information_details,$store_name);
+			$replace_array_admin = array($fromEmailName,$information_details,$store_name);
+			$replace_array_client =  array($user_fname,$information_details,$store_name);
 			$email_content_admin = str_replace($search_array,$replace_array_admin,$email_content);
+			$email_content_admin = stripslashes($email_content_admin);
 			$email_content_client = str_replace($search_array,$replace_array_client,$email_content_user);
+			$email_content_client = stripslashes($email_content_client);
 
 				templ_sendEmail($user_email,$user_fname,$fromEmail,$fromEmailName,$email_subject,$email_content_admin,$extra='');///To admin email
 				templ_sendEmail($fromEmail,$fromEmailName,$user_email,$user_fname,$email_subject_user,$email_content_client,$extra='');//to client email
@@ -416,7 +445,7 @@ if($_POST)
 				{
 					$suburl .= "&renew=1";
 				}		
-				wp_redirect(site_url()."/?ptype=success$suburl");
+				wp_redirect($site_url.$op."ptype=success$suburl");
 				exit;
 			}else
 			{
@@ -436,13 +465,13 @@ if($_POST)
 						$suburl = "&renew=1";
 					}
 					$suburl .= "&pid=$last_postid&trans_id=$trans_id ";
-					wp_redirect(site_url().'/?ptype=success&paydeltype='.$paymentmethod.$suburl);
+					wp_redirect($site_url.$op.'ptype=success&paydeltype='.$paymentmethod.$suburl);
 				}
 				else
 				{
-					if(file_exists( TEMPLATEPATH.'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php'))
+					if(file_exists( get_template_directory().'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php'))
 					{
-						include_once(TEMPLATEPATH.'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php');
+						include_once(get_template_directory().'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php');
 					}
 				}
 				exit;	

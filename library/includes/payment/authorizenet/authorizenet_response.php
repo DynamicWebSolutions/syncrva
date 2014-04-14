@@ -40,7 +40,7 @@ $user_phone = $current_user->user_phone;
 
 $payable_amt = $payable_amount;
 
-require_once(TEMPLATEPATH . '/library/includes/payment/authorizenet/authorizenet.class.php');
+require_once(get_template_directory() . '/library/includes/payment/authorizenet/authorizenet.class.php');
 
 $a = new authorizenet_class;
 
@@ -94,7 +94,7 @@ switch ($a->process()) {
 
    case 1:  // Successs
      //payment_success
-	$redirectUrl = site_url("/?ptype=payment_success&pid=".$last_postid);
+	$redirectUrl = home_url("/?ptype=payment_success&pid=".$last_postid);
 	wp_redirect($redirectUrl);
 	 break;     
    case 2:  // Declined
@@ -108,7 +108,7 @@ switch ($a->process()) {
 	  break;
 }
 
-require_once(TEMPLATEPATH . '/library/includes/payment/authorizenet/php_sdk/AuthorizeNet.php'); // Include the SDK you downloaded in Step 2
+require_once(get_template_directory() . '/library/includes/payment/authorizenet/php_sdk/AuthorizeNet.php'); // Include the SDK you downloaded in Step 2
 /*
 $api_login_id = '44d9sFF6';
 $transaction_key = '4326uXt933Tn2vEB';
@@ -146,7 +146,7 @@ $fingerprint = AuthorizeNetSIM_Form::getFingerprint($api_login_id,
 <input type='hidden' name="x_card_num" value="<?php echo $_REQUEST['cc_number']; ?>">
 <input type='hidden' name="x_exp_date" value="<?php echo $_REQUEST['cc_month'].substr($_REQUEST['cc_year'],2,strlen($_REQUEST['cc_year'])); ?>">
 </form>
-<script>
+<script type="text/javascript">
 	setTimeout("document.frm_payment_auth.submit()",20); 
 </script> 
 
@@ -231,7 +231,7 @@ $fingerprint = AuthorizeNetSIM_Form::getFingerprint($api_login_id,
                 // and your business needs.
 
                 // Once we're finished let's redirect the user to a receipt page
-               	$redirectUrl = site_url("/?ptype=payment_success&pid=".$last_postid);
+               	$redirectUrl = home_url("/?ptype=payment_success&pid=".$last_postid);
 				wp_redirect($redirectUrl);
                 exit;
             }

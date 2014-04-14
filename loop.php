@@ -2,7 +2,7 @@
 
 <div id="loop" class="list clear">
     <?php
-global $wp_query,$current_user;
+global $wp_query,$current_user,$site_url;
 if(isset($_GET['author_name'])) :
 	$curauth = get_userdatabylogin($author_name);
 else :
@@ -69,15 +69,14 @@ if (have_posts()) :
             <?php } 
     
 		if($post->post_type == 'post')
-		  {
+		{
 			if(has_post_format( 'chat' ))
-				{
-		?>
+			{ ?>
             <h2> <a href="<?php the_permalink() ?>">
                 <?php the_title(); ?>
                 </a> </h2>
             <?php }
-	  elseif(has_post_format('gallery')){?>
+		elseif(has_post_format('gallery')){?>
             <h2 ><a href="<?php the_permalink() ?>">
                 <?php the_title(); ?>
                 </a></h2>
@@ -105,27 +104,25 @@ if (have_posts()) :
             <!--  Post Title Condition for Post Format-->
             
 
-            <?php templ_before_loop_post_content(); // before loop post content hooks?>
-
-           
+            <?php templ_before_loop_post_content(); // before loop post content hooks?>           
             <div class="post_content">
 				<h2 ><a href="<?php the_permalink() ?>">
                 <?php the_title(); ?>
                 </a></h2>
 			   <div class="post-meta listing_meta">
                 <?php if(templ_is_show_listing_author()){ ?>
-                <?php echo By;?> <span class="post-author"> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>">
+                <?php _e('By','templatic');?> <span class="post-author"> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>">
                 <?php the_author(); ?>
                 </a> </span>
                 <?php }  ?>
                 <?php if(templ_is_show_listing_date()){?>
-                <?php echo on;?> <span class="post-date">
-                <?php the_time(templ_get_date_format()) ?>
+                <?php _e('on','templatic');?> <span class="post-date">
+                <?php if(get_post_type($post->ID) == 'post') { the_time(get_option('date_format'));} else {the_time(templ_get_date_format()); } ?>
                 </span>
                 <?php } 
 				if(templ_is_show_listing_views()){
-				echo '<span class="post-total-view"> '.VIEW_LIST_TEXT.user_post_visit_count($post->ID).'</span>';
-				echo '<span class="post-daily-view"> '.VIEW_LIST_TEXT_DAILY.user_post_visit_count_daily($post->ID).'</span>';
+				echo '<span class="post-total-view"> '.VIEW_LIST_TEXT.": ".user_post_visit_count($post->ID).'</span>';
+				echo '<span class="post-daily-view"> '.VIEW_LIST_TEXT_DAILY.": ".user_post_visit_count_daily($post->ID).'</span>';
 				}
 				if(get_post_format( $post->ID )){
 				$format = get_post_format( $post->ID );
@@ -134,8 +131,8 @@ if (have_posts()) :
 					<?php _e( MORE_TEXT . $format, 'templatic' ); ?>
 					</a>
                 <?php } ?>
-             </div>
-				<p><?php echo get_the_excerpt($post->ID); //the_excerpt();?></p>
+            </div>
+				<p><?php echo excerpt(get_option('ptthemes_content_excerpt_count')); //the_excerpt();?></p>
                 <?php
 					if($post->post_type == CUSTOM_POST_TYPE1){
 								$taxonomy = CUSTOM_CATEGORY_TYPE1;
@@ -161,31 +158,44 @@ if (have_posts()) :
 			 <div class="post_right">
                 <?php if(templ_is_show_listing_comment()){?>
                 <a href="<?php the_permalink(); ?>#commentarea" class="pcomments" >
-                <?php comments_number(__('0 review'), __('1 review'), __('% review')); ?>
+                <?php comments_number(__('0 review','templatic'), __('1 review','templatic'), __('% review','templatic')); ?>
                 </a>
-                <?php } ?>
-                <?php  if($post->post_type != 'post' && get_option('ptthemes_disable_rating') == 'no') {  ?>
+                <?php } 
+				if($post->post_type != 'post' && get_option('ptthemes_disable_rating') == 'no') {  ?>
                 <span class="rating"><?php echo get_post_rating_star($post->ID);?></span>
                 <?php } ?>
                 <?php if(get_post_meta($post->ID,'geo_address',true) != '' && !is_search() && !is_author()) { ?>
                 <a href="#map_canvas"  class="ping" id="pinpoint_<?php echo $post->ID; ?>">
-                <?php _e('Pinpoint');?>
+                <?php _e('Pinpoint','templatic');?>
                 </a>
-                <?php } ?>
-                <?php favourite_html($post->post_author,$post->ID); ?>
-                <?php
+                <?php } 
+				favourite_html($post->post_author,$post->ID); 
+				
 				if(is_author() && ($current_user->ID == $curauth->ID || $current_user->ID == 1)) { ?>
                 <span class="author_link">
                 <?php if($_REQUEST['list'] !=='favourite'){
+				global $site_url; 
+				if(strstr($site_url,'?') ){ $op ="&"; }else{ $op = "?"; } 
+				if(get_option('ptthemes_add_event_nav') == 'Yes' && $post->post_type=='event'){
 				if(get_time_difference($post->post_date, $post->ID ))
-				{
-				?>
-					<a href="<?php echo site_url();?>/?ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&pid=<?php echo $post->ID;?>"><?php echo EDIT_TEXT;?></a> |
+				{ 				?>
+					<a href="<?php echo $site_url.$op;?>ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&pid=<?php echo $post->ID;?>&action=edit"><?php echo EDIT_TEXT;?></a> |
                 <?php	}else{ ?>
-                <a href="<?php echo site_url();?>/?ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&renew=1&pid=<?php echo $post->ID;?>"><?php echo RENEW_TEXT;?></a> |
+                <a href="<?php echo $site_url.$op; ?>ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&renew=1&pid=<?php echo $post->ID;?>"><?php echo RENEW_TEXT;?></a> |
                 <?php } ?>
-                <a href="<?php echo site_url();?>/?ptype=<?php if($post->post_type=='event'){echo 'preview_event';}else{echo __('preview');}?>&pid=<?php echo $post->ID;?>"><?php echo DELETE_TEXT;?></a> </span>
+                <a href="<?php echo $site_url.$op;?>ptype=<?php if($post->post_type=='event'){echo 'preview_event';}else{echo __('preview');}?>&pid=<?php echo $post->ID;?>"><?php echo DELETE_TEXT;?></a> </span>
                 <?php }
+				
+				if(get_option('ptthemes_add_place_nav') == 'Yes' && $post->post_type=='place'){
+				if(get_time_difference($post->post_date, $post->ID ))
+				{ 				?>
+					<a href="<?php echo $site_url.$op;?>ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&pid=<?php echo $post->ID;?>&action=edit"><?php echo EDIT_TEXT;?></a> |
+                <?php	}else{ ?>
+                <a href="<?php echo $site_url.$op; ?>ptype=<?php if($post->post_type=='event'){echo 'post_event';}else{echo 'post_listing';}?>&renew=1&pid=<?php echo $post->ID;?>"><?php echo RENEW_TEXT;?></a> |
+                <?php } ?>
+                <a href="<?php echo $site_url.$op;?>ptype=<?php if($post->post_type=='event'){echo 'preview_event';}else{echo __('preview');}?>&pid=<?php echo $post->ID;?>"><?php echo DELETE_TEXT;?></a> </span>
+                <?php }
+				}
 		}?>
             </div>
             <?php }?>
@@ -214,18 +224,17 @@ if (have_posts()) :
 					?>
     <div class="hr clearfix"></div>
     <?php }
-				?>
-    <?php endwhile; ?>
+			
+	endwhile; ?>
     <?php else : 
-if(is_author()) { ?>
-    <h4><?php echo LISTING_NOT_AVAIL_MSG;?> </h4>
-    <?php 
-} else {
-?>
-    <?php get_search_form(); ?>
+		if(is_author()) { ?>
+			<h4><?php echo LISTING_NOT_AVAIL_MSG;?> </h4>
+			<?php 
+		} else {
+		get_search_form(); ?>
     <p><?php echo SEARCH_RESULT_NOT_FOUND; ?></p>
-    <?php } ?>
-    <?php endif; ?>
+    <?php } 
+	endif; ?>
     <div class="pagination"> 
         <!-- ADD Custom Numbered Pagination code. -->
         <?php if(function_exists('pagenavi')) { pagenavi(); } ?>

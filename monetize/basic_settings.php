@@ -20,7 +20,8 @@ function restrict_admin(){
 	$user_role = strtolower(get_current_user_role());
 	$permission = explode(',',get_option('set_permission'));
 	if(in_array($user_role,$permission) && get_option('set_permission') != '') {
-		wp_die( __('You are not allowed to access this part of the site','templatic') );
+		echo __('You are not allowed to access this part of the site','templatic')."<a href=".site_url().">".__('Dasgboard','templatic')."</a>";
+		exit;
 	}
 }
 if(strtolower(get_current_user_role()) != 'administrator' ){
@@ -70,10 +71,10 @@ function is_valid_coupon($coupon)
 	{
 		foreach($couponinfo as $couponinfoObj)
 		{
-			$option_value = unserialize($couponinfoObj->option_value);
+			$option_value = json_decode($couponinfoObj->option_value);
 			foreach($option_value as $key=>$value)
 			{
-				if($value['couponcode'] == $coupon)
+				if($value->couponcode == $coupon)
 				{
 					return true;
 				}
@@ -99,20 +100,22 @@ function registration_email($user_id)
 		$activation_key = get_user_meta($user_id,'activation_key',true);	
 		$subject = stripslashes(get_option('registration_success_email_subject'));
 		$client_message = stripslashes(get_option('registration_success_email_content'));
-			
+		global $site_url;	
+		if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; } 
 		if($subject=="" && $client_message=="")
 		{
 			registration_email($user_id);
-			$client_message = __('[SUBJECT-STR]Registration Email[SUBJECT-END]<p>Dear [#user_name#],</p>
-			<p>Your login information:</p>
-			<p>Username: [#user_login#]</p>
-			<p>Password: [#user_password#]</p>
-			<p>You can login from [#site_login_url#] or</p><p> the URL is : [#site_login_url_link#].</p>
-			<p>We hope you enjoy. Thanks!</p>
-			<p>[#site_name#]</p>','templatic');
-			$filecontent_arr1 = explode('[SUBJECT-STR]',$client_message);
-			$filecontent_arr2 = explode('[SUBJECT-END]',$filecontent_arr1[1]);
-			$subject = $filecontent_arr2[0];
+			$subject = __('Registration Email','templatic');
+			$client_message = '<p>'.__('Dear','templatic').' [#$user_name#],</p>
+			<p>'.__('Your login information:','templatic').'</p>
+			<p>'.__('Username:','templatic').' [#$user_login#]</p>
+			<p>'.__('Password:','templatic').' [#$user_password#]</p>
+			<p>'.__('You can login from','templatic').' [#$store_login_url#] '.__('or the URL is','templatic').' : [#$store_login_url_link#].</p>
+			<p>'.__('We hope you enjoy. Thanks!','templatic').'</p>
+			<p>[#$store_name#]</p>';
+			$subject = $subject;
+			$filecontent_arr2 = $client_message;
+			$subject = $filecontent_arr2;
 			if($subject == '')
 			{
 				$subject = __("Registration Email",'templatic');
@@ -120,15 +123,15 @@ function registration_email($user_id)
 			
 			$client_message = $filecontent_arr2[1];
 		}
-		$store_login_link = '<a href="'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'</a>';
-		$store_login = sprintf(__('<a href="'.site_url().'/?ptype=login&akey='.$activation_key.'&uid='.base64_encode($user_id).'">'.'Click Login'.'</a>','templatic'));
+		$store_login_link = '<a href="'.$site_url.$op.'ptype=login&akey='.$activation_key.'&uid='.$user_id.'">'.$site_url.$op.'ptype=login&akey='.$activation_key.'&uid='.$user_id.'</a>';
+		$store_login = sprintf(__('<a href="'.home_url().'/?ptype=login&akey='.$activation_key.'&uid='.$user_id.'">'.__('Click Login','templatic').'</a>','templatic'));
 	
 		/////////////customer email//////////////
 		$search_array = array('[#user_name#]','[#user_login#]','[#user_password#]','[#site_name#]','[#site_login_url#]','[#site_login_url_link#]');
 		$replace_array = array($user_login,$user_login,$user_pass,$store_name,$store_login,$store_login_link);
 		$client_message = str_replace($search_array,$replace_array,$client_message);
 		@mail($fromEmail,$fromEmailName,$user_email,$userName,$subject,$client_message,$extra='');///To clidne email
-		wp_redirect(site_url()."/");
+		wp_redirect($site_url."/");
 }
 //////REGISTRATION EMAIL FUNCTION END////////
 /* set option BOF*/

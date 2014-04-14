@@ -1,9 +1,9 @@
 <?php ob_start(); ?>
-<script>
+<script type='text/javascript'>
 function fill_state_cmb(str)
 {  	
-	var w = document.price_frm.country_id.selectedIndex;
-   var selected_text = document.price_frm.country_id.options[w].text;
+	var w = document.city_frm.country_id.selectedIndex;
+   var selected_text = document.city_frm.country_id.options[w].text;
    document.getElementById("country").value = selected_text+",";
 	if (str=="")  {
 		document.getElementById("zones_id").innerHTML="";
@@ -29,7 +29,7 @@ function fill_state_cmb(str)
 } 
 </script>
 
-<script>
+<script type='text/javascript'>
 function fill_city_cmb(str)
 {
 	var w = document.price_frm.zones_id.selectedIndex;
@@ -38,7 +38,7 @@ function fill_city_cmb(str)
 }
 </script>
 <?php
-global $wpdb,$multicity_db_table_name; 
+global $wpdb,$multicity_db_table_name,$site_url; 
 if($_REQUEST['cityact'] == 'addcity')
 {
 	$id  = $_REQUEST['city_id'];
@@ -52,9 +52,10 @@ if($_REQUEST['cityact'] == 'addcity')
 	
 	if(function_exists('icl_register_string')){
 		$context = get_option('blogname');
-		$name = 'City name';
+		$name = $_REQUEST['cityname'];
 		$value = $_REQUEST['cityname'];
-		$cityname = icl_register_string($context,$name,$value);
+		icl_register_string($context,$name,$value);
+		$cityname = $_REQUEST['cityname'];
 	}else{
 		$cityname = $_REQUEST['cityname'];
 	}
@@ -81,30 +82,30 @@ if($_REQUEST['cityact'] == 'addcity')
 		$msg_type = 'add';
 		$wpdb->query("insert into $multicity_db_table_name (country_id,zones_id,ptype,cityname,lat,lng,scall_factor,categories,is_zoom_home,is_default,geo_address,set_zooming_opt, map_type,sortorder) values (\"$country_id\",\"$zones_id\",\"$ptype\",\"$cityname\",\"$lat\",\"$lng\",\"$scall_factor\",\"$categories\",\"$is_zoom_home\",\"$default\",\"$geo_address\",\"$set_zooming_opt\",\"$map_type\",'')");
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#option_display_city" method=get name="city_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="success"><input type=hidden name="msg_type" value="'.$msg_type.'"></form>';
-	echo '<script>document.city_success.submit();</script>';
+	echo '<script type="text/javascript">document.city_success.submit();</script>';
 	exit;
 }
 if($_REQUEST['city_id'] != ''){
 	$pid = $_REQUEST['city_id'];
 	$citysql = "select * from $multicity_db_table_name where city_id=\"$pid\"";
 	$cityinfo = $wpdb->get_row($citysql);
-	$city_msg = 'Here you can edit city detail. Make sure you enter as much information as possible for accurate results.';
+	$city_msg = 'For accurate results, please enter as much information as possible.';
 } else {
-	$city_msg = 'Here you can add city detail. Make sure you enter as much information as possible for accurate results.';
+	$city_msg = 'For accurate results, please enter as much information as possible.';
 }	
 ?>
 <h4><?php if($_REQUEST['city_id']){  _e('Edit city details','templatic'); }else { _e('Add a city','templatic'); }?>
 
-<a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_display_city" name="btnviewlisting" class="l_back" title="<?php _e('Back to &lsquo;Manage cities&rsquo; list','templatic');?>"/><?php _e('&laquo; Back to &lsquo;Manage cities&rsquo; list','templatic'); ?></a>
+<a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_display_city" name="btnviewlisting" class="l_back" title="<?php _e('Back to &lsquo;Manage cities&rsquo; list','templatic');?>"/><?php _e('&laquo; Back to &lsquo;Manage cities&rsquo; list','templatic'); ?></a>
 </h4>
 
 <p class="notes_spec"><?php _e($city_msg,'templatic');?></p>
 
 
-<form action="<?php echo site_url()?>/wp-admin/admin.php?page=manage_settings&mod=city&pagetype=update_city#option_display_city" method="post" name="price_frm" id="price_frm">
+<form action="<?php echo home_url()?>/wp-admin/admin.php?page=manage_settings&mod=city&pagetype=update_city#option_display_city" method="post" name="city_frm" id="city_frm">
   <input type="hidden" name="cityact" value="addcity">
   <input type="hidden" name="city_id" value="<?php echo $_REQUEST['city_id'];?>">
   
@@ -156,7 +157,7 @@ if($_REQUEST['city_id'] != ''){
      <div class="option option-select"  >
      		 <div class="section">
       <div class="element">
-             <?php include_once(TEMPLATEPATH . "/library/map/city_location_add_map.php");?>
+             <?php include_once(get_template_directory() . "/library/map/city_location_add_map.php");?>
               </div>
              
 			   <div class="description"  style="margin-left:153px;"><?php echo GET_MAP_MSG;?></div>
@@ -237,11 +238,11 @@ if($_REQUEST['city_id'] != ''){
 		  </select><span id='process' style='display:none;'><img src="<?php echo get_template_directory_uri()."/images/process.gif"; ?>" alt='Processing..' /></span>
    		</div>--> <div class="element" id="field_category" style="height:100px; overflow-y:scroll;">
 		<?php 
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$cityinfo->categories); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$cityinfo->categories,'','select_all'); 
 			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$cityinfo->categories); 
 		?>
       </div><span id='process' style='display:none;'><img src="<?php echo get_template_directory_uri()."/images/process.gif"; ?>" alt='Processing..' /></span>
-      <div class="description"><?php _e('The categories you select here will be displayed in the bottom-right corner of this city&rsquo;s map on the homepage.<br/><b>Prerequisites:</b> <br/>1) &lsquo;Google Map V3 - Home page&rsquo; widget must be enabled.<br/> 2) The category should have atleast 1 place or event within it.','templatic');?></div>
+      <div class="description"><?php _e('Selected categories will be displayed in the bottom right corner of this city map on the homepage.<br/><b>Requirements to show categories on the map :</b> <br/>1) &lsquo;Google Map V3 - Home page&rsquo; widget must be enabled.<br/> 2) The category should have at least one place or event within it.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   

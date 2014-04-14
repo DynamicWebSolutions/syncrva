@@ -1,5 +1,5 @@
 <?php	
-global $upload_folder_path;
+global $upload_folder_path,$site_url;
 $cat_display=get_option('ptthemes_category_dislay');
 
 if($_POST)
@@ -7,9 +7,9 @@ if($_POST)
 	$_SESSION['place_info'] = $_POST;
 	if(!is_int($_POST['total_price']) && $_POST['total_price']<0)
 	{ ?>
-	<script>
+	<script type="text/javascript">
 	alert('<?php _e('Price is Invalid,please select valid price','templatic');?>');
-	window.location= '<?php echo site_url(); ?>'+'/?ptype=post_listing&backandedit=1';</script>
+	window.location= '<?php echo $site_url; ?>'+'/?ptype=post_listing&backandedit=1';</script>
 <?php	
 	}
 	$property_name = stripslashes($_POST['property_name']);
@@ -65,15 +65,12 @@ if($_POST)
 	}
 	/**registration validation for user BOF**/
 	if($current_user->ID ==''){
-			if ($_POST['user_email'] == '' )	{
+		if ($_POST['user_email'] == '' )	{
 			$_SESSION['userinset_error'] = array();
 			$_SESSION['userinset_error'][] = __('Email for Contact Details is Empty. Please enter Email, your all informations will sent to your Email.','templatic');
-			wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&usererror=1');
+			wp_redirect($site_url.'/?ptype=post_listing&backandedit=1&usererror=1');
 			exit;
-			//echo "<div class=error_msg>".__('Email for Contact Details is Empty. Please enter Email, your all informations will sent to your Email.')."</div>";	
-			//echo '<h6><b><a href="'.site_url().'/?pytpe=post_listing&backandedit=1">Return to Add place</a></b></h6>';
-			//exit;
-				}
+		}
 		
 		require( 'wp-load.php' );
 		require(ABSPATH.'wp-includes/registration.php');
@@ -125,7 +122,7 @@ if($_POST)
 		}	
 		if ($errors1->get_error_code() )
 		{
-			wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&usererror=1');
+			wp_redirect($site_url.'/?ptype=post_listing&backandedit=1&usererror=1');
 			exit;
 		}
 			
@@ -137,7 +134,7 @@ if($_POST)
 
 	$catid_info_arr = get_property_cat_id_name($_REQUEST['pid']);
 	$post_info = get_post_info($_REQUEST['pid']);
-	$property_name = stripslashes($post_info['property_name']);
+	$property_name = stripslashes($post_info['post_title']);
 	$proprty_desc = stripslashes($post_info['post_content']);
 		
 	$post_meta = get_post_meta($_REQUEST['pid'], '',false);
@@ -192,7 +189,7 @@ if($_REQUEST['pid'])
 	$largest_img_arr = bdw_get_images($_REQUEST['pid'],'large');
 }
 $pcd = explode(',',get_option('ptthemes_captcha_dislay'));	
-if((in_array('Add a new place/event page',$pcd) || in_array('Both',$pcd)) && file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') ){
+if((in_array('Add Place/Event submission page',$pcd) || in_array('Both',$pcd)) && file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') && $_REQUEST['alook'] != 1 ){
 		require_once( ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php');
 		$a = get_option("recaptcha_options");
 		$privatekey = $a['private_key'];
@@ -202,7 +199,7 @@ if((in_array('Add a new place/event page',$pcd) || in_array('Both',$pcd)) && fil
                                 $_POST["recaptcha_response_field"]);
 								
 		if (!$resp->is_valid ) {
-			wp_redirect(site_url().'/?ptype=post_listing&backandedit=1&ecptcha=captch');
+			wp_redirect($site_url.'/?ptype=post_listing&backandedit=1&ecptcha=captch');
 			exit;
 		} 
 	}
@@ -214,7 +211,7 @@ global $page_title;
 
 
  <?php if ( get_option( 'ptthemes_breadcrumbs' ) == 'Yes' ) {  ?>       
- <div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home'); ?></a> &raquo; <?php echo $property_name; ?></div>  
+ <div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo $property_name; ?></div>  
  <?php } ?>
  
 <div class="steps">
@@ -238,10 +235,10 @@ global $page_title;
    </div>
 	  <div class="post-content">
 	  
-      <script src="<?php bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
+      <script src="<?php echo get_bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
             <div id="galleria">
           <?php			$thumb_img_counter = 0;
-							if($_SESSION["file_info"])
+							if($_SESSION["file_info"] || $_REQUEST['alook'] || $_REQUEST['pid'] )
 							{
 								$thumb_img_counter = $thumb_img_counter+count($_SESSION["file_info"]);
 								$image_path = get_image_phy_destination_path();
@@ -250,10 +247,10 @@ global $page_title;
 									
 								foreach($_SESSION["file_info"] as $image_id=>$val)
 								{
-									//$thumb_image = site_url().$tmppath.$image_id.'.jpg';
+									//$thumb_image = home_url().$tmppath.$image_id.'.jpg';
 								    $curry = date("Y");
 									$currm = date("m");
-									$src = TEMPLATEPATH.'/images/tmp/'.$val;
+									$src = get_template_directory().'/images/tmp/'.$val;
 									if($val):
 									if(file_exists($src)):
 										$thumb_image = get_template_directory_uri().'/images/tmp/'.$val; ?>
@@ -273,22 +270,43 @@ global $page_title;
                                     <?php endif; ?>
 								<?php
 								$thumb_img_counter++;
+								 
+							if($_REQUEST['alook'] || $_REQUEST['pid']): ?>
+						 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/js/jquery.lightbox-0.5.js"></script>
+						 <script type="text/javascript">
+							var IMAGE_LOADING = '<?php echo get_template_directory_uri()."/images/lightbox-ico-loading.gif"; ?>';
+							var IMAGE_PREV = '<?php echo get_template_directory_uri()."/images/lightbox-btn-prev.gif"; ?>';
+							var IMAGE_NEXT = '<?php echo get_template_directory_uri()."/images/lightbox-btn-next.gif"; ?>';
+							var IMAGE_CLOSE = '<?php echo get_template_directory_uri()."/images/lightbox-btn-close.gif"; ?>';
+							var IMAGE_BLANK = '<?php echo get_template_directory_uri()."/images/lightbox-blank.gif"; ?>';
+							jQuery(function() {
+								jQuery('#gallery a').lightBox();
+							});
+						</script>
+						<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_directory'); ?>/library/css/jquery.lightbox-0.5.css" media="screen" />
+						<?php 
+                         $post_img_thumb = bdw_get_images_with_info($_REQUEST['pid'],'thumb'); 
+						 $large_arr = bdw_get_images_with_info($_REQUEST['pid'],'large'); 
+						 for($im=0;$im<count($post_img_thumb);$im++): ?>
+							<li>
+							   <a href="<?php echo $large_arr[$im]['file'];
+						   $attachment_id = $large_arr[$im]['id'];
+						   $attach_data = get_post($attachment_id);
+						   $img_title = $attach_data->post_excerpt;
+						 ?>" title="<?php echo $img_title; ?>">
+									<img src="<?php echo $post_img_thumb[$im]["file"];?>" height="70" width="70"  title="<?php echo $img_title; ?>" alt="<?php echo $img_alt; ?>" />
+							   </a>
+							</li>
+						<?php 
+						endfor;
+						endif;
 								}
 							}
-							/*if($thumb_img_arr)
-							{
-								$thumb_img_counter = $thumb_img_counter+count($thumb_img_arr);
-								for($i=0;$i<count($thumb_img_arr);$i++)
-								{
-									$thumb_image = $large_img_arr[$i];
-								?>
-								  <a href="<?php echo $thumb_image;?>"><img src="<?php echo $thumb_image;?>"></a>
-							<?php
-								}
-							}*/
+	
 							?>
         </div>
         <?php echo $proprty_desc; ?>
+		<?php if(isset($_SESSION['place_info']['video']) && $_SESSION['place_info']['video'] != '') { echo "<p>". preg_replace("{\\\}", " ", $_SESSION['place_info']['video'])."</p>"; } ?>
         <?php if($proprty_feature != '') { ?>       
         <div class="register_info">     
             <h3><?php echo SPECIAL_OFFER;?></h3><p><?php echo $proprty_feature;?></p>
@@ -317,7 +335,7 @@ global $page_title;
 						if($place_term->name != ""){
 						$taxcategory_link = get_term_link($place_term->slug,CUSTOM_CATEGORY_TYPE1 );
 						
-						$final_var .= '<a href="'.$taxcategory_link.'">'.$place_term->name.'</a>'.$sep;
+						$final_var .= '<a href="'.intval($taxcategory_link).'">'.$place_term->name.'</a>'.$sep;
 						
 						}
 					}
@@ -331,8 +349,8 @@ global $page_title;
 		$place_term = $wpdb->get_row("select * from $termtable where term_id = '".$place_taxonomy_res->term_id."'");	
 		if($place_term->name != '') {
 		
-			$taxcategory_link = get_term_link( $place_term->slug, CUSTOM_CATEGORY_TYPE1 );
-				echo '<span class="post-category"><a href="'.$taxcategory_link.'">'.$place_term->name.'</a></span>';	
+	
+				echo '<span class="post-category"><a href="#">'.$place_term->name.'</a></span>';	
 			}
 		} if($kw_tags != '') {?>
         <span class="post-tags"><?php echo $kw_tags; ?></span> <?php } ?>
@@ -340,25 +358,19 @@ global $page_title;
         
       </div>
 	</div>
-</div>	
-      <!--  Post Content Condition for Post Format-->
-      <?php templ_after_single_post_content(); // after single post content hooks?>
-      <!-- twitter & facebook likethis option-->
-      <?php 
-           //  templ_show_twitter_button();
-           // templ_show_facebook_button();
-        ?>
-
-		
-    
-</div>
+	</div>	
+		<!--  Post Content Condition for Post Format-->
+		<?php templ_after_single_post_content(); // after single post content hooks?>
+		<!-- twitter & facebook likethis option-->
+	 
+	</div>
 
 		<div class="sidebar right">
 			<div class="company_info">
             <!-- claim to ownership -->
           <?php 
 		     if(get_option('ptthemes_enable_claimownership') =='Yes'){
-							global $post,$wpdb,$claim_db_table_name ;
+							global $post,$wpdb,$claim_db_table_name,$site_url ;
 							$claimreq = $wpdb->get_results("select * from $claim_db_table_name where post_id= '".$post->ID."' and status = '1'");
 								if(mysql_affected_rows() >0 || get_post_meta($post->ID,'is_claimed',true) == 1)
 								{
@@ -367,7 +379,7 @@ global $page_title;
 						
 						?>	
 							<a href="javascript:void(0);" onclick="show_hide_popup('claim_listing');" title="Mail to a friend" class="i_claim c_sendtofriend"><?php echo CLAIM_OWNERSHIP;?></a>
-						<?php include_once (TEMPLATEPATH .'/monetize/email_notification/popup_owner_frm.php'); ?>
+						<?php include_once (get_template_directory() .'/monetize/email_notification/popup_owner_frm.php'); ?>
 						<?php } }?>
 
 <?php if($address) {     ?>
@@ -393,7 +405,7 @@ if($contact) { ?>
        <?php echo get_post_rating_star($post->ID);?>
         	</span> 
         </p><?php } ?>
-       <div class="share clarfix"> 
+       <div class="share clearfix"> 
        <div class="addthis_toolbox addthis_default_style">
         <a href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4c873bb26489d97f" class="addthis_button_compact sharethis"><?php echo SHARE_TEXT; ?></a>
         </div>
@@ -411,11 +423,11 @@ if($contact) { ?>
          <?php }
 		 if(get_option('ptthemes_email_on_detailpage') == 'Yes') { ?>
          <a href="javascript:void(0);"  title="Mail to a friend" class="b_sendtofriend i_email2"><?php echo MAIL_TO_FRIEND;?></a> 
-		<?php include_once (TEMPLATEPATH . '/monetize/email_notification/popup_frms.php'); } ?>					
+		<?php include_once (get_template_directory() . '/monetize/email_notification/popup_frms.php'); } ?>					
     <!-- post Inquiry -->
 	<?php if(get_option('ptthemes_inquiry_on_detailpage') == 'Yes') { ?>
         <a href="javascript:void(0);" title="I"  class="i_email2 i_sendtofriend"><?php echo SEND_INQUIRY;?></a> 
-        <?php include_once (TEMPLATEPATH .'/monetize/email_notification/popup_inquiry_frm.php'); } ?>
+        <?php include_once (get_template_directory() .'/monetize/email_notification/popup_inquiry_frm.php'); } ?>
 		<?php	global $custom_post_meta_db_table_name;
 				$sql = "select * from $custom_post_meta_db_table_name where is_active=1 and show_on_detail=1 and (post_type='".CUSTOM_POST_TYPE1."' or post_type='both') ";
 				if($fields_name)
@@ -431,9 +443,9 @@ if($contact) { ?>
 						if($post_meta_info_obj->htmlvar_name != "gallery" && $post_meta_info_obj->htmlvar_name != "twitter"  && $post_meta_info_obj->htmlvar_name != "facebook" && $post_meta_info_obj->htmlvar_name != "contact" && $post_meta_info_obj->htmlvar_name != "listing_image" && $post_meta_info_obj->htmlvar_name != "available" && $post_meta_info_obj->htmlvar_name != "geo_address" && $post_meta_info_obj->htmlvar_name != "website" && $post_meta_info_obj->htmlvar_name != "timing" && $post_meta_info_obj->htmlvar_name != "video")
 						{
 							if($post_meta_info_obj->ctype =='texteditor' || $post_meta_info_obj->ctype =='textarea') {
-								echo "<div class='i_customlable'><span >".$post_meta_info_obj->site_title." :"."</span>".$_SESSION['place_info'][$post_meta_info_obj->htmlvar_name]."</div>";
+								echo "<div class='i_customlable'><span >".$post_meta_info_obj->site_title." :"."</span>". stripslashes($_SESSION['place_info'][$post_meta_info_obj->htmlvar_name]) ."</div>";
 							} else {
-								echo "<div class='i_customlable'><span>".$post_meta_info_obj->site_title." :"."</span>".$_SESSION['place_info'][$post_meta_info_obj->htmlvar_name]."</div>";
+								echo "<div class='i_customlable'><span>".$post_meta_info_obj->site_title." :"."</span>". stripslashes($_SESSION['place_info'][$post_meta_info_obj->htmlvar_name]) ."</div>";
 							}
 						}
 					 }
@@ -454,7 +466,7 @@ if($contact) { ?>
 								echo "<div class='i_customlable'><span>".$post_meta_info_obj->site_title." :"."</span>".$check."</div>";
 							else:
 								if($value_1 !=''){
-									echo "<div class='i_customlable'><span>".$post_meta_info_obj->site_title." :"."</span>".$_SESSION['place_info'][$post_meta_info_obj->htmlvar_name]."</div>"; }
+									echo "<div class='i_customlable'><span>".$post_meta_info_obj->site_title." :"."</span>". stripslashes($_SESSION['place_info'][$post_meta_info_obj->htmlvar_name])."</div>"; }
 							endif;	
 					}
 		} ?>
@@ -467,7 +479,7 @@ if($contact) { ?>
      <?php if($geo_longitude &&  $geo_latitude){?>
       <?php
 	  
-   include_once (TEMPLATEPATH . '/library/map/preview_map.php');   
+   include_once (get_template_directory() . '/library/map/preview_map.php');   
    show_address_google_map($geo_latitude,$geo_longitude,$address,$map_view,$zooming_factor,$width='275',$height='315');?>
     <?php }elseif($address){?>
     <iframe src="http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=<?php echo $address;?>&ie=UTF8&z=14&iwloc=A&output=embed" height="315" width="275"></iframe>
@@ -479,7 +491,7 @@ if($contact) { ?>
   <script type="text/javascript">
 var $cg = jQuery.noConflict();
 // Load theme
-Galleria.loadTheme('<?php bloginfo('template_directory'); ?>/js/galleria.classic.js');
+Galleria.loadTheme('<?php echo get_bloginfo('template_directory'); ?>/js/galleria.classic.js');
 // run galleria and add some options
     $cg('#galleria').galleria({
         image_crop: true, // crop all images to fit

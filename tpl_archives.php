@@ -11,7 +11,7 @@ if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){
 	$_SESSION['multi_city1'] = $_COOKIE['multi_city1'];
 	$_SESSION['multi_city'] = $_COOKIE['multi_city1'];
 }else if($_SESSION['multi_city'] == "" && $_POST['multi_city'] == ""){
-	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
+	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "" && $_REQUEST['ptype'] != 'csvdl') {
 		include_once("tpl_splash.php");
 		exit;
 	} else {
@@ -27,7 +27,7 @@ if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){
 if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "" && $_SESSION['multi_city1'] == "" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
 	include_once("tpl_splash.php");
 	exit;
-}else {
+}else { global $site_url;
 	if($_SESSION['multi_city'] == ""){
 		$_SESSION['multi_city']= $_COOKIE['multi_city1'];
 	}
@@ -41,7 +41,8 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 	} else if($_REQUEST['ptype']=='profile'){
 		global $current_user;
 		if(!$current_user->ID)	{
-			wp_redirect(site_url().'/?ptype=login');
+			if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
+			wp_redirect($site_url.$op.'ptype=login');
 			exit;
 		}
 		include_once(TT_MODULES_FOLDER_PATH . "registration/registration.php");exit;
@@ -176,9 +177,9 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
             </a> <br />
             
             <span class="arclist_date">  <?php _e('by','templatic');?>
-            <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>"><?php the_author(); ?></a>
+            <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>"><?php the_author(); ?></a>
             
-            <?php _e('on','templatic');?>  <?php the_time(__('M j, Y'),'templatic') ?> // <?php comments_popup_link(__('No Comments','templatic'), __('1 Comment','templatic'), __('% Comments','templatic'), '', __('Comments Closed','templatic')); ?>
+            <?php _e('on','templatic');?>  <?php the_time(__('M j, Y','templatic')) ?> // <?php comments_popup_link(__('No Comments','templatic'), __('1 Comment','templatic'), __('% Comments','templatic'), '', __('Comments Closed','templatic')); ?>
             </span>
            
            

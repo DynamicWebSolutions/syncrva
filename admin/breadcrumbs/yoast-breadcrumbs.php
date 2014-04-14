@@ -141,7 +141,8 @@ if ( ! class_exists( 'YoastBreadcrumbs_Admin' ) ) {
 <?php		}
 	}
 }
-
+if(!function_exists('yoast_breadcrumb'))
+{
 function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 	global $wp_query, $post, $curauth;
 	
@@ -183,7 +184,7 @@ function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 	{
 		function yoast_get_term_parents($id,$term_type='category', $link = FALSE, $separator = '/', $nicename = FALSE){
 			$chain = '';
-			$category = get_term( $id, $term_type, $output, $filter );
+			$category = get_term( $id, $term_type, @$output, @$filter );
 			if ( is_wp_error( $category ) )
 				return $category;
 		
@@ -215,10 +216,13 @@ function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 	}
 	
 	$on_front = get_option('show_on_front');
-	
+	if(function_exists('icl_register_string')){
+		icl_register_string(DOMAIN,$opt['home'].'home',$opt['home']);
+		$opt['home'] = icl_t(DOMAIN,$opt['home'].'home',$opt['home']);
+	}
 	if ($on_front == "page") {
 		$homelink = '<a'.$nofollow.'href="'.get_permalink(get_option('page_on_front')).'">'.$opt['home'].'</a>';
-		$bloglink = $homelink.' '.$opt['sep'].' <a href="'.get_permalink(get_option('page_for_posts')).'">'.$opt['blog'].'</a>';
+		$bloglink = $homelink;
 	} else {
 		$homelink = '<a'.$nofollow.'href="'.get_bloginfo('url').'">'.$opt['home'].'</a>';
 		$bloglink = $homelink;
@@ -240,11 +244,22 @@ function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 				$cats = wp_get_post_terms( $post->ID, CUSTOM_CATEGORY_TYPE1 ) ;
 				$cat = $cats[0];
 
-				$output .= join( " ".$opt['sep']." ", get_the_taxonomies($post)). " ".$opt['sep']." ";
-
-				$output = str_replace('Place categories:','',$output);
+				//$output .= join( " ".$opt['sep']." ", get_the_taxonomies($post)). " ".$opt['sep']." ";
+				$taxonomy_taxonomy_arr = get_the_taxonomies($post);
+				$taxonomy_category = $taxonomy_taxonomy_arr[CUSTOM_CATEGORY_TYPE1];
+				if(!empty($taxonomy_category)){
+				$taxonomy_category = substr($taxonomy_category,0,-1);
+				$output .= $taxonomy_category. " ".$opt['sep']." ";
 				
+				//$output = str_replace('Place categories:','',$output);
 				$output = str_replace('Uncategorized','',$output);
+				}
+				
+				$custom_Tag = $taxonomy_taxonomy_arr[CUSTOM_TAG_TYPE1];
+				if(!empty($custom_Tag)){
+				$custom_Tag = substr($custom_Tag,0,-1);
+				$output .= $custom_Tag. " ".$opt['sep']." ";
+				}
 				
 				$output = $output;
 
@@ -253,8 +268,21 @@ function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 				global $post;
 				$cats = wp_get_post_terms( $post->ID, CUSTOM_CATEGORY_TYPE2 ) ;
 				$cat = $cats[0];
-				$output .= join( " ".$opt['sep']." ", get_the_taxonomies($post)). " ".$opt['sep']." ";
-				$output = str_replace('Event categories:','',$output);
+				//$output .= join( " ".$opt['sep']." ", get_the_taxonomies($post)). " ".$opt['sep']." ";
+				$taxonomy_taxonomy_arr = get_the_taxonomies($post);
+				$taxonomy_category = $taxonomy_taxonomy_arr[CUSTOM_CATEGORY_TYPE2];
+				if(!empty($taxonomy_category)){
+				$taxonomy_category = substr($taxonomy_category,0,-1);
+				$output .= $taxonomy_category. " ".$opt['sep']." ";
+				
+				$output = str_replace('Uncategorized','',$output);
+				}
+				
+				$custom_Tag = $taxonomy_taxonomy_arr[CUSTOM_TAG_TYPE2];
+				if(!empty($custom_Tag)){
+				$custom_Tag = substr($custom_Tag,0,-1);
+				$output .= $custom_Tag. " ".$opt['sep']." ";
+				}
 				$output = $output;
 			}else
 			{
@@ -359,7 +387,7 @@ function yoast_breadcrumb($prefix = '', $suffix = '', $display = true) {
 		return $prefix.$output.$suffix;
 	}
 }
-
+}
 add_action('admin_menu', array('YoastBreadcrumbs_Admin','add_config_page'));
 
 require_once("yoast-posts.php");

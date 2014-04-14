@@ -12,7 +12,7 @@ if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){
 	$_SESSION['multi_city1'] = $_COOKIE['multi_city1'];
 	$_SESSION['multi_city'] = $_COOKIE['multi_city1'];
 }else if($_SESSION['multi_city'] == "" && $_POST['multi_city'] == ""){
-	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
+	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "" && $_REQUEST['ptype'] != 'csvdl') {
 		include_once("tpl_splash.php");
 		exit;
 	} else {
@@ -28,21 +28,21 @@ if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){
 if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "" && $_SESSION['multi_city1'] == "" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
 	include_once("tpl_splash.php");
 	exit;
-}else {
+}else { global $site_url;
 	if($_SESSION['multi_city'] == ""){
 		$_SESSION['multi_city']= $_COOKIE['multi_city1'];
 	}
-	if(isset($_REQUEST['ptype']) && $_REQUEST['ptype']!=""){
-	if($_REQUEST['ptype'] == 'favorite'){
+	if(isset($_REQUEST['ptype']) && $_REQUEST['ptype']!="" && is_stringonly()){
+	if($_REQUEST['ptype'] == 'favorite' && is_stringonly()){
 		if($_REQUEST['action']=='add')	{
 			add_to_favorite($_REQUEST['pid']);
 		}else{
 			remove_from_favorite($_REQUEST['pid']);
 		}
 	} else if($_REQUEST['ptype']=='profile'){
-		global $current_user;
+		global $current_user,$site_url;
 		if(!$current_user->ID)	{
-			wp_redirect(site_url().'/?ptype=login');
+			wp_redirect($site_url.'/?ptype=login');
 			exit;
 		}
 		include_once(TT_MODULES_FOLDER_PATH . "registration/registration.php");exit;
@@ -53,14 +53,14 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 	}
 	elseif($_REQUEST['ptype'] == 'register' || $_REQUEST['ptype'] == 'login') {
 		include (TT_MODULES_FOLDER_PATH . "registration/registration.php");
-	} else if($_REQUEST['ptype']=='post_listing') {
+	} else if($_REQUEST['ptype']=='post_listing' && is_stringonly()) {
 		include_once(TT_MODULES_FOLDER_PATH.'place/submit_place.php');exit;
-	} elseif($_REQUEST['ptype']=='post_event') {
+	} elseif($_REQUEST['ptype']=='post_event' && is_stringonly()) {
 		include_once(TT_MODULES_FOLDER_PATH.'event/submit_event.php');exit;
 	} elseif($_REQUEST['ptype'] == 'preview'){
 		include (TT_MODULES_FOLDER_PATH . "place/preview.php");
 		exit;
-	} elseif($_REQUEST['ptype'] == 'preview_event'){
+	} elseif($_REQUEST['ptype'] == 'preview_event' && is_stringonly()){
 		include (TT_MODULES_FOLDER_PATH . "event/preview_event.php"); exit;
 	} elseif($_REQUEST['ptype'] == 'paynow'){
 		include (TT_MODULES_FOLDER_PATH . "place/paynow.php");
@@ -80,9 +80,9 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 	{
 		include_once(TT_MODULES_FOLDER_PATH . "general/success.php");
 		exit;
-	} elseif($_GET['ptype'] == 'notifyurl')  // PAYMENT GATEWAY NOTIFY URL
+	} elseif($_GET['ptype'] == 'notifyurl' && is_stringonly())  // PAYMENT GATEWAY NOTIFY URL
 	{
-		if($_GET['pmethod'] == 'paypal')	{
+		if($_GET['pmethod'] == 'paypal' && is_stringonly())	{
 			include_once(TT_MODULES_FOLDER_PATH . 'general/ipn_process.php');
 		} elseif($_GET['pmethod'] == '2co')	{
 			include_once(TT_MODULES_FOLDER_PATH . 'general/ipn_process_2co.php');
@@ -188,7 +188,7 @@ if($_POST)
 				<?php if (function_exists('dynamic_sidebar') && dynamic_sidebar('contact_googlemap')){?><?php } else {?>  <?php }?>
             </div>
     
-      <?php the_content(); ?>
+      <div class="contact_detail"><?php the_content(); ?></div>
     </div>
     
   </div>
@@ -231,7 +231,7 @@ if($_REQUEST['msg'] == 'success')
       <span class="indicates">*</span></label>
     <textarea name="your-message" id="your-message" cols="40" class="textarea textarea2" rows="10"></textarea>
     <span id="your_messageInfo"  class="error"></span> </div>
-  <input type="submit" value="Send" class="b_submit" />
+  <input type="submit" value="<?php _e('Send','templatic'); ?>" class="b_submit" />
 </form>
 
 <script type="text/javascript">

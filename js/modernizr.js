@@ -14,3 +14,22 @@ function toggle(){
 		document.getElementById('toggle').setAttribute('class','toggleoff');
 	}
 }
+if(jQuery.browser.msie ){
+   jQuery(function(){
+		jQuery("#sr").val(placesearch);
+		jQuery("#sr").focus(function(){
+        this.select();
+		});
+		jQuery("#sr").click(function(){
+        jQuery("#sr").val('');
+		});
+		
+		jQuery("#sn").val(nearplace);
+		jQuery("#sn").focus(function(){
+        this.select();
+		});
+		jQuery("#sn").click(function(){
+        jQuery("#sn").val('');
+		});
+    })
+}

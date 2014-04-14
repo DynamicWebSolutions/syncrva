@@ -33,13 +33,13 @@ $paymentinfo = $wpdb->get_results($paymentsql);
   <?php _e($message,'templatic');?>
 </div>
 <?php }?>
-<table style=" width:50%"  class="widefat post fixed" >
+<table class="widefat post fixed" >
   <thead>
     <tr>
-      <th width="180"><?php _e('Payment method','templatic');?></th>
-      <th width="85"><?php _e('Active?','templatic');?></th>
-      <th width="85" align="center"><?php _e('Display order','templatic');?></th>
-      <th width="100" align="center"><?php _e('Action','templatic');?></th>
+      <th><?php _e('Payment method','templatic');?></th>
+      <th><?php _e('Active?','templatic');?></th>
+      <th align="center"><?php _e('Display order','templatic');?></th>
+      <th align="center"><?php _e('Action','templatic');?></th>
     </tr>
     <?php
 if($paymentinfo)
@@ -65,13 +65,13 @@ if($paymentinfo)
       <td><?php echo $paymentInfo['display_order'];?></td>
       <td><?php if($paymentInfo['isactive']==1)
 	{
-		echo '<a title="Click to de-activate" href="'.site_url().'/wp-admin/admin.php?page=manage_settings&status=0&id='.$option_id.'#option_payment"><img style="width:11px; height:11px; margin-bottom:2px;" src="'.get_template_directory_uri().'/images/online.png" alt="Active payment option"></a>';
+		echo '<a title="Click to de-activate" href="'.home_url().'/wp-admin/admin.php?page=manage_settings&status=0&id='.$option_id.'#option_payment"><img style="width:11px; height:11px; margin-bottom:2px;" src="'.get_template_directory_uri().'/images/online.png" alt="Active payment option"></a>';
 	}else
 	{
-		echo '<a title="'.__('Click to activate','templatic').'" href="'.site_url().'/wp-admin/admin.php?page=manage_settings&status=1&id='.$option_id.'#option_payment"><img style="width:11px; height:11px; margin-bottom:2px; opacity: 0.6;" src="'.get_template_directory_uri().'/images/offline.png" alt="'.__('Inactive payment option','templatic').'"></a>';
+		echo '<a title="'.__('Click to activate','templatic').'" href="'.home_url().'/wp-admin/admin.php?page=manage_settings&status=1&id='.$option_id.'#option_payment"><img style="width:11px; height:11px; margin-bottom:2px; opacity: 0.6;" src="'.get_template_directory_uri().'/images/offline.png" alt="'.__('Inactive payment option','templatic').'"></a>';
 	}
 	?>&nbsp;&nbsp;<?php
-    echo '<a href="'.site_url().'/wp-admin/admin.php?page=manage_settings&payact=setting&id='.$option_id.'#option_payment"><img src="'.get_template_directory_uri().'/images/edit.png" alt="Edit payment option"></a>';
+    echo '<a href="'.home_url().'/wp-admin/admin.php?page=manage_settings&payact=setting&id='.$option_id.'#option_payment"><img src="'.get_template_directory_uri().'/images/edit.png" alt="Edit payment option"></a>';
 	?></td>
       <td>&nbsp;</td>
     </tr>

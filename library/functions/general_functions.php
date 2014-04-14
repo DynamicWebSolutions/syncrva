@@ -337,7 +337,7 @@ if (!class_exists('General')) {
 		function view_store_link_home()
 		{
 		?>
-        <a href="<?php echo site_url("/?ptype=store");?>" class="highlight_button fr" ><?php _e(VIEW_STORE_TEXT);?></a>
+        <a href="<?php echo home_url("/?ptype=store");?>" class="highlight_button fr" ><?php _e(VIEW_STORE_TEXT);?></a>
         <?php	
 		}
 		
@@ -370,7 +370,7 @@ if(!isset($General))
 }
 
 /* get category checklist tree BOF*/
-function get_wp_category_checklist($post_taxonomy,$pid)
+function get_wp_category_checklist($post_taxonomy,$pid,$mod='',$select_all='')
 {
 	    $pid = explode(',',$pid);
 		global $wpdb;
@@ -395,9 +395,10 @@ function get_wp_category_checklist($post_taxonomy,$pid)
 		if($wpcategories)
 		{
 		echo "<ul>"; 
-		if($taxonomy == CUSTOM_CATEGORY_TYPE1){
+		if($select_all == 'select_all')
+		{
 		?>
-		<li><label><input type="checkbox" name="selectall" id="selectall" class="checkbox" <?php if($_REQUEST['mod']=='custom_fields'){ ?> onclick="displaychk_custom();"<?php  }else{ ?>onclick="displaychk_frm();"<?php } ?>/></label>&nbsp;<?php echo "Select All"; ?></li>
+		<li><label><input type="checkbox" name="selectall" id="selectall" value="all" class="checkbox" <?php if($_REQUEST['mod']=='custom_fields'){ ?> onclick="displaychk_custom();"<?php  } elseif($_REQUEST['mod']=='price'){ ?> onclick="displaychk_price();"<?php  }else{ ?>onclick="displaychk_frm();"<?php } ?> <?php if($pid[0]){ if(in_array('all',$pid)){ echo "checked=checked"; } }else{  }?>/></label>&nbsp;<?php echo "Select All"; ?></li>
 
 		<?php
 		}
@@ -409,7 +410,7 @@ function get_wp_category_checklist($post_taxonomy,$pid)
 		$termprice = $wpcat->term_price;
 		$tparent =  $wpcat->parent;	
 		?>
-		<li><label><input type="checkbox" name="category[]" id="<?php echo $termid; ?>" value="<?php echo $termid; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($termid,$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
+		<li><label><input type="checkbox" name="category[]" id="<?php echo $termid; ?>" value="<?php echo $termid; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($termid,$pid) || in_array('all',$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
 		<?php
 		
 		if($taxonomy !=""){
@@ -453,14 +454,17 @@ function get_wp_category_checklist($post_taxonomy,$pid)
 			}
 			$p = $p*15;
 		 ?>
-			<li style="margin-left:<?php echo $p; ?>px;"><label><input type="checkbox" name="category[]" id="<?php echo $term_tax_id; ?>" value="<?php echo $term_tax_id; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($term_tax_id,$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
+			<li style="margin-left:<?php echo $p; ?>px;"><label><input type="checkbox" name="category[]" id="<?php echo $term_tax_id; ?>" value="<?php echo $term_tax_id; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($term_tax_id,$pid) || in_array('all',$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
 		<?php  }	}else{
-		$post_taxonomy  = CUSTOM_CATEGORY_TYPE1;
 		
+
+		if($wpcat->taxonomy == CUSTOM_CATEGORY_TYPE1 )
+			$post_taxonomy  = CUSTOM_CATEGORY_TYPE1;
+		elseif($wpcat->taxonomy == CUSTOM_CATEGORY_TYPE2){
+			$post_taxonomy  = CUSTOM_CATEGORY_TYPE2;
+			}
 		 $child = get_term_children( $termid, $post_taxonomy );
-		 if($child ==''){
-		 $post_taxonomy  = CUSTOM_CATEGORY_TYPE2;
-		 $child = get_term_children( $termid, $post_taxonomy ); }
+		 
 		 foreach($child as $child_of)
 		 { 
 		 	$p = 0;
@@ -472,13 +476,13 @@ function get_wp_category_checklist($post_taxonomy,$pid)
 
 			if($child_of)
 			{
-				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND (tt.taxonomy ='".CUSTOM_CATEGORY_TYPE1."')");
+				$catprice = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$child_of."' and t.term_id = tt.term_id AND (tt.taxonomy ='".CUSTOM_CATEGORY_TYPE1."' or tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."')");
 				for($i=0;$i<count($catprice);$i++)
 				{
 					if($catprice->parent)
 					{	
 						$p++;
-						$catprice1 = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$catprice->parent."' and t.term_id = tt.term_id AND (tt.taxonomy ='".CUSTOM_CATEGORY_TYPE1."')");
+						$catprice1 = $wpdb->get_row("select * from $wpdb->term_taxonomy tt ,$wpdb->terms t where t.term_id='".$catprice->parent."' and t.term_id = tt.term_id AND (tt.taxonomy ='".CUSTOM_CATEGORY_TYPE1."' or tt.taxonomy ='".CUSTOM_CATEGORY_TYPE2."')");
 						if($catprice1->parent)
 						{
 							$i--;
@@ -490,7 +494,7 @@ function get_wp_category_checklist($post_taxonomy,$pid)
 			}
 			$p = $p*15;
 		 ?>
-			<li style="margin-left:<?php echo $p; ?>px;"><label><input type="checkbox" name="category[]" id="<?php echo $term_tax_id; ?>" value="<?php echo $term_tax_id; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($term_tax_id,$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
+			<li style="margin-left:<?php echo $p; ?>px;"><label><input type="checkbox" name="category[]" id="<?php echo $term_tax_id; ?>" value="<?php echo $term_tax_id; ?>" class="checkbox" <?php if($pid[0]){ if(in_array($term_tax_id,$pid) || in_array('all',$pid)){ echo "checked=checked"; } }else{  }?> /></label>&nbsp;<?php echo $name; if($termprice != "") { echo " (".display_amount_with_currency($termprice).") ";}else{  echo " (".display_amount_with_currency('0').") "; } ?></li>
 		<?php  }	
 				}		
 }

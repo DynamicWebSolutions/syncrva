@@ -21,61 +21,73 @@ if(!class_exists('templ_latest_posts_with_images')){
 			$number = empty($instance['number']) ? '5' : apply_filters('widget_number', $instance['number']);
 			$my_post_type = empty($instance['post_type']) ? 'post' : apply_filters('widget_post_type', $instance['post_type']);
 			global $post,$wpdb;
-			
-					if($category)
-					{
-						//$arg = "&cat=$category";	
-						$arg = "AND  $wpdb->posts.ID in (select tr.object_id from $wpdb->term_relationships tr join $wpdb->term_taxonomy t on t.term_taxonomy_id=tr.term_taxonomy_id where t.term_id in ($category)  )";
-					}
-		
-				$multi_city_id = $_SESSION['multi_city'];
-				if($my_post_type !="post"){
-				$temp_city = "AND ($wpdb->postmeta.meta_key = 'post_city_id' 
-				AND ($wpdb->postmeta.meta_value LIKE '%,".$multi_city_id.",%' OR $wpdb->postmeta.meta_value LIKE '".$multi_city_id.",%' OR $wpdb->postmeta.meta_value LIKE '%,".$multi_city_id."' OR $wpdb->postmeta.meta_value LIKE '%".$multi_city_id."%'))";
-				}	
-     			$today_special = $wpdb->get_results("SELECT DISTINCT $wpdb->posts.ID ,$wpdb->posts.*
-				FROM $wpdb->posts, $wpdb->postmeta
-				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id 
-				$temp_city
-				AND $wpdb->posts.post_status = 'publish' 
-				AND $wpdb->posts.post_type = '".$my_post_type."'
-				$arg 
-				ORDER BY $wpdb->posts.post_date DESC LIMIT 0,$number");  
-			
-						
-			if($today_special) {
+			if($my_post_type !='post'){
+				add_action('pre_get_posts', 'search_filter');
+				add_filter('posts_where', 'searching_filter_where');			
+				add_filter('posts_orderby', 'feature_listing_orderby');
+				if($my_post_type ==CUSTOM_POST_TYPE1 ){ $taxonomy_slug = CUSTOM_CATEGORY_TYPE1 ; }else{ $taxonomy_slug = CUSTOM_CATEGORY_TYPE2 ; }
+				if($category){			
+				$argsl = array('post_type' => $my_post_type,'posts_per_page' =>  $number	,'post_status' => array('publish'),
+				  'tax_query' => array( array('taxonomy' => $taxonomy_slug,'field' => 'id','terms' => $category,'operator'  => 'IN') ),
+					'orderby' => 'ID',
+					'order' => 'DESC'
+				);
+				}else{
+				$argsl = array('post_type' => $my_post_type,'posts_per_page' =>  $number	,'post_status' => array('publish'),
+					'orderby' => 'ID',
+					'order' => 'DESC'
+				);
+				}
+			}else{
+				/* REMOVE aLL FILTERS WHILE IT'S POSTS*/
+				remove_action('pre_get_posts', 'search_filter');
+				remove_filter('posts_where', 'searching_filter_where');			
+				remove_filter('posts_orderby', 'feature_listing_orderby');
+				if($category){
+				$argsl = array('post_type' => 'post','posts_per_page' =>  $number	,'post_status' => array('publish'),
+				  'tax_query' => array( array('taxonomy' => 'category','field' => 'id','terms' => $category,'operator'  => 'IN') ),
+					'orderby' => 'ID',
+					'order' => 'DESC'
+				);
+				}else{
+				$argsl = array('post_type' => 'post','posts_per_page' =>  $number	,'post_status' => array('publish'),
+					'orderby' => 'ID',
+					'order' => 'DESC'
+				);
+				}
+			}
+			global $wp_query,$post;
+			$wp_queryp = null;
+			$wp_queryp = new WP_Query($argsl);
+			if($wp_queryp->have_posts()) {
 
 			?>
 			
-		 <?php if($title){?> <h3 class="i_publication"><?php _e($title,'templatic');?></h3> <?php }?>
-					<ul class="latest_posts"> 
+		<?php if($title){?> <h3 class="i_publication"><?php _e($title,'templatic');?></h3> <?php }?>
+		<ul class="latest_posts"> 
 			 <?php 
-					foreach($today_special as $post) :
-					setup_postdata($post);
+			while($wp_queryp->have_posts()) :
+				$wp_queryp->the_post();
 					 ?>
 			<?php $post_images = bdw_get_images($post->ID); ?>	
 			<li>
-         
-        
-			 <?php $post_images = bdw_get_images_with_info($post->ID,'thumb');
+			<?php $post_images = bdw_get_images_with_info($post->ID,'thumb');
 				$atch_id  = $post_images[0]['id'];
-				if($post_images[0]['file']){ 
-				$post_images = vt_resize($atch_id,$post_images[0]['file'],50,50,true);
-				
-				?>
-				 <a  class="post_img" href="<?php the_permalink(); ?>">
-				 <img  src="<?php echo $post_images['url'];?>" alt="<?php the_title(); ?>" width="50" height="50" title="<?php the_title(); ?>"  /> </a>
-				<?php
-				}?>
+				if(isset($post_images[0]['file']) && $post_images[0]['file'] !=''){ 
+					$post_images = vt_resize($atch_id,$post_images[0]['file'],50,50,true); ?>
+					<a  class="post_img" href="<?php the_permalink(); ?>">
+					 <img  src="<?php echo $post_images['url'];?>" alt="<?php the_title(); ?>" width="50" height="50" title="<?php the_title(); ?>"  /> </a>
+					<?php
+				} ?>
 						
 				<h4> <a class="widget-title" href="<?php the_permalink(); ?>">
 					  <?php the_title(); ?>
 					  </a> <span class="post_author"><?php _e('by','templatic');?> <?php the_author_posts_link(); ?> <?php _e('at','templatic');?> <?php the_time(templ_get_date_format()) ?> / <?php comments_popup_link(__('No Comments','templatic'), __('1 Comment','templatic'), __('% Comments','templatic'), '', __('Comments Closed','templatic')); ?> </span></h4> 
 					  
-					  <p> <?php echo bm_better_excerpt(175, ''); ?> <a href="<?php the_permalink(); ?>"> <?php _e('more...','templatic');?> </a></p> 
+					  <p> <?php echo bm_better_excerpt(175, '',$post); ?> <a href="<?php the_permalink(); ?>"> <?php _e('more...','templatic');?> </a></p> 
 			</li>
-	<?php endforeach; ?>
-				</ul>
+		<?php endwhile; wp_reset_query();?>
+		</ul>
 		
 	<?php
 		}

@@ -10,13 +10,6 @@ function templ_page_title_fun($title)
 	return '<h1>'.$title.'</h1>';
 }
 
-add_filter('templ_theme_guide_link_filter','templ_theme_guide_link_fun');
-function templ_theme_guide_link_fun($guidelink)
-{
-	$guidelink .= "/theme-documentation/geoplaces-v4-theme-guide/"; // templatic.com site theme guide url here
-	return $guidelink;
-}
-
 add_filter('templ_theme_forum_link_filter','templ_theme_forum_link_fun');
 function templ_theme_forum_link_fun($forumlink)
 {
@@ -126,7 +119,7 @@ $sidebar_widget_arr['front_top_banner'] =array(1,array('name' => 'Front Top Bann
 
 $sidebar_widget_arr['front_content'] =array(1,array('name' => 'Front Content','id' => 'front_content','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
 $sidebar_widget_arr['front_sidebar'] =array(1,array('name' => 'Front Sidebar','id' => 'front_sidebar','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
-$sidebar_widget_arr['below_registration'] =array(1,array('name' => 'Below Login/Registration','id' => 'below_registration','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
+$sidebar_widget_arr['below_registration'] =array(1,array('name' => 'Below Login/Registration','id' => 'below_registration', 'description' => 'This region is located below login form and its only for social gigya plugin.','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
 $sidebar_widget_arr['place_listing_sidebar'] =array(1,array('name' => 'Place Listing Sidebar','id' => 'place_listing_sidebar','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
 $sidebar_widget_arr['place_detail_sidebar'] =array(1,array('name' => 'Place Detail Sidebar','id' => 'place_detail_sidebar','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
 $sidebar_widget_arr['place_detail_content_banner'] =array(1,array('name' => 'Place Detail Content Banner','id' => 'place_detail_content_banner','before_widget' => '','after_widget' => '','before_title' => '<h3>','after_title' => '</h3>'));
@@ -192,7 +185,7 @@ $user_twitter = get_user_meta($user_id,'user_twitter',true);
 </tr>
 
 <tr>
-<th><label for="user_twitter"><?php _e("Twitter Link"); ?></label></th>
+<th><label for="user_twitter"><?php _e("Twitter Link",'templatic'); ?></label></th>
 <td>
 <input type="text" name="user_twitter" id="user_twitter" value="<?php echo esc_attr( $user_twitter); ?>" class="textfield" /><br />
 </td>
@@ -250,11 +243,11 @@ foreach($form_fields_usermeta as $key=>$val)
 	if($val['type']=='texteditor')
 	{
 		
-		$str = $val['tag_before'].'<textarea name="'.$key.'" '.$val['extra'].'>'.$fval.'</textarea>'.$val['tag_after'];
-		if($val['is_require'])
-		{
-			$str .= '<span id="'.$key.'_error"></span>';	
-		}
+		$str = $val['tag_before'].'<textarea name="'.$key.'" PLACEHOLDER="'.$val["default"].'" class="mce $val["extra_parameter"]">'.$fval.'</textarea>'.$val['tag_after'];
+			if($val['is_require'])
+			{
+				$str .= '<span id="'.$key.'_error"></span>';	
+			}
 	}else
 	if($val['type']=='file')
 	{
@@ -273,9 +266,18 @@ foreach($form_fields_usermeta as $key=>$val)
 		$str = '';
 	}else
 	if($val['type']=='date')
-	{ 
-		$str = '<input name="'.$key.'" type="text" '.$val['extra'].' value="'.get_user_meta($user_id,$key,true).'">';	
-		$str .= '<img src="'.get_template_directory_uri().'/images/cal.gif" alt="Calendar"  onclick="displayCalendar(document.userform.'.$key.',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" class="calendar_img" />';
+	{ ?>
+			<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery(function() {
+					jQuery( "#<?php echo $key;?>" ).datepicker( {
+						firstDay: firstDay,
+					} );
+				});
+			</script>	
+	<?php
+		
+		$str = '<input name="'.$key.'" id="'.$key.'" type="text" '.$val['extra'].' value="'.get_user_meta($user_id,$key,true).'">';	
 		if($val['is_require'])
 		{
 			$str .= '<span id="'.$key.'_error"></span>';	

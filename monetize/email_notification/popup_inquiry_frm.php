@@ -1,5 +1,5 @@
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/basic.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/basic.js'></script>
            <div id="myrecap" style="display:none;">
 		   <?php $display = get_option('ptthemes_captcha_dislay');
 		   /* CONDITION IF NONE OF THEM SELECTED */
@@ -30,7 +30,7 @@
 	<?php $userdata = get_userdata($post->post_author); ?>  
 	<input type="hidden" name="to_name" id="to_name" value="<?php _e($userdata->display_name,'templatic');?>" />
 	<input type="hidden" id="author_email" name="author_email" value="<?php echo $userdata->user_email; ?>"/>
-	<h3><?php _e(INQ_FRM_TITLE." for ".$post->post_title,'templatic'); ?></h3>
+	<h3><?php _e(INQ_FRM_TITLE_FOR.' '.$post->post_title,'templatic'); ?></h3>
 		<p id="reply_send_success" class="success_msg" style="display:none;"></p>
 		<div class="row  clearfix" ><label><?php _e(INQ_YOUR_NAME,'templatic'); ?> : <span>*</span></label> <input name="full_name" id="full_name" type="text"  /><span id="full_nameInfo"></span></div>
 	
@@ -52,7 +52,7 @@
 <!-- here -->
 <?php
 global $post,$wpdb;
-if($_POST['your_iemail'] != "")
+if(@$_POST['your_iemail'] != "")
 {
 	$display = get_option('ptthemes_captcha_dislay');
 	if(file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha') && $display != 'None of them'){ 
@@ -65,7 +65,7 @@ if($_POST['your_iemail'] != "")
                                 $_POST["recaptcha_response_field"]);
 								
 		if (!$resp->is_valid ) { 
-		echo "<script>alert('Invalid captcha');</script>";
+		echo "<script type='text/javascript'>alert('Invalid captcha');</script>";
 		return false;	
 		} 
 	}
@@ -109,6 +109,8 @@ if($_POST['your_iemail'] != "")
 		if($subject == '')
 		{
 			$subject = $frnd_subject;
+		}else{
+			$subject = $email_subject;
 		}
 		$client_message = $filecontent_arr2[1];
 	} else {
@@ -118,20 +120,22 @@ if($_POST['your_iemail'] != "")
 
 	$post_url_link = '<a href="'.$_REQUEST['link_url'].'">'.$post_title.'</a>';
 	/////////////customer email//////////////
-	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('siteurl').'">'.get_option('blogname').'</a></b>.','templatic');
-	$search_array = array('[#to_name#]','[#frnd_subject#]','[#post_title#]','[#frnd_comments#]','[#your_name#]','[#contact#]');
-	$replace_array = array($to_name,$frnd_subject,$post_url_link,$frnd_comments,$yourname_link,$contact_num);
+	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('home').'">'.get_option('blogname').'</a></b>.','templatic');
+	$search_array = array('[#to_name#]','[#frnd_subject#]','[#post_title#]','[#frnd_comments#]','[#your_name#]','[#contact#]','[#reply-to#]');
+	$replace_array = array($to_name,$frnd_subject,$post_url_link,$frnd_comments,$yourname_link,$contact_num,$youremail);
 	$client_message = str_replace($search_array,$replace_array,$client_message,$contact_num); 
+	$client_message = stripslashes($client_message);
 	templ_sendEmail($youremail,$yourname,$to_email,$to_name,$subject,$client_message,$extra='');///To clidne email
+	//templ_sendEmail($to_email,$to_name,$youremail,$yourname,$subject,$client_message,$extra='');
 	//////Inquiry EMAIL END////////	
-	if(get_option('siteurl').'/' == $_REQUEST['request_uri']){
-			echo "<script>alert('".__('Email sent successfully','templatic')."');</script>";
+	if(get_option('home').'/' == $_REQUEST['request_uri']){
+			echo "<script type='text/javascript'>alert('".__('Email sent successfully','templatic')."');</script>";
 	} else {
-		echo "<script>alert('".__('Email sent successfully','templatic')."');</script>";
+		echo "<script type='text/javascript'>alert('".__('Email sent successfully','templatic')."');</script>";
 	}
 	
 }?>
-<script>
+<script type='text/javascript'>
 var $q = jQuery.noConflict();
 $q(document).ready(function(){
 

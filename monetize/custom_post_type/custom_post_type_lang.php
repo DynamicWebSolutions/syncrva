@@ -50,7 +50,7 @@ define('CUSTOM_TAG_TYPE2','eventtags');
 
 
 define('CUSTOM_MENU_TITLE2',__('Event','templatic'));
-define('CUSTOM_MENU_NAME2','Event','templatic');
+define('CUSTOM_MENU_NAME2',__('Event','templatic'));
 define('CUSTOM_MENU_SIGULAR_NAME2',__('Event','templatic'));
 define('CUSTOM_MENU_ADD_NEW2',__('Add event','templatic'));
 define('CUSTOM_MENU_ADD_NEW_ITEM2',__('Add new event','templatic'));

@@ -1,5 +1,5 @@
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
-<script type='text/javascript' src='<?php bloginfo('template_directory'); ?>/js/basic.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/jquery.simplemodal.js'></script>
+<script type='text/javascript' src='<?php echo get_bloginfo('template_directory'); ?>/js/basic.js'></script>
 <?php if(get_option('ptthemes_inquiry_on_detailpage') == 'No') { ?>
  <div id="myrecap" style="display:none;">
 		   <?php $display = get_option('ptthemes_captcha_dislay');
@@ -43,9 +43,7 @@
 		
 			<div class="row  clearfix" ><label><?php _e('Subject','templatic');?> : </label> <input name="frnd_subject" value="<?php _e('About','templatic');?>" id="frnd_subject" type="text"  /></div>
 		
-			<div class="row textarea_row  clearfix" ><label><?php _e('Comments','templatic');?> : </label> <textarea name="frnd_comments" id="frnd_comments" cols="10" rows="5" ><?php _e('Hello, 
-			
-I just stumbled upon this listing and thought you might like it. Just check it out.','templatic'); ?></textarea></div>
+			<div class="row textarea_row  clearfix" ><label><?php _e('Comments','templatic');?> : </label> <textarea name="frnd_comments" id="frnd_comments" cols="10" rows="5" ><?php _e('Hello, I just stumbled upon this listing and thought you might like it. Just check it out.','templatic'); ?></textarea></div>
 			<div id="popup_frms"></div>
 			<div class="row  clearfix" >
 				<input name="Send" type="submit" value="<?php _e('Send','templatic')?> " class="button " />
@@ -54,7 +52,7 @@ I just stumbled upon this listing and thought you might like it. Just check it o
 </form>
 </div>
 <?php 
-if($_POST['yourname'])
+if(@$_POST['yourname'])
 {
 	$display = get_option('ptthemes_captcha_dislay');
 	if(file_exists(ABSPATH.'wp-content/plugins/wp-recaptcha/recaptchalib.php') && plugin_is_active('wp-recaptcha')&& $display != 'None of them'){ 
@@ -67,7 +65,7 @@ if($_POST['yourname'])
                                 $_POST["recaptcha_response_field"]);
 								
 		if (!$resp->is_valid ) { 
-		echo "<script> alert('Invalid captcha');</script>";
+		echo "<script type='text/javascript'> alert('Invalid captcha');</script>";
 		return false;	
 		} 
 	}
@@ -105,13 +103,14 @@ if($_POST['yourname'])
 	
 	$post_url_link = '<a href="'.$_REQUEST['link_url'].'">'.$post_title.'</a>';
 	/////////////customer email//////////////
-	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('siteurl').'">'.get_option('blogname').'</a></b>.','templatic');
+	$yourname_link = __($yourname.'<br>Sent from - <b><a href="'.get_option('home').'">'.get_option('blogname').'</a></b>.','templatic');
 	$search_array = array('[#$to_name#]','[#$post_title#]','[#$frnd_comments#]','[#$your_name#]','[#$post_url_link#]');
 	$replace_array = array($to_name,$post_url_link,nl2br($frnd_comments),$yourname_link,$post_url_link);
 	$client_message = str_replace($search_array,$replace_array,$client_message);
+	$client_message = stripslashes($client_message);
 	templ_sendEmail($youremail,$yourname,$to_friend_email,$to_name,$subject,$client_message,$extra='');///To clidne email
 	//////Inquiry EMAIL END////////	
-	echo "<script>alert('Email sent successfully');location.href='".$_REQUEST['link_url']."'</script>";
+	echo "<script type='text/javascript'>alert('Email sent successfully');location.href='".$_REQUEST['link_url']."'</script>";
 	
 	
 }

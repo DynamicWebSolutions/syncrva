@@ -93,16 +93,14 @@ add_filter( 'manage_edit-place_columns', 'templatic_edit_place_columns' ) ;
 
 function templatic_edit_place_columns( $columns ) {
 
-	$columns = array(
-		'cb' => '<input type="checkbox" />',
-		'title' => __( 'Place' ),
-		'author' => __( 'Author' ),
-		'post_city_id' => __( 'City' ),
-		'geo_address' => __( 'Address' ),
-		'post_category' => __( 'Categories' ),
-		'post_tags' => __( 'Tags' ),
-		'date' => __( 'Date' )
-	);
+	unset($columns['comments']);
+	unset($columns['date']);
+ 
+	$columns['post_city_id'] = __( 'City' );
+	$columns['geo_address'] = __( 'Address' );
+	$columns['post_category'] = __( 'Categories' );
+	$columns['post_tags'] = __( 'Tags' );
+	$columns['date'] = __( 'Date' );
 
 	return $columns;
 }
@@ -110,7 +108,7 @@ function templatic_edit_place_columns( $columns ) {
 add_action( 'manage_place_posts_custom_column', 'templatic_manage_place_columns', 10, 2 );
 
 function templatic_manage_place_columns( $column, $post_id ) {
-	echo '<link href="'.get_template_directory_uri().'/monetize/admin.css" rel="stylesheet" type="text/css" />';
+	
 	global $post;
 
 	switch( $column ) {
@@ -125,7 +123,7 @@ function templatic_manage_place_columns( $column, $post_id ) {
 				}
 				echo implode(' , ',$templ_places);
 			}else {
-				_e( 'Uncategorized' );
+				_e( 'Uncategorized' ,'templatic');
 			}
 
 			break;
@@ -135,17 +133,18 @@ function templatic_manage_place_columns( $column, $post_id ) {
 			$templ_place_tags = get_the_terms($post_id,CUSTOM_TAG_TYPE1);
 			if (is_array($templ_place_tags)) {
 				foreach($templ_place_tags as $key => $templ_place_tag) {
-					$edit_link = site_url()."/wp-admin/edit.php?".CUSTOM_TAG_TYPE1."=".$templ_place_tag->slug."&post_type=".CUSTOM_POST_TYPE1;
+					$edit_link = home_url()."/wp-admin/edit.php?".CUSTOM_TAG_TYPE1."=".$templ_place_tag->slug."&post_type=".CUSTOM_POST_TYPE1;
 					$templ_place_tags[$key] = '<a href="'.$edit_link.'">' . $templ_place_tag->name . '</a>';
 				}
 				echo implode(' , ',$templ_place_tags);
 			}else {
-				_e( '' );
+				_e( '','templatic' );
 			}
 				
 			break;
 		case 'post_city_id' :
 			/* Get the address for the post. */
+			$post_city_name='';
 			 $post_city_id = get_post_meta( $post_id, 'post_city_id', true );
 				if($post_city_id != ''&& !strstr($post_city_id,',')){
 					$post_city_name = get_city_name($post_city_id);
@@ -276,26 +275,23 @@ add_filter( 'manage_edit-event_columns', 'templatic_edit_event_columns' ) ;
 
 function templatic_edit_event_columns( $columns ) {
 
-	$columns = array(
-		'cb' => '<input type="checkbox" />',
-		'title' => EVENT_TITLE_HEAD,
-		'author' => AUTHOR_TEXT,
-		'post_city_id' => CITY_TEXT,
-		'geo_address' => ADDRESS,
-		'start_timing' => EVENT_ST_TIME,
-		'end_timing' => EVENT_END_TIME,
-		'post_category' => CATGORIES_TEXT,
-		'post_tags' => TAGS_TEXT_HEAD,
-		'date' => DATE_TEXT
-	);
-
+	unset($columns['comments']);
+	unset($columns['date']);
+ 
+	$columns['post_city_id'] = __( 'City' );
+	$columns['geo_address'] = __( 'Address' );
+	$columns['start_timing'] = EVENT_ST_TIME;
+	$columns['end_timing'] = EVENT_END_TIME;
+	$columns['post_category'] = __( 'Categories' );
+	$columns['post_tags'] = __( 'Tags' );
+	$columns['date'] = __( 'Date' );
 	return $columns;
 }
 
 add_action( 'manage_event_posts_custom_column', 'templatic_manage_event_columns', 10, 2 );
 
 function templatic_manage_event_columns( $column, $post_id ) {
-	echo '<link href="'.get_template_directory_uri().'/monetize/admin.css" rel="stylesheet" type="text/css" />';
+	
 	global $post;
 
 	switch( $column ) {

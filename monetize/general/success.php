@@ -8,7 +8,7 @@ if($_REQUEST['renew'])
 	$page_title = POSTED_SUCCESS_TITLE;
 }
 
-global $page_title;?>
+global $page_title,$site_url;?>
 <?php get_header(); ?>
 <?php 
 
@@ -31,7 +31,7 @@ if($paymentmethod == 'prebanktransfer')
 }
 ?>
 <?php if ( get_option( 'ptthemes_breadcrumbs' ) == 'Yes' ) {  ?>
-<div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
+<div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
 <?php if(get_post_type($order_id) == CUSTOM_POST_TYPE1) { ?>
  <div class="steps">
         		<span ><?php _e(ENTER_PLACE,'templatic'); ?></span>
@@ -52,12 +52,18 @@ if($paymentmethod == 'prebanktransfer')
 	    <div class="post-content">
  
 <?php
+global $site_url,$op;
+if(strstr($site_url,'?')){
+	$op ="&";
+}else{
+	$op="?";
+}
 
-if(get_post_type($order_id)== CUSTOM_POST_TYPE2)
+if(strtolower(get_option('ptthemes_listing_new_status'))=='publish')
 {
 	$post_link = get_permalink($_REQUEST['pid']);
 }else {
-	$post_link = get_permalink($_REQUEST['pid']);	
+	$post_link = $site_url.$op.'ptype=preview&alook=1&pid='.$_REQUEST['pid'];	
 }
 
 $store_name = get_option('blogname');
@@ -69,9 +75,11 @@ if($paymentmethod == 'prebanktransfer')
 	$payOpts = $paymentInfo['payOpts'];
 	$bankInfo = $payOpts[0]['value'];
 	$accountinfo = $payOpts[1]['value'];
+	
 }
 
-
+if(($paymentmethod == 'prebanktransfer' || $paymentmethod == 'payondelevary') && get_post_status( $_REQUEST['pid'] ) == 'draft')
+	$post_link = $site_url.$op.'ptype=preview&alook=1&pid='.$_REQUEST['pid'];
 $buyer_information = "";
 								global $custom_post_meta_db_table_name;
 								$post = get_post($_REQUEST['pid']);

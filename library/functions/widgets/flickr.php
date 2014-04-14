@@ -44,7 +44,6 @@ addcss('.flickr_badge_image img { <?php if($width){ echo 'width:'.$width.'px;';}
 	<?php if($title){?><h3><?php _e($title,'templatic');?></h3><?php }?>
      <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=<?php echo $number; ?>&amp;display=latest&amp;size=s&amp;layout=x&amp;source=user&amp;user=<?php echo $id; ?>"></script>
 	</div>
-    </div>
     
       	
 	<?php

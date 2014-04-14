@@ -3,7 +3,11 @@
 Template Name: Page - Sitemap for event
 */
 ?>
-<?php get_header(); ?>
+<?php
+if(file_exists(get_template_directory()."/common_settings.php")){
+		include(get_template_directory()."/common_settings.php");
+	}
+ get_header(); ?>
 
 <?php if ( have_posts() ) : ?>
 <?php while ( have_posts() ) : the_post(); ?>
@@ -77,10 +81,10 @@ Template Name: Page - Sitemap for event
       <div class="arclist">
         <h3><?php echo META_TEXT;?></h3>
         <ul class="sitemap_list">
-          <li><a href="<?php bloginfo('rdf_url'); ?>" title="<?php echo RDF_RSS.' '.ONE_FEED;?>"><?php echo RDF_RSS.' '.ONE_FEED;?></a></li>
-          <li><a href="<?php bloginfo('rss_url'); ?>" title="<?php echo RSS_TEXT.' '.POINT_FEED;?>"><?php echo RSS_TEXT.' '.POINT_FEED;?></a></li>
-          <li><a href="<?php bloginfo('rss2_url'); ?>" title="<?php echo RSS_TEXT.' '.TWO_FEED;?>"><?php echo RSS_TEXT.' '.TWO_FEED;?></a></li>
-          <li><a href="<?php bloginfo('atom_url'); ?>" title="<?php echo ATOM_FEED;?>"><?php echo ATOM_FEED;?></a></li>
+          <li><a href="<?php echo get_bloginfo('rdf_url'); ?>" title="<?php echo RDF_RSS.' '.ONE_FEED;?>"><?php echo RDF_RSS.' '.ONE_FEED;?></a></li>
+          <li><a href="<?php echo get_bloginfo('rss_url'); ?>" title="<?php echo RSS_TEXT.' '.POINT_FEED;?>"><?php echo RSS_TEXT.' '.POINT_FEED;?></a></li>
+          <li><a href="<?php echo get_bloginfo('rss2_url'); ?>" title="<?php echo RSS_TEXT.' '.TWO_FEED;?>"><?php echo RSS_TEXT.' '.TWO_FEED;?></a></li>
+          <li><a href="<?php echo get_bloginfo('atom_url'); ?>" title="<?php echo ATOM_FEED;?>"><?php echo ATOM_FEED;?></a></li>
         </ul>
       </div>
       <!--/arclist -->

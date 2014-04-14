@@ -10,7 +10,7 @@ body { background: <?php echo get_option('ptthemes_body_background_color');?>; }
 body { background:<?php if(get_option('ptthemes_body_background_image')){?>url(<?php echo get_option('ptthemes_body_background_image');?>)<?php }?> <?php if(get_option('ptthemes_body_bg_postions')){ echo get_option('ptthemes_body_bg_postions');}?>;  }
 <?php }?>
 <?php if(get_option('ptthemes_link_color_normal')){?>
-a { color:<?php echo get_option('ptthemes_link_color_normal');?> !important;  }
+.wrapper a { color:<?php echo get_option('ptthemes_link_color_normal');?> !important;  }
 <?php }?>
 <?php if(get_option('ptthemes_link_color_hover')){?>
 a:hover { color:<?php echo get_option('ptthemes_link_color_hover');?> !important;   }

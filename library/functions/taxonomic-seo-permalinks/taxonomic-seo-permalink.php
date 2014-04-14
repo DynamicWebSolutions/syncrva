@@ -77,8 +77,9 @@ function tsp_write_link_addresses($permalink, $post_id, $leavename)
 		foreach ($custom_taxonomies as $tax_name ) { 
 			$tax_token = '%'.$tax_name.'%';
 			global $post;
-			if(!strstr($_SERVER['REQUEST_URI'],'/wp-admin/')){
-			$tax_terms = get_the_terms( $post->ID, $tax_name );
+			
+			if(!strstr($_SERVER['REQUEST_URI'],'/wp-admin/') && isset($post)){
+			$tax_terms = get_the_terms($post->ID, $tax_name );
 			}
 			//var_dump($tax_terms);
 			if ( !empty($tax_terms) )

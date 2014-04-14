@@ -107,7 +107,7 @@ if($address_longitude && $address_latitude)
 {
 
 ?>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false"></script>
 <script type="text/javascript">
 /* <![CDATA[ */
 
@@ -125,7 +125,7 @@ var basicsetting = {
     var myOptions = {
       zoom: <?php echo $scale;?>,
       mapTypeId: google.maps.MapTypeId.<?php echo $map_type;?>,
-	   zoomControl: false,
+	   zoomControl: true,
       center: latLng	  
     };
     map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);

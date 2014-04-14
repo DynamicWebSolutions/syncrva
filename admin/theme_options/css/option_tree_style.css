@@ -131,7 +131,6 @@ a:hover strong {
       margin: 5px 20px 0 0;
       padding: 4px 10px;
       font-size: 11px;
-      height: 24px;
     }
 	.top-info { position:relative; }
 	.theme_guide { position:absolute; left:300px; top:0px; }
@@ -206,7 +205,7 @@ a:hover strong {
     font-size: 13px !important;
     color: #fff;
     text-shadow: 0 1px 0 #333;
-    background: #3b9201 url(../images/btn_green.png) repeat-x 0 0;
+    background: #3b9201;
     border: 1px solid #666;
     padding: 5px 10px ;
   }
@@ -258,6 +257,7 @@ a:hover strong {
       .screenshot img {
         max-width: 334px;
         padding: 4px;
+								margin-top: 5px;
       	border: 1px solid #ccc;
       	background: #fafafa;
         border-color: #ccc #eee #eee #ccc;
@@ -320,6 +320,7 @@ a:hover strong {
       overflow: hidden;
       padding: 20px;
     }
+				#framework_wrap #content .block .widefat tr td {border-bottom: 1px solid #ddd}
       #framework_wrap #content p {
         font-size: 12px;
         color: #555;
@@ -327,8 +328,9 @@ a:hover strong {
         margin: 0;
 		font-weight: normal;
       }
-      #framework_wrap #content table {
-        border: 1px solid #dfdfdf;
+  #framework_wrap #content table {
+        table-layout: auto;
+								border: 1px solid #dfdfdf;
         width: 100%;
         text-align: left;
         border-spacing: 0;
@@ -340,6 +342,7 @@ a:hover strong {
         border-radius: 4px;
       }
 	  #framework_wrap #content table label {font-size:13px;}
+			#framework_wrap #content table.widefat span iframe {height: 42px !important}
         
         #framework_wrap #content .has-table table th {
           background: #f1f1f1;
@@ -481,14 +484,12 @@ a:hover strong {
           
         }
         .input_wrap {
-          padding: 4px 10px 12px 0;
           float: left;
           width: 350px;
         }
           .input_wrap input[type="checkbox"],
           .input_wrap input[type="radio"] {
             float: left;
-            width: 20px;
             margin-top: 2px;
             vertical-align: bottom;
           }
@@ -500,11 +501,6 @@ a:hover strong {
             width: 325px;
 		    font-size:12px;
           }
-          #framework_wrap #content label input {
-            margin-right: 5px;
-            display: block;
-            float: left;
-          }
         #framework_wrap #content input[type="text"],
         #framework_wrap #content select,
         #framework_wrap #content textarea {
@@ -512,9 +508,7 @@ a:hover strong {
           border-color: #ccc #eee #eee #ccc;
           border-style: solid;
           border-width: 1px;
-          font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
           font-size: 12px;
-          margin-bottom: 9px !important;
           padding: 5px;
           width: 344px;
           display: block;
@@ -563,11 +557,7 @@ a:hover strong {
         #framework_wrap #content .element small {
           float: left;
           font-size: 9px;
-          line-height: 9px;
           color: #999;
-          position: relative;
-          top: -5px;
-          left: 2px;
         }
         .upload_button,
         .upload_file_button,
@@ -733,16 +723,9 @@ a:hover strong {
 }
 .ui-tabs .ui-tabs-nav li a { 
   float: left; 
-  text-decoration: none;
-  display: block;
   width: 127px;
   padding: 8px 10px;
   border-bottom: 1px solid #e3e3e3;
-  color: #21759B;
-  text-shadow: 0 1px 0 #fff;
-  background-image: url(../images/white_px.png);
-  background-repeat: repeat-x;
-  background-position: 0 0;
   font-size: 12px;
 }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
@@ -1008,13 +991,16 @@ div.file_wrap {
     text-shadow: 0 1px 0 #333333;
 	display: block;
 	width: 90px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
 }
 #framework_wrap #content .option	a.button-framework-csv:hover{
 	background: #41741F;
 	border: 1px solid #333;
 	color: #FFFFFF !important;
 	
+}
+#framework_wrap #content  #option_bulk_upload label input { float:none; display:inherit;}
+
+.ui-tabs-active{
+	background:white;
+	width:148px;
 }

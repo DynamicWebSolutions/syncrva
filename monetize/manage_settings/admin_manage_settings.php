@@ -10,11 +10,11 @@ include 'tab_header.php';
 ?>
 <!-- Add /Edit Form For Custom Fields BOF -->
 <link rel="stylesheet" href="<?php echo PLUGIN_URL_MANAGE_SETTINGS;?>css/style.css">
-<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="<?php echo PLUGIN_URL_MANAGE_SETTINGS;?>js/manage_settings.js"></script>
 <script type="text/javascript">
 function displaychk_frm(){
-	dml = document.forms['price_frm'];
+	dml = document.forms['city_frm'];
 	chk = dml.elements['category[]'];
 	len = dml.elements['category[]'].length;
 	
@@ -28,6 +28,19 @@ function displaychk_frm(){
 }
 function displaychk_custom(){
 	dml = document.forms['custom_fields_frm'];
+	chk = dml.elements['category[]'];
+	len = dml.elements['category[]'].length;
+	
+	if(document.getElementById('selectall').checked == true) { 
+		for (i = 0; i < len; i++)
+		chk[i].checked = true ;
+	} else { 
+		for (i = 0; i < len; i++)
+		chk[i].checked = false ;
+	}
+}
+function displaychk_price(){
+	dml = document.forms['price_frm'];
 	chk = dml.elements['category[]'];
 	len = dml.elements['category[]'].length;
 	

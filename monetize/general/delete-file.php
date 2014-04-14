@@ -20,7 +20,7 @@ if($_REQUEST['pid'])
 if(isset($_GET["imagename"]) && $_GET["imagename"]!="")
 {
 	// remove from folder too
-	$uploaddir = TEMPLATEPATH."/images/tmp/";
+	$uploaddir = get_template_directory()."/images/tmp/";
 	$image_name = $_GET["imagename"];
 	@unlink($uploaddir.$image_name);
 	echo 'deleted';

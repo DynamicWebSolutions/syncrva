@@ -14,11 +14,30 @@ if($post_meta_info){
 }
 if(isset($_POST['save_user']) || $_POST['save_user'] != "")
 {
-	$admin_title = $_POST['admin_title'];
-	$site_title = $_POST['site_title'];
+	$context = get_option('blogname');
+	if(function_exists('icl_register_string')){
+		$name = $_REQUEST['site_title'];
+		$value = $_REQUEST['site_title'];
+		icl_register_string($context,$name,$value);
+		$site_title = $_POST['site_title'];
+		
+		$name1 = $_REQUEST['admin_title'];
+		$value1 = $_REQUEST['admin_title'];
+		icl_register_string($context,$name1,$value1);
+		$admin_title = $_POST['admin_title'];
+		
+		$name2 = $_REQUEST['admin_desc'];
+		$value2 = $_REQUEST['admin_desc'];
+		icl_register_string($context,$name2,$value2);
+		$admin_desc = $_POST['admin_desc'];
+		
+	}else{
+		$site_title = $_POST['site_title'];
+		$admin_title = $_POST['admin_title'];
+		$admin_desc = $_POST['admin_desc'];
+	}
 	$ctype = $_POST['ctype'];
 	$htmlvar_name = $_POST['htmlvar_name'];
-	$admin_desc = $_POST['admin_desc'];
 	$clabels = $_POST['clabels'];
 	$default_value = $_POST['default_value'];
 	$sort_order = $_POST['sort_order'];
@@ -27,6 +46,13 @@ if(isset($_POST['save_user']) || $_POST['save_user'] != "")
 	$on_profile = $_POST['on_profile'];
 	$my_post_type = $_POST['post_type'];
 	$option_values = $_POST['option_values'];
+	/* for transaltion */
+	$opt_val = explode(',',$option_values);
+	for($o=0 ; $o <= count($opt_val) ; $o++){
+		if(function_exists('icl_register_string')){
+			icl_register_string($context,$opt_val[$o],$opt_val[$o]);
+		}
+	}
 	$is_require = $_POST['is_require'];
 	if($_REQUEST['cf'])
 	{
@@ -46,21 +72,21 @@ if(isset($_POST['save_user']) || $_POST['save_user'] != "")
 		$msgtype = 'add';
 	}
 	
-	$url = site_url().'/wp-admin/admin.php';
+	$url = home_url().'/wp-admin/admin.php';
 	echo '<form action="'.$url.'#option_display_custom_usermeta" method="get" id="frm_edit_customuser_fields" name="frm_edit_customuser_fields">
 	<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="usersuccess" name="usermetamsg"><input type="hidden" value="'.$msgtype.'" name="msgtype">
 	</form>
-	<script>document.frm_edit_customuser_fields.submit();</script>
+	<script type="text/javascript">document.frm_edit_customuser_fields.submit();</script>
 	';exit;
 }
 ?>
 
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings&mod=user_meta&act=addedit#option_display_custom_usermeta" method="post" name="custom_fields_frm" onsubmit="return chk_userfield_form();">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings&mod=user_meta&act=addedit#option_display_custom_usermeta" method="post" name="custom_fields_frm" onsubmit="return chk_userfield_form();">
 	<input type="submit" class="button-framework-imp right position_top" name="save_user" id="save" value="<?php _e('Save all changes','templatic');?>" />
 	<h4><?php if($_REQUEST['cf']){  _e('Edit Custom User Meta','templatic'); 
 	$custom_msg = 'Here you can edit custom user meta detail.'; }else { _e('Add a field for users&rsquo; profile','templatic'); $custom_msg = 'Create a new field to show in user dashboard / profile section.';}?>
     
-     <a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_display_custom_usermeta" name="btnviewlisting" class="l_back" title="<?php _e('Back to &lsquo;Manage user information fields&rsquo; list','templatic');?>"/><?php _e('&laquo; Back to &lsquo;Manage user information fields&rsquo; list','templatic'); ?></a> 
+     <a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_display_custom_usermeta" name="btnviewlisting" class="l_back" title="<?php _e('Back to &lsquo;Manage user information fields&rsquo; list','templatic');?>"/><?php _e('&laquo; Back to &lsquo;Manage user information fields&rsquo; list','templatic'); ?></a> 
     
     </h4>
     
@@ -131,7 +157,7 @@ if(isset($_POST['save_user']) || $_POST['save_user'] != "")
     <h3><?php _e('HTML variable name: ','templatic');?></h3>
     <div class="section">
       <div class="element">
-           <input type="text" name="htmlvar_name" id="htmlvar_name" value="<?php echo $post_val->htmlvar_name;?>" size="50" <?php if($post_val->is_delete=='1'){?>  readonly="readonly"<?php }?> />   		</div>
+           <input type="text" name="htmlvar_name" id="htmlvar_name" value="<?php echo $post_val->htmlvar_name;?>" size="50" <?php if(isset($_REQUEST['cf']) && $_REQUEST['cf']!= ''){?>  readonly="readonly"<?php }?> />   		</div>
       <div class="description"><?php _e('The HTML variable name for the custom field. IMPORTANT: It should be a unique name.','templatic');?></div>
     </div>
   </div> <!-- #end -->
@@ -217,7 +243,7 @@ function usershow_option_add(htmltype)
 	
 	if(htmltype=='head')
 	{
-		document.getElementById('admin_title_id').style.display='none';	
+		//document.getElementById('admin_title_id').style.display='none';	
 		document.getElementById('admin_label_id').style.display='none';	
 		document.getElementById('admin_desc_id').style.display='none';	
 		document.getElementById('default_value_id').style.display='none';	
@@ -227,7 +253,7 @@ function usershow_option_add(htmltype)
 	}
 	else
 	{
-		document.getElementById('admin_title_id').style.display='';	
+		//document.getElementById('admin_title_id').style.display='';	
 		document.getElementById('admin_label_id').style.display='';	
 		document.getElementById('admin_desc_id').style.display='';	
 		document.getElementById('default_value_id').style.display='';	

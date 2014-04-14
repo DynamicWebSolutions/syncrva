@@ -23,7 +23,7 @@ class subscribe extends WP_Widget {
     <?php } ?>
   <div class="subscribe_bg">
                      <form class="newsletter_form"  action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow"  onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo $id; ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true"> 
-                        <input type="text" class="field"  id="subscribe_email" value="<?php _e('Enter Email Address','templatic')?>" onfocus="if (this.value == '<?php _e('Enter Email Address')?>') {this.value = '';}" onblur="if (this.value == '') {this.value = '<?php _e('Enter Email Address','templatic')?>';}" name="email" />
+                        <input type="text" class="field"  id="subscribe_email" value="<?php _e('Enter Email Address','templatic')?>" onfocus="if (this.value == '<?php _e('Enter Email Address','templatic')?>') {this.value = '';}" onblur="if (this.value == '') {this.value = '<?php _e('Enter Email Address','templatic')?>';}" name="email" />
                         <input type="hidden" value="<?php echo $id; ?>" name="uri"/><input type="hidden" name="loc" value="en_US"/>
      <input class="btn_submit" type="submit" name="submit" value="Subscribe Now!" /> 
                     </form>

@@ -263,7 +263,9 @@ h5.form_title { border-bottom:1px solid #ddd; }
 .main_img { border:1px solid #ccc; background:#fff; }
 .date { color:#858585;  }
 .by { color:#858585; border-bottom:1px solid #e3e3e3; }
-.category { color:#858585; background:url(../images/i_category.png) no-repeat left 0px; }
+.category { color:#858585;background-image:url(../images/i_category.png);
+	background-repeat: no-repeat;
+	background-position:left 0px; }
 
 .tags { color:#858585;  background:url(../images/i_tags.png) no-repeat left 2px; }
 .post_left a { color:#000; }

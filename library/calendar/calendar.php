@@ -32,7 +32,14 @@ function change_calendar(mnth,yr)
 		document.getElementById("eventcal").innerHTML=xmlhttp.responseText;
 		}
 	  } 
-	  url = "<?php echo get_template_directory_uri(); ?>/library/calendar/ajax_calendar.php?mnth="+mnth+"&yr="+yr
+	<?php 
+		if(is_plugin_active('wpml-translation-management/plugin.php')){
+			global $sitepress;
+			$current_lang_code= ICL_LANGUAGE_CODE;
+			$language="language=".$current_lang_code;
+		}
+	?>
+	  url = "<?php echo get_template_directory_uri(); ?>/library/calendar/ajax_calendar.php?<?php echo $language;?>&mnth="+mnth+"&yr="+yr
 
 	  xmlhttp.open("GET",url,true);
 	  xmlhttp.send();
@@ -59,7 +66,14 @@ function show_calendar()
 		document.getElementById("eventcal").innerHTML=xmlhttp.responseText;
 		}
 	  } 
-	  url = "<?php echo get_template_directory_uri(); ?>/library/calendar/ajax_calendar.php"
+	<?php 
+		if(is_plugin_active('wpml-translation-management/plugin.php')){
+			global $sitepress;
+			$current_lang_code= ICL_LANGUAGE_CODE;
+			$language="language=".$current_lang_code;
+		}
+	?>
+	  url = "<?php echo get_template_directory_uri(); ?>/library/calendar/ajax_calendar.php?<?php echo $language;?>"
 
 	  xmlhttp.open("GET",url,true);
 	  xmlhttp.send();
@@ -69,7 +83,7 @@ function display_data(data){
 }
 </script>
 
-<script>
+<script type="text/javascript">
 //call after page loaded
 window.onload = show_calendar ; 
 </script>

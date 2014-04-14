@@ -24,6 +24,9 @@ if($_POST['priceact'] == 'addprice')
 	$billing_cycle = $_POST['billing_cycle'];
 	if($cat){
 		$price_post_cat = implode(",",$cat);
+		if($_POST['selectall'] !=''){
+			$price_post_cat = $price_post_cat.",all";
+		}
 	}
 	$is_featured = $_POST['is_featured'];
 	$feature_amount = $_POST['feature_amount'];
@@ -37,10 +40,10 @@ if($_POST['priceact'] == 'addprice')
 		$wpdb->query($insertprice);
 		$msgtype = 'add_price';
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#option_display_price" method=get name="price_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="pricesuccess"><input type=hidden name="msgtype" value="'.$msgtype.'"></form>';
-	echo '<script>document.price_success.submit();</script>';
+	echo '<script type="text/javascript">document.price_success.submit();</script>';
 	exit;
 
 }
@@ -57,7 +60,7 @@ if($_REQUEST['price_id']!='')
 }
 ?>
 <!-- Function to fetch categories -->
-<script>
+<script type="text/javascript">
 function showcat1(str)
 {  	
 	if (str=="")
@@ -89,11 +92,11 @@ function showcat1(str)
 	  xmlhttp.send();
 } 
 </script>
-<form action="<?php echo site_url()?>/wp-admin/admin.php?page=manage_settings&mod=price&pagetype=addedit" method="post" name="price_frm">
+<form action="<?php echo home_url()?>/wp-admin/admin.php?page=manage_settings&mod=price&pagetype=addedit" method="post" name="price_frm">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" onclick="return price_validation();" class="button-framework-imp right position_top" />
 <h4><?php _e($price_title,'templatic');?> 
 
-<a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_display_price" name="btnviewlisting" class="l_back" title="<?php _e('Back to manage price list','templatic');?>"/><?php _e(PRICE_BACK_LABLE,'templatic'); ?></a>
+<a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_display_price" name="btnviewlisting" class="l_back" title="<?php _e('Back to manage price list','templatic');?>"/><?php _e(PRICE_BACK_LABLE,'templatic'); ?></a>
 </h4>
  <p class="notes_spec"><?php _e($price_msg,'templatic');?></p>
 <p style="background: #f4f4f4; padding:10px; margin-bottom:20px;"><b><?php _e(PRICE_SETTING_TITLE,'templatic'); ?></b></p>
@@ -152,15 +155,15 @@ function showcat1(str)
 		$pctype = $addpriceinfo[0]->price_post_type;
 		if($pctype == "both")
 		{
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat); 
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod'],'select_all'); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod']); 
 		}elseif($pctype == CUSTOM_POST_TYPE1){ 
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod'],'select_all'); 
 		}elseif($pctype == CUSTOM_POST_TYPE2){
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat);
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod'],'select_all');
 		}else{ 
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat); 
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod'],'select_all'); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$addpriceinfo[0]->price_post_cat,$_REQUEST['mod']); 
 		}
 		?>
       </div><span id='process' style='display:none;'><img src="<?php echo get_template_directory_uri()."/images/process.gif"; ?>" alt='Processing..' /></span>

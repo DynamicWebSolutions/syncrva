@@ -32,7 +32,7 @@ if($_REQUEST['caticon'] == 1)
 			$price = 0;
 		}
 		$term_icon = $catinfo_obj->term_icon;
-		$path= get_template_directory_uri().'/monetize/upload/index.php?img=term_icon'.$term_id.'&nonce=mktnonce&caticon=1';
+		$path= get_template_directory_uri().'/monetize/upload/image_uploader.php?img=term_icon'.$term_id.'&nonce=mktnonce&caticon=1';
 		?>
       <tr>
         <td><?php echo $name;?> </td>
@@ -63,6 +63,6 @@ $wpdb->query("update $wpdb->terms set term_price = \"$cprice\",term_icon=\"$term
 
 }else{ 
 	$my_post_type = explode(",",$_REQUEST['post_type']);
-get_wp_category_checklist($my_post_type[1],'');
+get_wp_category_checklist($my_post_type[1],'',$_REQUEST['mod'],'select_all');
 }
 ?>

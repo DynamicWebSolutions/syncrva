@@ -13,27 +13,39 @@ if(!class_exists('templ_popularposts'))
 			extract($args, EXTR_SKIP);
 			$title = empty($instance['title']) ? '' : apply_filters('widget_title', $instance['title']);
 			$my_post_type = empty($instance['post_type']) ? 'post' : apply_filters('widget_post_type', $instance['post_type']);
-			$number = empty($instance['number']) ? '5' : apply_filters('widget_number', $instance['number']);
+			$number = empty($instance['number']) ? 5 : apply_filters('widget_number', $instance['number']);
 			?>						
         <div class="widget popular">
        <?php if($title){?> <h3><?php _e($title,'templatic');?></h3><?php }?>
         <ul>
         <?php
         global $wpdb;
-        $now = gmdate("Y-m-d H:i:s",time());
-        $lastmonth = gmdate("Y-m-d H:i:s",gmmktime(date("H"), date("i"), date("s"), date("m"),date("d"),date("Y")-1));
-        $popularposts = "SELECT *, COUNT($wpdb->comments.comment_post_ID) AS 'stammy' FROM $wpdb->posts, $wpdb->comments WHERE comment_approved = '1' AND $wpdb->posts.ID=$wpdb->comments.comment_post_ID AND $wpdb->posts.post_status = 'publish' AND $wpdb->posts.post_date < '$now' AND $wpdb->posts.post_date > '$lastmonth' AND $wpdb->posts.comment_status = 'open' and $wpdb->posts.post_type ='".$my_post_type."' GROUP BY $wpdb->comments.comment_post_ID   ORDER BY stammy DESC LIMIT $number";
-        $posts = $wpdb->get_results($popularposts);
-        $popular = '';
-        if($posts){
-            foreach($posts as $post){
+
+		/* REMOVE aLL FILTERS WHILE IT'S POSTS*/
+		remove_action('pre_get_posts', 'search_filter');
+		remove_filter('posts_where', 'searching_filter_where');			
+		remove_filter('posts_orderby', 'feature_listing_orderby');
+		if($my_post_type != 'post')
+			add_action('posts_where','popular_posts_where');
+		$args = array(
+				  'post_type' => $my_post_type,
+				  'posts_per_page' => $number,
+				  'ignore_sticky_posts'=> 1,
+				  'orderby' => 'comment_count',
+				  'order' => 'DESC'
+		);
+
+		global $wp_query;
+		$cmt_query = null;
+		$cmt_query = new WP_Query($args);
+        if($cmt_query->have_posts()){
+            while($cmt_query->have_posts()){ $cmt_query->the_post();
                 $post_title = stripslashes($post->post_title);
                 $guid = get_permalink($post->ID);
-				$first_post_title=substr($post_title,0,26);
-        ?>
-        <li> <a href="<?php echo $guid; ?>" title="<?php echo $post_title; ?>"><?php _e($first_post_title,'templatic');?></a> <br />
-        <span class="date"><?php echo get_the_time(templ_get_date_format(),$post) ?> <?php _e(' at ','templatic');?> <?php echo get_the_time(templ_get_time_format(),$post) ?></span> 
-        </li>
+				$first_post_title=substr($post_title,0,26);  ?>
+				<li> <a href="<?php echo $guid; ?>" title="<?php echo $post_title; ?>"><?php the_title(); ?></a> <br />
+				<span class="date"><?php echo the_time(templ_get_date_format(),$post) ?> <?php _e(' at ','templatic');?> <?php echo the_time(templ_get_time_format(),$post) ?></span> 
+				</li>
         <?php } } ?>
         </ul>
         </div>

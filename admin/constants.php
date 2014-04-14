@@ -8,7 +8,7 @@ add_theme_support( 'automatic-feed-links' );
 
 // Make theme available for translation
 // Translations can be filed in the /languages/ directory
-load_theme_textdomain( 'templatic', TEMPLATEPATH . '/languages' );
+load_theme_textdomain( 'templatic', get_template_directory() . '/languages' );
 
 // This theme uses wp_nav_menu() in one location.
 $nav_menu_arg = array();
@@ -29,11 +29,9 @@ define('TT_CSS_FOLDER_URL',get_bloginfo( 'template_directory', 'display' ).'/lib
 define('TT_MODULE_FOLDER_URL',get_bloginfo( 'template_directory', 'display' ).'/modules/'); //theme css folder url
 
 
-if(file_exists(TEMPLATEPATH . '/ecommerce/'))
-	define('TT_MODULES_FOLDER_PATH',TEMPLATEPATH.'/ecommerce/'); //addons folder path
-else  if(file_exists(TEMPLATEPATH . '/monetize/'))
-		define('TT_MODULES_FOLDER_PATH',TEMPLATEPATH.'/monetize/'); //addons folder path
-		define('TT_LIBRARY_FOLDER_PATH',TEMPLATEPATH.'/library/'); //library folder path
+if(file_exists(get_template_directory() . '/monetize/'))
+		define('TT_MODULES_FOLDER_PATH',get_template_directory().'/monetize/'); //addons folder path
+		define('TT_LIBRARY_FOLDER_PATH',get_template_directory().'/library/'); //library folder path
 define('TT_FUNCTIONS_FOLDER_PATH',TT_LIBRARY_FOLDER_PATH . 'functions/'); //functions folder path
 define('TT_WIDGET_FOLDER_PATH',TT_FUNCTIONS_FOLDER_PATH.'widgets/'); //widget folder path
 define('TT_JSCRIPT_FOLDER_PATH',TT_LIBRARY_FOLDER_PATH . 'js/'); //javascript folder path

@@ -2,13 +2,13 @@
 global $page_title;?>
 <?php get_header(); ?>
 <?php if ( get_option( 'ptthemes_breadcrumbs' ) == 'Yes' ) {  ?>
-<div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
+<div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo $page_title; ?></div><?php } ?>
 
 <div  class="<?php templ_content_css();?>" >
 <div class="post-content">
 
 <?php 
-if($_REQUEST['trans_id'] != "" || $_REQUEST['payment_status'] == "Completed"){
+if($_REQUEST['trans_id'] != "" || $_REQUEST['payment_status'] == "Completed" || $_GET['ptype'] == 'payment_success'){
 global $wpdb,$transection_db_table_name;
 $trans_id = $wpdb->get_row("select * from $transection_db_table_name where trans_id='".$_REQUEST['trans_id']."' and status=1");
 

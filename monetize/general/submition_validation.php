@@ -14,8 +14,16 @@ for($i=0;$i<count($validation_info);$i++) {
 	$name = $validation_info[$i]['name'];
 	$espan = $validation_info[$i]['espan'];
 	$type = $validation_info[$i]['type'];
-	$text = $validation_info[$i]['text'];
+	$context = get_option('blogname');
+	if(function_exists('icl_register_string')){	
+		$text = $validation_info[$i]['text'];
+		icl_register_string($context,'field_require_desc',$text);
+		$text = $validation_info[$i]['text'];
+	}else{
+		$text = __($validation_info[$i]['text'],'templatic');
+	}	
 	$validation_type = $validation_info[$i]['validation_type'];
+	
 	
 	$js_code .= '
 	dml = document.forms[\'propertyform\'];
@@ -102,8 +110,6 @@ for($i=0;$i<count($validation_info);$i++) {
 				'.$espan.'.removeClass("message_error2");
 				return true;
 			}
-			alert(flag);
-			
 		}
 	';
 	}else {
@@ -114,7 +120,7 @@ for($i=0;$i<count($validation_info);$i++) {
 				chklength = jQuery("[name=category]").val();
 				if(chklength == 0)
 				 {
-					jQuery("#category_span").html("Please select Category");
+					jQuery("#category_span").html("'.__("Please select Category",'templatic').'");
 					return false;
 				 }
 			}
@@ -228,47 +234,29 @@ if($jsfunction)
 $js_code .= '	
 propertyform.submit(function()
 { 
+	if (document.getElementsByName("price_select").length >0){
+		if (!jQuery("input:radio[name=price_select]:checked").val())
+		 {
+			jQuery("#price_package_error").html("'.__("Please Select Price Package",'templatic').'");
+			return false;
+		 }
+		else
+		{
+			jQuery("#price_package_error").html("");
+		}
+	} 
+	
 	if('.$jsfunction_str.')
-	{ 
-		if (document.getElementsByName("price_select").length >0){
-			if (!jQuery("input:radio[name=price_select]:checked").val())
-			 {
-				jQuery("#price_package_error").html("Please Select Price Package");
-				 if(!jQuery("input:radio[name=CATEGORY]:checked").val()){
-				 jQuery("html, body").animate({scrollTop:0}, "slow"); }
-				return false;
-				
-			 }
-			else
-			{
-				jQuery("#price_package_error").html("");
-			}
-		} 
-		
-		return true;
+	{
+		jQuery("#common_error").html("");
+		return true
 	}
 	else
 	{
-		if (document.getElementsByName("price_select").length >0){
-			if (!jQuery("input:radio[name=price_select]:checked").val())
-			 {
-				jQuery("#price_package_error").html("Please Select Price Package");
-				if(!jQuery("input:radio[name=CATEGORY]:checked").val()){
-				 jQuery("html, body").animate({scrollTop:0}, "slow");
-				 }
-				return false;
-			 }
-			else
-			{
-				jQuery("#price_package_error").html("");
-			}
-		}
-		
-		if(!jQuery("input:radio[name=CATEGORY]:checked").val()){
-		jQuery("html, body").animate({scrollTop:0}, "slow");
-		}
+		jQuery("#common_error").html("'.__("Ooops, looks like you forgot to enter a value inside the field",'templatic').'");
 		return false;
 	}
+
 });
 ';
 

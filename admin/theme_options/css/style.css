@@ -459,7 +459,6 @@ a:hover strong {
           .input_wrap input[type="checkbox"],
           .input_wrap input[type="radio"] {
             float: left;
-            width: 20px;
             margin-top: 2px;
             vertical-align: bottom;
           }

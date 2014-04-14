@@ -9,19 +9,17 @@
 
 
 
-<?php if(strstr($_SERVER['HTTP_USER_AGENT'],'MSIE')){?>
-<script src="<?php bloginfo('template_directory'); ?>/library/js/jquery.helper.js" type="text/javascript" ></script>
-<?php }?>
 
 <script type="text/javascript">
 /* <![CDATA[ */
 function addToFavourite(post_id,action)
 {
  	<?php 
-	global $current_user;
+	global $current_user,$site_url;
+	if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 	if($current_user->ID==''){ 
 	?>
-	window.location.href="<?php echo site_url(); ?>/?ptype=login&amp;page1=sign_in";
+	window.location.href="<?php echo home_url().$op; ?>ptype=login&amp;page1=sign_in";
 	<?php 
 	} else {
 	?>
@@ -29,11 +27,11 @@ function addToFavourite(post_id,action)
 	if(action == 'add')
 	{
 		 
-		fav_url = '<?php echo site_url(); ?>/index.php?ptype=favorite&action=add&pid='+post_id;
+		fav_url = '<?php echo home_url(); ?>/index.php<?php echo $op; ?>ptype=favorite&action=add&pid='+post_id;
 	}
 	else
 	{
-		fav_url = '<?php echo site_url(); ?>/index.php?ptype=favorite&action=remove&pid='+post_id;
+		fav_url = '<?php echo home_url(); ?>/index.php<?php echo $op; ?>ptype=favorite&action=remove&pid='+post_id;
 		
 	}
 	var $ac = jQuery.noConflict();

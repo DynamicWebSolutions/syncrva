@@ -26,14 +26,14 @@ if($_POST) {
 	}
 	
 	
-		$location = site_url()."/wp-admin/admin.php";
+		$location = home_url()."/wp-admin/admin.php";
 		echo '<form action="'.$location.'#option_emails" method=get name="femail_success">
 		<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="email_success"></form>';
-		echo '<script>document.femail_success.submit();</script>';
+		echo '<script type="text/javascript">document.femail_success.submit();</script>';
 		exit;
 } }
 ?>
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings&mod=notification#option_emails" name="emails" method="post">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings&mod=notification#option_emails" name="emails" method="post">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp position_top">
 <h4><?php _e('Notification emails &amp; messages','templatic');?></h4>
 <p class="notes_spec"><?php _e('Notification e-mails are sent to administrators and users while relevant messages are displayed on the site at different times such as when a new user registers or a payment process completes successfully. You may customize these emails and messages here.','templatic');?></p>

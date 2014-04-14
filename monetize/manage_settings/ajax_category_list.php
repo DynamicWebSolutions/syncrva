@@ -11,7 +11,7 @@
         <th><?php _e('Action','templatic'); ?></th>
       </tr>
 		<?php 
-		$catinfo = $wpdb->get_results("SELECT t.*  FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON tt.term_id = t.term_id WHERE tt.taxonomy IN ('".CUSTOM_CATEGORY_TYPE1."','".CUSTOM_CATEGORY_TYPE2."')");
+		$catinfo = get_terms(array(CUSTOM_CATEGORY_TYPE1,CUSTOM_CATEGORY_TYPE2),array('hide_empty'=>0));
 		
 		foreach($catinfo as $catinfo_obj){
 		$term_id = $catinfo_obj->term_id;
@@ -22,7 +22,7 @@
 			$price = 0;
 		}
 		$term_icon = $catinfo_obj->term_icon;
-		$path= get_template_directory_uri().'/monetize/upload/index.php?img=term_icon'.$term_id.'&nonce=mktnonce&caticon=1';
+		$path= get_template_directory_uri().'/monetize/upload/image_uploader.php?img=term_icon'.$term_id.'&nonce=mktnonce&caticon=1';
 		?>
       <tr>
         <td><?php echo $name;?> </td>

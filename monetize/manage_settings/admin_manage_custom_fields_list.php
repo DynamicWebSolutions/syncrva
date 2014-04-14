@@ -4,18 +4,18 @@ if($_REQUEST['pagetype']=='delete')
 {
 	$cid = $_REQUEST['field_id'];
 	$wpdb->query("delete from $custom_post_meta_db_table_name where cid=\"$cid\"");
-	$url = site_url().'/wp-admin/admin.php';
+	$url = home_url().'/wp-admin/admin.php';
 	echo '<form action="'.$url.'#option_display_custom_fields" method="get" id="frm_custom_field" name="frm_custom_field">
 	<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="delsuccess" name="custom_field_msg">
 	</form>
-	<script>document.frm_custom_field.submit();</script>
+	<script type="text/javascript">document.frm_custom_field.submit();</script>
 	';exit;	
 }
 ?>
-	<h4><?php _e('Manage custom fields','templatic');?> <a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=custom_fields#option_display_custom_fields';?>" title="<?php _e('Add custom field','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add a  custom field','templatic'); ?></a> </h4>
+	<h4><?php _e('Manage custom fields','templatic');?> <a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=custom_fields#option_display_custom_fields';?>" title="<?php _e('Add custom field','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add a  custom field','templatic'); ?></a> </h4>
     
-    <p class="notes_spec"><?php _e('Custom fields help you ask for additional information from listing adders. You can setup these fields on per category basis, which means a field meant for &lsquo;Food&rsquo; category won&rsquo;t appear in &lsquo;Art&rsquo; category. ','templatic');?></p>
-
+    <p class="notes_spec"><?php _e('Custom fields help you collect additional information on the listing submission form. You can setup custom fields on per category basis, which means a field assigned to the &lsquo;Food&rsquo; category will not show on the submission form if the &lsquo;Art&rsquo; category  is selected.','templatic');?></p>
+	 <div id="message" class="updated"><p style="padding:5px;"><?php _e('<strong>Note:</strong> Please do not delete existing fields, deactivate them instead. You can not change the HTML variable of the existing fields, it will break the field.','templatic');?></p></div>
 
 <?php if(isset($_REQUEST['custom_field_msg'])) {?>
 <div class="updated fade below-h2" id="message" style="padding:5px; font-size:11px;" >
@@ -45,15 +45,15 @@ if($post_meta_info){
 	foreach($post_meta_info as $post_meta_info_obj){
 	?>
      <tr>
-      <td><?php echo $post_meta_info_obj->site_title;?></td>
+      <td><?php echo $post_meta_info_obj->admin_title;?></td>
       <td><?php echo $post_meta_info_obj->post_type;?></td>
       <td><?php echo $post_meta_info_obj->ctype;?></td>
       <td><?php if($post_meta_info_obj->is_active) _e('Yes','templatic'); else _e('No','templatic');?></td>
       <td>
 	 <a href="javascript:void(0);showdetail('<?php echo $post_meta_info_obj->cid;?>');"><img src="<?php echo get_template_directory_uri(); ?>/images/details.png" alt="<?php _e('Detail','templatic');?>" title="<?php _e('Detail','templatic');?>" border="0" /></a> &nbsp;&nbsp; 
-	 <a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=custom_fields&field_id='.$post_meta_info_obj->cid.'#option_display_custom_fields';?>" title="<?php _e('Edit Field','templatic');?>">
+	 <a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=custom_fields&field_id='.$post_meta_info_obj->cid.'#option_display_custom_fields';?>" title="<?php _e('Edit Field','templatic');?>">
 	 <img src="<?php echo get_template_directory_uri(); ?>/images/edit.png" alt="<?php _e('Edit Field','templatic');?>" border="0" /></a> <?php if($post_meta_info_obj->is_delete=='1'){?>&nbsp;&nbsp;
-	  <a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&pagetype=delete&field_id='.$post_meta_info_obj->cid;?>#option_display_custom_fields" onclick="return confirmSubmit();" title="<?php _e('Delete field','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete Field','templatic');?>" border="0" /></a><?php }else{ ?>
+	  <a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&pagetype=delete&field_id='.$post_meta_info_obj->cid;?>#option_display_custom_fields" onclick="return confirmSubmit();" title="<?php _e('Delete field','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete Field','templatic');?>" border="0" /></a><?php }else{ ?>
 	  <img title="<?php _e("This field is undeletable (locked). To unlock it, click 'Edit' and set 'Is deletable?' to 'Yes'",'templatic');?>" src="<?php echo get_template_directory_uri(); ?>/images/lock.gif" alt="<?php _e('Locked','templatic');?>" border="0" style="margin:0px 0px 0px 9px;"/>
 	  <?php } ?>
       </td>
@@ -82,7 +82,7 @@ if($post_meta_info){
 	</tr>
       
        <tr>   
-		<td><?php _e('Shown on &lsquo;Add place&rsquo; page?','templatic')?> : <strong><?php if($post_meta_info_obj->show_on_listing) _e('Yes','templatic'); else _e('No','templatic');?></strong></td>	   
+		<td><?php _e('Shown on &lsquo;Add place&rsquo; page?','templatic')?> : <strong><?php if($post_meta_info_obj->show_on_page == 'user_side' || $post_meta_info_obj->show_on_page == 'both_side') _e('Yes','templatic'); else _e('No','templatic');?></strong></td>	   
       	<td><?php _e('HTML variable name','templatic')?> : <strong><?php echo $post_meta_info_obj->htmlvar_name;?></strong></td>
 		
          <td><?php  _e('CSS class','templatic'); if($post_meta_info_obj->style_class != "") { ?> : <strong><?php echo $post_meta_info_obj->style_class;?></strong><?php }else{ echo " - ";} ?></td>

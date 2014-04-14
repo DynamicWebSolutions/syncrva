@@ -51,7 +51,7 @@ function save_comment_rating( $comment_id = 0) {
 	if(!$rate_userid){
 	$rate_userid = $current_user->ID;
 	}
-	$wpdb->query("INSERT INTO $rating_table_name (rating_postid,rating_rating,comment_id,rating_ip,rating_userid) VALUES ( \"$post_id\", \"$rating_val\",\"$comment_id\",\"$rating_ip\",\"$rate_userid \")");
+	$wpdb->query("INSERT INTO $rating_table_name (rating_postid,rating_rating,comment_id,rating_ip,rating_userid) VALUES ( $post_id, $rating_val,$comment_id,'$rating_ip',$rate_userid )");
 }
 
 add_action( 'wp_insert_comment', 'save_comment_rating' );

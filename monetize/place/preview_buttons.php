@@ -1,4 +1,6 @@
 <?php	
+global $site_url; 
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 $property_price_info = get_property_price_info($_REQUEST['price_select'],$_SESSION['place_info']['total_price']);
 $payable_amount = $property_price_info[0]['price'];
 $alive_days = $property_price_info[0]['alive_days'];
@@ -29,10 +31,10 @@ if($_REQUEST['alook'])
 <?php
 if($_REQUEST['pid'] || $_POST['renew'])
 {
-	$form_action_url = site_url().'/?ptype=paynow';
+	$form_action_url = $site_url.$op.'ptype=paynow';
 }else
 {
-	$form_action_url = get_ssl_normal_url(site_url().'/?ptype=paynow');
+	$form_action_url = get_ssl_normal_url($site_url.$op.'ptype=paynow');
 }
 ?>
 <form method="post" action="<?php echo $form_action_url; ?>" name="paynow_frm" id="paynow_frm" >
@@ -110,11 +112,11 @@ if($_REQUEST['pid'] || $_POST['renew'])
 					<li id="<?php echo $paymentInfo['key'];?>">
 					<label class="r_lbl"><input <?php echo $jsfunction;?>  type="radio" value="<?php echo $paymentInfo['key'];?>" id="<?php echo $paymentInfo['key'];?>_id" name="paymentmethod" <?php echo $chked;?> />  <?php echo $paymentInfo['name']?></label>
 					<?php
-						if(file_exists(TEMPLATEPATH.'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php'))
+						if(file_exists(get_template_directory().'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php'))
 						{
 						?>
 					<?php
-							include_once(TEMPLATEPATH.'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php');
+							include_once(get_template_directory().'/library/includes/payment/'.$paymentInfo['key'].'/'.$paymentInfo['key'].'.php');
 							?>
 					<?php
 						} 
@@ -179,7 +181,7 @@ if($is_delet_property)
 ?>
 	
 	<h5 class="payment_head"><?php _e(PRO_DELETE_PRE_MSG);?></h5>
-	<input type="button" name="Delete" value="<?php echo PRO_DELETE_BUTTON;?>" class="fr b_delete" onclick="window.location.href='<?php echo site_url();?>/?ptype=delete&pid=<?php echo $_REQUEST['pid']; ?>'" />
+	<input type="button" name="Delete" value="<?php echo PRO_DELETE_BUTTON;?>" class="fr b_delete" onclick="window.location.href='<?php echo $site_url;?>/?ptype=delete&pid=<?php echo $_REQUEST['pid']; ?>'" />
 	<input type="button" name="Cancel" value="<?php echo PRO_CANCEL_BUTTON;?>" class="fl b_cancel" onclick="window.location.href='<?php echo get_author_posts_url($current_user->ID);?>'" />
     <?php  } else { echo "ERROR: SORRY, you can not delete this post."; }?>
 <?php
@@ -210,7 +212,7 @@ if($_REQUEST['pid'])
 
 }
 ?>
-<a href="<?php echo site_url();?>/?ptype=post_listing&backandedit=1<?php if($_REQUEST['pid']){ echo '&pid='.$_REQUEST['pid'];}?><?php if($_REQUEST['renew']){echo '&renew=1';}?>" class="b_goback fl" ><?php _e(PRO_BACK_AND_EDIT_TEXT);?></a>
+<a href="<?php echo $site_url.$op;?>ptype=post_listing&backandedit=1<?php if($_REQUEST['pid']){ echo '&pid='.$_REQUEST['pid'];}?><?php if($_REQUEST['renew']){echo '&renew=1';}?>" class="b_goback fl" ><?php _e(PRO_BACK_AND_EDIT_TEXT);?></a>
 <input type="button" name="Cancel" value="<?php _e(PRO_CANCEL_BUTTON);?>" class="b_cancel fl" onclick="window.location.href='<?php echo get_author_posts_url($current_user->ID);?>'" />
  <?php }?>  
  </form></div>

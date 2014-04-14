@@ -35,7 +35,7 @@ if($_POST && $_POST['contact_widget'])
 		// Additional headers
 		$headers .= 'To: '.$toEmailName.' <'.$toEmail.'>' . "\r\n";
 		$headers .= 'From: '.$_POST['your-name'].' <'.$_POST['your-email'].'>' . "\r\n";
-		
+		$message = stripslashes($message);
 		// Mail it
 		templ_sendEmail($_POST['your-email'],$_POST['your-name'],$toEmail,$toEmailName,$subject,$message);
 		if(strstr($_REQUEST['request_url'],'?'))

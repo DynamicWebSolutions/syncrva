@@ -2,6 +2,8 @@
 if($_POST)
 {
 	ob_start();
+	global $site_url;
+	if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 	if(!$current_user->ID) {
 		wp_redirect(get_settings('home').'/index.php?page=login');
 		exit;
@@ -16,12 +18,12 @@ if($_POST)
 		if($user_email)	{
 			$check_users=$wpdb->get_var("select ID from $wpdb->users where user_email like \"$user_email\" where ID!=\"$user_id\"");
 			if($check_users){
-				wp_redirect(site_url().'/?ptype=profile&emsg=wemail');exit;	
+				wp_redirect($site_url.$op.'ptype=profile&emsg=wemail');exit;	
 			}
 		}else {
-			wp_redirect(site_url().'/?ptype=profile&emsg=empty_email');exit;
+			wp_redirect($site_url.$op.'ptype=profile&emsg=empty_email');exit;
 		} if($pwd!=$cpwd)	{
-			wp_redirect(site_url().'/?ptype=profile&emsg=pw_nomatch');exit;
+			wp_redirect($site_url.$op.'ptype=profile&emsg=pw_nomatch');exit;
 		}
 	}
 	if($userName){
@@ -36,7 +38,6 @@ if($_POST)
 		global $upload_folder_path;
 		global $form_fields_usermeta;
 		$custom_metaboxes = templ_get_usermeta();
-
 		foreach($form_fields_usermeta as $fkey=>$fval)
 		{
 			$fldkey = "$fkey";
@@ -61,7 +62,7 @@ if($_POST)
 						$image_path = '';	
 					}					
 					$_POST[$fkey] = $image_path;
-					$fldkey = $image_path;			
+					$$fldkey = $image_path;			
 				}
 				else{
 					$_POST[$fkey]=$_POST['prev_upload'];
@@ -74,47 +75,33 @@ if($_POST)
 	
 	if(isset($_REQUEST['update_profile']))
 	{
-	
-	global $upload_folder_path;
-	
-		$custom_metaboxes = templ_get_usermeta();
-		
-		foreach($custom_metaboxes as $fkey=>$fval)
+		global $upload_folder_path;
+		$$fldkey = $_FILES["user_photo"];
+		if($_FILES['user_photo'])
 		{
-			$fldkey = "$fkey";
-			$$fldkey = $_POST["$fkey"];
-			if($fval['type']=='upload')
-			{
-				
-				if($_FILES[$fkey]['name'] && $_FILES[$fkey]['size']>0) {
-					$dirinfo = wp_upload_dir();
-					$path = $dirinfo['path'];
-					$url = $dirinfo['url'];
-					$destination_path = $path."/";
-					$destination_url = $url."/";
-					
-					$src = $_FILES[$fkey]['tmp_name'];
-					$file_ame = date('Ymdhis')."_".$_FILES[$fkey]['name'];
-					$target_file = $destination_path.$file_ame;
-					if(move_uploaded_file($_FILES[$fkey]["tmp_name"],$target_file))
-					{
-						$image_path = $destination_url.$file_ame;
-					}else
-					{
-						$image_path = '';	
-					}				
-					$_POST[$fkey] = $image_path;
-					$fldkey = $image_path;
-					
-				}
-				else{
-					$_POST[$fkey]=$_POST['prev_upload'];
-				}
-			}
-			update_usermeta($user_id, $fkey, $$fldkey);
-			 // User Custom Metadata Here
-		}
 			
+			if($_FILES['user_photo']['name'] && $_FILES['user_photo']['size']>0) {
+				$dirinfo = wp_upload_dir();
+				$path = $dirinfo['path'];
+				$url = $dirinfo['url'];
+				$destination_path = $path."/";
+				$destination_url = $url."/";
+				
+				$src = $_FILES['user_photo']['tmp_name'];
+				$file_ame = date('Ymdhis')."_".$_FILES['user_photo']['name'];
+				$target_file = $destination_path.$file_ame;
+				if(move_uploaded_file($_FILES['user_photo']["tmp_name"],$target_file))
+				{
+					$image_path = $destination_url.$file_ame;
+				}else
+				{
+					$image_path = '';	
+				}				
+				$$fldkey = $image_path;
+				update_usermeta($user_id, 'user_photo', $$fldkey);
+			}
+		}
+			 // User Custom Metadata Here
 		$user_id = $current_user->ID;
 		$user_facebook = $_REQUEST['user_facebook'];
 		$user_twitter = $_REQUEST['user_twitter'];
@@ -133,18 +120,18 @@ if($_POST)
 }
 
 $page_title = EDIT_PROFILE_TITLE;
-global $page_title;
+global $page_title,$site_url;
 get_header(); ?>
 
 <?php if ( get_option('ptthemes_breadcrumbs' ) == 'Yes') {  ?>
     <div class="breadcrumb clearfix">
-        <div class="breadcrumb_in"><a href="<?php echo site_url(); ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo EDIT_PROFILE_TITLE; ?> </div>
+        <div class="breadcrumb_in"><a href="<?php echo $site_url; ?>"><?php _e('Home','templatic'); ?></a> &raquo; <?php echo EDIT_PROFILE_TITLE; ?> </div>
     </div>
 <?php } ?>
-<script>var rootfolderpath = '<?php echo bloginfo('template_directory');?>/images/';</script>
-<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script>
+<script type="text/javascript">var rootfolderpath = '<?php echo get_bloginfo('template_directory');?>/images/';</script>
+<?php /*<script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/js/dhtmlgoodies_calendar.js"></script> */ ?>
 <!-- TinyMCE -->
-<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="<?php echo get_bloginfo('template_directory'); ?>/library/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 	tinyMCE.init({
 		// General options
@@ -190,31 +177,32 @@ get_header(); ?>
         <div class="post-content">
           <div id="sign_up">
             <?php
-if ( $_REQUEST['msg']=='success')
+if ( @$_REQUEST['msg']=='success')
 {
 	echo "<p class=\"success_msg\"> ".EDIT_PROFILE_SUCCESS_MSG." </p>";
 }else
-if ( $_REQUEST['emsg']=='empty_email')
+if ( @$_REQUEST['emsg']=='empty_email')
 {
 	echo "<p class=\"error_msg\"> ".EMPTY_EMAIL_MSG." </p>";
-}elseif ( $_REQUEST['emsg']=='wemail')
+}elseif ( @$_REQUEST['emsg']=='wemail')
 {
 	echo "<p class=\"error_msg\"> ".ALREADY_EXIST_MSG." </p>";
-}elseif ( $_REQUEST['emsg']=='pw_nomatch')
+}elseif ( @$_REQUEST['emsg']=='pw_nomatch')
 {
 	echo "<p class=\"error_msg\"> ".PW_NO_MATCH_MSG." </p>";
 }
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 ?>
 <div class="registration_form_box">
   <?php 
-  if($_SESSION['session_message'])
+  if(@$_SESSION['session_message'])
 	{
 		echo '<p class="success_msg">'.$_SESSION['session_message'].'</p>';
 		$_SESSION['session_message'] = '';
 	}
    ?>
  
-  <form name="personal_info" id="personal_info" action="<?php echo site_url().'/?ptype=profile'; ?>" method="post" enctype="multipart/form-data" >  
+  <form name="personal_info" id="personal_info" action="<?php echo $site_url.$op.'ptype=profile'; ?>" method="post" enctype="multipart/form-data" >  
  
 <?php do_action('templ_profile_form_end');?>  
       <h5><?php _e(PERSONAL_INFO_TEXT);?></h5>
@@ -226,6 +214,11 @@ global $form_fields_usermeta1;
 $validation_info1 = array();
 
 ?>
+       <div class="form_row clearfix upload_img">
+       	<label><?php _e(USER_PHOTO); ?> </label>
+        <input type="file" value="" class="textfield error" id="user_photo" name="user_photo" />
+		<img src="<?php echo get_user_meta($current_user->ID,'user_photo',true); ?>" alt="" height="120" width="120" />
+       </div>
        <div class="form_row clearfix">
         <label><?php _e(FACEBOOK_TEXT) ?></label>
         <input type="text" name="user_facebook" id="user_facebook" class="textfield" value="<?php echo get_user_meta($current_user->ID,'user_facebook',true); ?>" size="25" tabindex="20" />
@@ -247,12 +240,12 @@ $validation_info1 = array();
       
    <input type="submit" name="update_profile" value="<?php _e(EDIT_PROFILE_UPDATE_BUTTON);?>" class="b_registernow"  />
    
-   <input type="button" name="Cancel" value="Cancel" class="button_cancel" onclick="window.location.href='<?php echo get_author_posts_url($current_user->ID);?>'"/>
+   <input type="button" name="Cancel" value="<?php _e("Cancel",DOMAIN); ?>" class="button_cancel" onclick="window.location.href='<?php echo get_author_posts_url($current_user->ID);?>'"/>
    
 </form>
 
  
-<form name="userform" id="userform" action="<?php echo site_url().'/?ptype=profile'; ?>" method="post" enctype="multipart/form-data" >  
+<form name="userform" id="userform" action="<?php echo $site_url.$op.'ptype=profile'; ?>" method="post" enctype="multipart/form-data" >  
 	
      <h5><?php _e(EDIT_PROFILE_PAGE_TITLE);?></h5>
 
@@ -279,15 +272,20 @@ foreach($form_fields_usermeta as $key=>$val)
 	$str = ''; $fval = '';
 	$field_val = $key.'_val';
 	$$field_val = get_user_meta($current_user->ID,$key,true);
-	if($$field_val){ $fval = $$field_val; }else{$fval = $val['default'];}
-	
+	if($$field_val){ $fval = $$field_val; }else{ $fval = $val['default']; }
+	if(function_exists('icl_t')){
+		$context = get_option('blogname');
+		$label = icl_t($context,$val['label'],$val['label']);
+	}else{
+		$label = $val['label'];
+	}
 	if($val['is_require'])
 	{
 		$validation_info[] = array(
 								   'name'	=> $key,
 								   'espan'	=> $key.'_error',
 								   'type'	=> $val['type'],
-								   'text'	=> $val['label'],
+								   'text'	=> $label,
 								   );
 	}
 	if($key)
@@ -321,11 +319,11 @@ foreach($form_fields_usermeta as $key=>$val)
 	if($val['type']=='texteditor')
 	{
 		
-		$str = $val['tag_before'].'<textarea name="'.$key.'" '.$val['extra'].'>'.$fval.'</textarea>'.$val['tag_after'];
-		if($val['is_require'])
-		{
-			$str .= '<span id="'.$key.'_error"></span>';	
-		}
+		$str = $val['tag_before'].'<textarea name="'.$key.'" PLACEHOLDER="'.$val["default"].'" class="mce $val["extra_parameter"]">'.$fval.'</textarea>'.$val['tag_after'];
+			if($val['is_require'])
+			{
+				$str .= '<span id="'.$key.'_error"></span>';	
+			}
 	}else
 	if($val['type']=='file')
 	{
@@ -344,9 +342,17 @@ foreach($form_fields_usermeta as $key=>$val)
 		$str = '';
 	}else
 	if($val['type']=='date')
-	{ 
-		$str = '<input name="'.$key.'" type="text" '.$val['extra'].' value="'.get_user_meta($current_user->ID,$key,true).'">';	
-		$str .= '<img src="'.get_template_directory_uri().'/images/cal.gif" alt="Calendar"  onclick="displayCalendar(document.userform.'.$key.',\'yyyy-mm-dd\',this)" style="cursor: pointer;" align="absmiddle" border="0" class="calendar_img" />';
+	{ ?>
+		<script type="text/javascript">
+			jQuery.noConflict();
+			jQuery(function() {
+				jQuery( "#<?php echo $key;?>" ).datepicker( {
+					firstDay: firstDay,
+				} );
+			});
+		</script>
+	<?php
+		$str = '<input name="'.$key.'" id="'.$key.'" type="text" '.$val['extra'].' value="'.get_user_meta($current_user->ID,$key,true).'">';	
 		if($val['is_require'])
 		{
 			$str .= '<span id="'.$key.'_error"></span>';	
@@ -470,24 +476,27 @@ foreach($form_fields_usermeta as $key=>$val)
 	}else
 	if($val['type']=='multicheckbox')
 	{
-		$options = $val['options'];
-		if($options)
-		{  $chkcounter = 0;
-			
-			$option_values_arr = explode(',',$options);
-			for($i=0;$i<count($option_values_arr);$i++)
-			{
-				$chkcounter++;
-				$seled='';
-				if(in_array($option_values_arr[$i],$fval)){ $seled='checked="checked"';}
-				$str .= $val['tag_before'].'<input name="'.$key.'[]"  id="'.$key.'_'.$chkcounter.'" type="checkbox" '.$val['extra'].' value="'.$option_values_arr[$i].'" '.$seled.'> '.$option_values_arr[$i].$val['tag_after'];
-			}
-			if($val['is_require'])
-			{
-				$str .= '<span id="'.$key.'_error"></span>';	
-			}
-		}
-	}
+                        $options = $val['options'];
+                        if($options)
+                        {  $chkcounter = 0;
+                            $str .='<div class="form_cat_right">';
+                            $option_values_arr = explode(',',$options);
+                            for($i=0;$i<count($option_values_arr);$i++)
+                            {
+                                $chkcounter++;
+                                $seled='';
+                                $fval_arr = explode(',',$fval);
+                                if(in_array($option_values_arr[$i],$fval_arr)){ $seled='checked="checked"';}
+                                $str .= $val['tag_before'].'<label><input name="'.$key.'[]"  id="'.$key.'_'.$chkcounter.'" type="checkbox" '.$val['extra'].' value="'.$option_values_arr[$i].'" '.$seled.' /> '.$option_values_arr[$i].'</label>'.$val['tag_after'];
+                            }
+							
+                            if($val['is_require'])
+                            {
+                                $str .= '<span id="'.$key.'_error"></span>';	
+                            }
+							$str.='</div>';
+                        }
+                    }
 	else
 	if($val['type']=='packageradio')
 	{
@@ -513,10 +522,10 @@ foreach($form_fields_usermeta as $key=>$val)
 	}
 	if($val['is_require'])
 	{
-		$label = '<label>'.$val['label'].' <span>*</span> </label>';
+		$label = '<label>'.$label.' <span>*</span> </label>';
 	}else
 	{
-		$label = '<label>'.$val['label'].'</label>';
+		$label = '<label>'.$label.'</label>';
 	}
 	echo $val['outer_st'].$label.$val['tag_st'].$str.$val['tag_end'].$val['outer_end'];
 

@@ -32,17 +32,23 @@ if($comment_add_flag)
 <div id="respond">
   <h3><?php echo POST_REVIEW;?></h3>
   <div class="comment_form">
-    <?php if ( get_option('comment_registration') && !$user_ID ) : ?>
-    <p class="comment_message"><?php echo YOU_MUST;?> <a href="<?php echo get_option('siteurl'); ?>/wp-login.php?redirect_to=<?php echo urlencode(get_permalink()); ?>"><?php echo LOGGED_IN;?></a> <?php echo POST_COMMENT;?></p>
+    <?php if ( get_option('comment_registration') && !$user_ID ) :
+	if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; } 
+	?>
+    <p class="comment_message"><?php echo YOU_MUST;?> <a href="<?php echo get_option('home').$op; ?>ptype=login"><?php echo LOGGED_IN;?></a> <?php echo POST_COMMENT;?></p>
     <?php else : ?>
-    <form action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post" id="commentform">
+    <form action="<?php echo get_option('home'); ?>/wp-comments-post.php" method="post" id="commentform">
 	<?php global $post;
 	if(get_option('ptthemes_disable_rating') == 'no' && ($post->post_type == CUSTOM_POST_TYPE1 || $post->post_type == CUSTOM_POST_TYPE2)){ ?> 
 		 <span class="rating_text"><?php echo RATING_MSG;?> </span>
-         <p class="commpadd"><span class="comments_rating"> <?php require_once (TEMPLATEPATH . '/library/rating/get_rating.php');?> </span> </p>
+         <p class="commpadd"><span class="comments_rating"> <?php require_once (get_template_directory() . '/library/rating/get_rating.php');?> </span> </p>
 		<?php	} ?>
-      <?php if ( $user_ID ) : ?>
-      <p class="comment_message"><?php echo LOGGED_AS;?> <a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><?php echo $user_identity; ?></a>. <a href="<?php echo wp_logout_url(get_permalink()); ?>" title="Log out of this account"><?php echo LOGOUT;?></a></p>
+      <?php if ( $user_ID ) : 
+	   global $current_user;
+		$user_link = get_author_posts_url($user_ID);
+		if(strstr($user_link,'?') ){$user_link = $user_link.'&list=favourite';}else{$user_link = $user_link.'?list=favourite';}
+	  ?>
+      <p class="comment_message"><?php echo LOGGED_AS;?> <a href="<?php echo str_replace(' ','-',$user_link); ?>"><?php echo $user_identity; ?></a>. <a href="<?php echo wp_logout_url(get_permalink()); ?>" title="Log out of this account"><?php echo LOGOUT;?></a></p>
       
       
       <p class="commpadd clearfix commform-textarea">

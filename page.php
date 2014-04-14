@@ -1,4 +1,6 @@
 <?php 
+global $site_url;
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){ 
 	$_SESSION['multi_city'] = $_POST['multi_city'];
 	$_SESSION['multi_city1'] = $_POST['multi_city'];
@@ -8,7 +10,7 @@ if(isset($_POST['multi_city']) && $_POST['multi_city'] != ''){
 	$_SESSION['multi_city1'] = $_COOKIE['multi_city1'];
 	$_SESSION['multi_city'] = $_COOKIE['multi_city1'];
 }else if($_SESSION['multi_city'] == "" && $_POST['multi_city'] == ""){
-	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "") {
+	if($_REQUEST['front_post_city_id'] == "" && get_option('splash_page') != "" && $_SESSION['multi_city1']=="" && $_SESSION['multi_city'] == "" && $_COOKIE['multi_city1'] == "" && $_REQUEST['ptype'] != 'csvdl') {
 		include_once("tpl_splash.php");
 		exit;
 	} else {
@@ -29,44 +31,46 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 	include_once("tpl_splash.php");
 	exit;
 }else {
+	global $site_url;
+	
 	if($_SESSION['multi_city'] == ""){
 		$_SESSION['multi_city']= $_COOKIE['multi_city1'];
 	}
 	if(isset($_REQUEST['ptype']) && $_REQUEST['ptype']!=""){
-	if($_REQUEST['ptype'] == 'favorite'){
+	if($_REQUEST['ptype'] == 'favorite' && is_stringonly()){
 		if($_REQUEST['action']=='add')	{
 			add_to_favorite($_REQUEST['pid']);
 		}else{
 			remove_from_favorite($_REQUEST['pid']);
 		}
-	} else if($_REQUEST['ptype']=='profile'){
+	} else if($_REQUEST['ptype']=='profile' && is_stringonly()){
 		global $current_user;
 		if(!$current_user->ID)	{
-			wp_redirect(site_url().'/?ptype=login');
+			wp_redirect($site_url.$op.'ptype=login');
 			exit;
 		}
 		include_once(TT_MODULES_FOLDER_PATH . "registration/registration.php");exit;
-	} elseif($_REQUEST['ptype'] == 'phpinfo') {
+	} elseif($_REQUEST['ptype'] == 'phpinfo' && is_stringonly()) {
 		//echo phpinfo();exit;
 	} elseif($_REQUEST['ptype'] == 'csvdl') {
 		include (TT_MODULES_FOLDER_PATH . "/library/includes/csvdl.php");
 	}
 	elseif($_REQUEST['ptype'] == 'register' || $_REQUEST['ptype'] == 'login') {
 		include (TT_MODULES_FOLDER_PATH . "registration/registration.php");
-	} else if($_REQUEST['ptype']=='post_listing') {
+	} else if($_REQUEST['ptype']=='post_listing' && is_stringonly()) {
 		include_once(TT_MODULES_FOLDER_PATH.'place/submit_place.php');exit;
-	} elseif($_REQUEST['ptype']=='post_event') {
+	} elseif($_REQUEST['ptype']=='post_event' && is_stringonly()) {
 		include_once(TT_MODULES_FOLDER_PATH.'event/submit_event.php');exit;
-	} elseif($_REQUEST['ptype'] == 'preview'){
+	} elseif($_REQUEST['ptype'] == 'preview' && is_stringonly()){
 		include (TT_MODULES_FOLDER_PATH . "place/preview.php");
 		exit;
-	} elseif($_REQUEST['ptype'] == 'preview_event'){
+	} elseif($_REQUEST['ptype'] == 'preview_event' && is_stringonly()){
 		include (TT_MODULES_FOLDER_PATH . "event/preview_event.php"); exit;
-	} elseif($_REQUEST['ptype'] == 'paynow'){
+	} elseif($_REQUEST['ptype'] == 'paynow' && is_stringonly()){
 		include (TT_MODULES_FOLDER_PATH . "place/paynow.php");
-	} elseif($_REQUEST['ptype'] == 'paynow_event'){
+	} elseif($_REQUEST['ptype'] == 'paynow_event' && is_stringonly()){
 		include (TT_MODULES_FOLDER_PATH . "event/paynow_event.php");
-	} elseif($_REQUEST['ptype'] == 'cancel_return'){
+	} elseif($_REQUEST['ptype'] == 'cancel_return' && is_stringonly()){
 		include_once(TT_MODULES_FOLDER_PATH . 'general/cancel.php');
 		if($post_author_id == $current_user->ID){
 		set_property_status($_REQUEST['pid'],'trash');
@@ -92,7 +96,7 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 			include_once(TT_MODULES_FOLDER_PATH . 'general/ipn_process_2co.php');
 		}
 		exit;
-	} elseif($_REQUEST['ptype'] == 'sort_image') {
+	} elseif($_REQUEST['ptype'] == 'sort_image' && is_stringonly()) {
 		global $wpdb;
 		$arr_pid = explode(',',$_REQUEST['pid']);
 		for($j=0;$j<count($arr_pid);$j++){
@@ -103,13 +107,13 @@ if(isset($_REQUEST['front_post_city_id']) =="" && get_option('splash_page') != "
 			$wpdb->query('update '.$wpdb->posts.' set  menu_order = "'.$j.'" where ID = "'.$media_id.'" ');
 		}
 		echo 'Image order saved successfully';
-	} elseif($_REQUEST['ptype'] == 'delete') {
+	} elseif($_REQUEST['ptype'] == 'delete' && is_stringonly()) {
 		global $current_user;	
 		if($post_author_id == $current_user->ID)	{
 			wp_delete_post($_REQUEST['pid']);
 			wp_redirect(get_author_link($echo = false, $current_user->ID));
 		}	
-	} elseif($_REQUEST['ptype'] == 'att_delete') {	
+	} elseif($_REQUEST['ptype'] == 'att_delete' && is_stringonly()) {	
 		if($_REQUEST['remove'] == 'temp')	{
 			if($_SESSION["file_info"])	{
 				$tmp_file_info = array();

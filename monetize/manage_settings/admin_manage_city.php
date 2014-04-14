@@ -3,10 +3,10 @@ global $wpdb,$multicity_db_table_name;
 if($_REQUEST['pagetype'] == 'delete' && $_REQUEST['city_id'] != '') {
 	$pid = $_REQUEST['city_id'];
 	$wpdb->query("delete from $multicity_db_table_name where city_id=\"$pid\"");
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'" method=get name="price_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="delsuccess"></form>';
-	echo '<script>document.price_success.submit();</script>';
+	echo '<script type="text/javascript">document.price_success.submit();</script>';
 	exit;
 }
 if($_REQUEST['pagetype'] == 'update_city') { 
@@ -29,16 +29,16 @@ if($_REQUEST['pagetype'] == 'update_city') {
 	}else	{
 		$wpdb->query("insert into $multicity_db_table_name (cityname,lat,lng,scall_factor,categories,is_zoom_home,is_default) values (\"$cityname\",\"$lat\",\"$lng\",\"$scall_factor\",\"$categories\",\"$is_zoom_home\",\"$default\")");
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 	echo '<form action="'.$location.'#option_display_city" method=get name="city_success">
 	<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="success"></form>';
-	echo '<script>document.city_success.submit();</script>';
+	echo '<script type="text/javascript">document.city_success.submit();</script>';
 	exit;
 }
 ?>
 
-<h4><?php _e('Manage cities','templatic');?>
-<a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=city#option_display_city';?>" title="<?php _e('Add a new city','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add a new city','templatic'); ?></a>
+<h4><?php _e('Manage city','templatic');?>
+<a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=city#option_display_city';?>" title="<?php _e('Add a new city','templatic');?>" name="btnviewlisting" class="l_add_new" /><?php _e('Add a new city','templatic'); ?></a>
 </h4>
 <p class="notes_spec"><?php _e('Add, edit and manage city details here. To add a new city, click the &quot;Add a new city&quot; link above. <br/><b>Note:</b> You should select any one city as the default city to show its map on the homepage.','templatic');?></p>
 
@@ -59,7 +59,7 @@ if($_REQUEST['pagetype'] == 'update_city') {
 </div>
 <?php }?>
 <p style="display:none" id="delete"></p>
-<script>
+<script type="text/javascript">
 function default_city(city)
 {
 	document.getElementById("defaultcity").value = city;
@@ -100,7 +100,7 @@ if(isset($_REQUEST['submit']) && $_REQUEST['submit'] != '')
  <label><input type="radio" name="default_city" id="default_city" <?php if(get_option('splash_page') == "") { ?> checked="checked" <?php } ?> onclick="return default_city(this.value)" value="default_city"/> <?php _e('Display Default City to User','templatic');?> </label>
  </div>
 
-<form method="post" action="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings';?>#option_display_city" <?php if(get_option('splash_page') != "") { ?> style="display:none" <?php } ?> name="default_city_frm" id="default_city_frm">
+<form method="post" action="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings';?>#option_display_city" <?php if(get_option('splash_page') != "") { ?> style="display:none" <?php } ?> name="default_city_frm" id="default_city_frm">
 	<input type="hidden" name="set_default_city_opt" value="1" />
     
      <div class="option option-select" style="padding-bottom:0;" >
@@ -152,7 +152,7 @@ if($cityinfo) {
     </tr>
 <?php
 $citysql = "select * from $multicity_db_table_name";
-$targetpage = site_url('/wp-admin/admin.php?page=manage_settings');
+$targetpage = home_url('/wp-admin/admin.php?page=manage_settings');
 $recordsperpage = 15;
 $pagination = $_REQUEST['pagination'];
 if($pagination == '')
@@ -171,13 +171,14 @@ if($cityinfo) {
 		<td><?php echo $cityinfoObj->city_id;?></td>
 		<td><?php 
 		if(function_exists('icl_t')){
-			echo icl_t($cityinfoObj->cityname);
+			$context = get_option('blogname');
+			echo icl_t($context,$cityinfoObj->cityname,$cityinfoObj->cityname);
 		}else{
 			echo $cityinfoObj->cityname; } ?></td>
 		<td><?php echo fecth_country_name($cityinfoObj->country_id);?></td>
 		<td><?php echo fecth_zone_name($cityinfoObj->zones_id);?></td> 
 		<td><?php echo $cityinfoObj->scall_factor;?></td>
-		<td><a href="javascript:void(0);showcitydetail('<?php echo $cityinfoObj->city_id;?>');"><img src="<?php echo get_template_directory_uri(); ?>/images/details.png" alt="<?php _e('Detail','templatic');?>" title="<?php _e('Detail','templatic');?>" border="0" /></a> &nbsp;&nbsp; <a href="<?php echo site_url().'/wp-admin/admin.php?page=manage_settings&mod=city&city_id='.$cityinfoObj->city_id;?>#option_display_city" title="<?php _e('Edit City','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/edit.png" alt="<?php _e('Edit City','templatic');?>" border="0" /></a> &nbsp;&nbsp;<a href="javascript:void(0);" title="<?php _e('Delete City','templatic');?>" onclick="return confirmDelete(<?php echo $cityinfoObj->city_id;?>);"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete City','templatic');?>" border="0" /></a></td>
+		<td><a href="javascript:void(0);showcitydetail('<?php echo $cityinfoObj->city_id;?>');"><img src="<?php echo get_template_directory_uri(); ?>/images/details.png" alt="<?php _e('Detail','templatic');?>" title="<?php _e('Detail','templatic');?>" border="0" /></a> &nbsp;&nbsp; <a href="<?php echo home_url().'/wp-admin/admin.php?page=manage_settings&mod=city&city_id='.$cityinfoObj->city_id;?>#option_display_city" title="<?php _e('Edit City','templatic');?>"><img src="<?php echo get_template_directory_uri(); ?>/images/edit.png" alt="<?php _e('Edit City','templatic');?>" border="0" /></a> &nbsp;&nbsp;<a href="javascript:void(0);" title="<?php _e('Delete City','templatic');?>" onclick="return confirmDelete(<?php echo $cityinfoObj->city_id;?>);"><img src="<?php echo get_template_directory_uri(); ?>/images/delete.png" alt="<?php _e('Delete City','templatic');?>" border="0" /></a></td>
     </tr>
 	<tr id="citydetail_<?php echo $cityinfoObj->city_id;?>" style="display:none;">
 		<td colspan="6">

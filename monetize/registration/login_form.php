@@ -10,7 +10,8 @@
 			 ?>
 </h4>
 <?php 
-global $General,$wpdb;
+global $General,$wpdb,$site_url;
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
 
 $errors = new WP_Error();
@@ -29,8 +30,8 @@ if ( defined('RELOCATE') ) { // Move flag is set
 		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
 
 	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	if ( dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) != site_url() )
-		update_option('siteurl', dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) );
+	if ( dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) != $site_url )
+		update_option('home', dirname($schema . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']) );
 }
 
 //Set a cookie now to see if they are supported by the browser.
@@ -49,7 +50,7 @@ case 'logout' :
 	wp_logout();
 
 	$redirect_to =  $_SERVER['HTTP_REFERER'];
-	//$redirect_to = site_url().'/?ptype=login&loggedout=true';
+	//$redirect_to = home_url().'/?ptype=login&loggedout=true';
 	if ( isset( $_REQUEST['redirect_to'] ) )
 		$redirect_to = $_REQUEST['redirect_to'];
 
@@ -65,7 +66,7 @@ case 'retrievepassword' :
 		$error_message = $errors->errors['invalid_email'][0];
 		if ( !is_wp_error($errors) ) {
 			global $General;
-			wp_redirect($General->get_url_login(site_url()).'/?ptype=login&action=login&checkemail=confirm');
+			wp_redirect($General->get_url_login($site_url).$op.'ptype=login&action=login&checkemail=confirm');
 			exit();
 		}
 	}
@@ -85,18 +86,18 @@ case 'rp' :
 	$errors = reset_password($_GET['key'], $_GET['login']);
 	global $General;
 	if ( ! is_wp_error($errors) ) {
-		wp_redirect($General->get_url_login(site_url()).'/?ptype=login&action=login&checkemail=newpass');
+		wp_redirect($General->get_url_login($site_url).$op.'ptype=login&action=login&checkemail=newpass');
 		exit();
 	}
 
-	wp_redirect($General->get_url_login(site_url()).'/?ptype=login&action=lostpassword&error=invalidkey');
+	wp_redirect($General->get_url_login($site_url).$op.'ptype=login&action=lostpassword&error=invalidkey');
 	exit();
 
 break;
 
 case 'register' :
 	if ( !get_option('users_can_register') ) {
-		wp_redirect(site_url().'/?ptype=login&registration=disabled');
+		wp_redirect($site_url.$op.'ptype=login&registration=disabled');
 		exit();
 	}
 
@@ -117,7 +118,7 @@ case 'register' :
 		$user_postalcode = $_POST['user_postalcode'];
 		$phone = $_POST['phone'];
 		
-		$errors = register_new_user($user_login, $user_email);
+		$errors = templ_register_new_user($user_login, $user_email);
 		if($General->allow_autologin_after_reg())
 		{
 			if ( !is_wp_error($errors) ) 
@@ -144,15 +145,18 @@ case 'register' :
 			}
 			if ( !$secure_cookie && is_ssl() && force_ssl_login() && !force_ssl_admin() && ( 0 !== strpos($redirect_to, 'https') ) && ( 0 === strpos($redirect_to, 'http') ) )
 				$secure_cookie = false;
-		
-			$user = wp_signon('', $secure_cookie);
-		
-			$redirect_to = apply_filters('login_redirect', $redirect_to, isset( $_REQUEST['reg_redirect_link'] ) ? $_REQUEST['reg_redirect_link'] : '', $user);
-		
-			if ( !is_wp_error($user) ) 
+			
+			if(get_option('allow_autologin_after_reg') == 'Yes')
 			{
-				wp_safe_redirect($redirect_to);
-				exit();
+				$user = wp_signon('', $secure_cookie);
+			
+				$redirect_to = apply_filters('login_redirect', $redirect_to, isset( $_REQUEST['reg_redirect_link'] ) ? $_REQUEST['reg_redirect_link'] : '', $user);
+			
+				if ( !is_wp_error($user) ) 
+				{
+					wp_safe_redirect($redirect_to);
+					exit();
+				}
 			}
 			exit();
 		}
@@ -161,7 +165,7 @@ case 'register' :
 		{
 			if ( !is_wp_error($errors) ) {
 				global $General;
-				wp_redirect($General->get_url_login(site_url()).'/?ptype=login&action=login&checkemail=registered');
+				wp_redirect($General->get_url_login($site_url).$op.'ptype=login&action=login&checkemail=registered');
 				exit();
 			}	
 		}
@@ -212,14 +216,15 @@ if($_REQUEST['checkemail']=='confirm')
 	<input type="hidden" name="testcookie" value="1" />
     <p class="rember">
       <input name="rememberme" type="checkbox" id="rememberme" value="forever" class="fl" />
-      <?php echo REMEMBER_ON_COMPUTER_TEXT; ?> </p>
+      <?php echo REMEMBER_ON_COMPUTER_TEXT; ?> 
+	</p>
     <!-- <a  href="javascript:void(0);" onclick="chk_form_login();" class="highlight_button fl login" >Sign In</a>-->
 	
 	<div class="form_row ">
     <input class="b_signin_n" type="submit" value="<?php echo SIGN_IN_BUTTON;?>"  name="submit" />
     
      <a href="javascript:void(0);showhide_forgetpw();" class="forgot_password" ><?php echo FORGOT_PW_TEXT;?></a>
-	</div> <?php do_action('login_form'); ?>  
+	</div> <?php do_action('geoplaces_login_form'); ?>  
    
      	 		
   </form>
@@ -246,7 +251,7 @@ if($_REQUEST['checkemail']=='confirm')
   
   <div id="lostpassword_form" <?php if($display_style != '') { echo $display_style; } else { echo 'style="display:none;"';} ?> >
     <h4><?php echo FORGOT_PW_TEXT;?></h4>
-    <form name="lostpasswordform" id="lostpasswordform" action="<?php echo site_url().'/?ptype=login&amp;action=lostpassword'; ?>" method="post">
+    <form name="lostpasswordform" id="lostpasswordform" action="<?php echo $site_url.$op.'ptype=login&amp;action=lostpassword'; ?>" method="post">
       <div class="form_row clearfix">
         <label> <?php echo USERNAME_EMAIL_TEXT; ?>: </label>
         <input type="text" name="user_login" id="user_login1" value="<?php echo esc_attr($user_login); ?>" size="20" class="textfield" />

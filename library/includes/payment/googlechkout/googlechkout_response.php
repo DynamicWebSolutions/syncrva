@@ -21,6 +21,6 @@ $user_email = $current_user->user_email;
             	<h1 class="head2"><?php echo GOOGLE_CHKOUT_MSG;?></h1>
             </div>
  
-<script>
+<script type="text/javascript">
 setTimeout("document.frm_payment_method.submit()",50);
 </script>

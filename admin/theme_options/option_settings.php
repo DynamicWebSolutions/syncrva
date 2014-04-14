@@ -102,9 +102,21 @@ function temp_get_option_tree_informations()
 
 if(current_user_can('manage_options'))
 {
-IF(isset($_REQUEST['ajaxact']) && $_REQUEST['ajaxact'] != ""){
+if(isset($_REQUEST['ajaxact']) && $_REQUEST['ajaxact'] != ""){
 	if($_REQUEST['ajaxact']=='save_options')
 	{
+		if($_REQUEST['ptthemes_enable_responsivemap']=='')
+		{
+			update_option( 'ptthemes_enable_responsivemap', 'no' );
+		}
+		if($_REQUEST['ptthemes_disable_rating']=='')
+		{
+			update_option( 'ptthemes_disable_rating', 'no' );
+		}
+		if($_REQUEST['ptthemes_disable_rating_limit']=='')
+		{
+			update_option( 'ptthemes_disable_rating_limit', 'no' );
+		}
 		if($_POST)
 		{
 			foreach($_POST as $key=>$val)

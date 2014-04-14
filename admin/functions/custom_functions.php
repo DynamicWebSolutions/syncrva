@@ -286,7 +286,7 @@ function templ_sendEmail($fromEmail,$fromEmailName,$toEmail,$toEmailName,$subjec
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
 		// Additional headers
-	$headers .= 'To: '.$toEmailName.' <'.$toEmail.'>' . "\r\n";
+	
 	$headers .= 'From: '.get_option('blogname').' <'.$fromEmail.'>' . "\r\n";
 		
 	$subject = apply_filters('templ_send_email_subject', $subject);
@@ -435,6 +435,8 @@ function templ_get_excerpt($finalstring, $limit='',$post_id='') {
 	}
 	}
 	$read_more1 = apply_filters('templ_get_excerpt_readmore_filter',$read_more1);
+	$finalstring = apply_filters('the_content', $finalstring);
+	$finalstring = str_replace(']]>', ']]&gt;', $finalstring);
 	if($limit)
 	{
 		$words = explode(" ",$finalstring);
@@ -460,7 +462,7 @@ function templ_listing_content($post)
 	if (apply_filters('templ_get_listing_content_filter', true))
 	{
 		if(get_option('ptthemes_postcontent_full')=='Full Content')
-		{ 			
+		{ 	
 			echo $post->post_content;			
 		}else
 		{
@@ -471,6 +473,14 @@ function templ_listing_content($post)
 			}
 
 			$limit = get_option('ptthemes_content_excerpt_count');
+			/*$dom = new DOMDocument;
+			$dom->loadHTML($htmlString);
+			$xPath = new DOMXPath($dom);
+			$nodes = $xPath->query('//*[@id="anotherDiv"]');
+			if($nodes->item(0)) {
+				$nodes->item(0)->parentNode->removeChild($nodes->item(0));
+			}
+			echo $dom->saveHTML();*/
 			echo templ_get_excerpt($string, $limit);
 		}
 	}
@@ -485,6 +495,8 @@ RETURNS : Meta Content, Description and Noindex settings for SEO
 */
 function templ_seo_meta_content()
 {
+	$description = '';
+	$keywords = '';
 	if (is_home() || is_front_page()) 
 	{
 		$description = stripslashes(get_option('ptthemes_home_desc_seo'));
@@ -556,7 +568,8 @@ function templ_seo_title() {
 			$curr_term = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy')); # current term data
 			# if it's term
 			if (!empty($curr_term)) {
-				$newtitle = $curr_tax->label . $sep . $curr_term->name;
+				//$newtitle = $curr_tax->label . $sep . $curr_term->name;
+				$newtitle = $curr_term->name;
 			} else {
 				$newtitle = $curr_tax->label;
 			}
@@ -596,47 +609,25 @@ ARGUMENTS : None
 RETURNS : Get Header Main Menu Action Hook
 */
 function templ_main_header_navigation_content()
-{
-
-		if(strtolower(get_option('ptthemes_main_pages_nav_enable'))!='deactivate'){?>
-            <div class="main_nav">
+{ ?>
+        <div class="main_nav">
             
-            <div class="main_nav_in clear">
+            <div class="main_nav_in clearfix">
+				<?php 
+				/* if Uber menu not activated no need to show menu title in header */
+				if(!is_plugin_active('ubermenu/ubermenu.php')) { ?>
          		<div class="currentmenu2"><span>Menu</span></div>
+				<?php } ?>
             	<?php apply_filters('templ_main_header_nav_above_filter','');
-				 $nav_menu = get_option('theme_mods_Geoplaces4');
-    				if (!is_active_widget( false, false, 'nav_menu', true ) && is_active_widget( false, false, 'widget_multi_city', true ) && !is_active_widget( false, false, 'dc_jqmegamenu_widget', true ) && $nav_menu['nav_menu_locations']['secondary'] == 0) { global $wpdb; ?>
-								<div class="menu-header">
-								<ul class="menu sf-js-enabled" id="menu-main">
-								<li class="hometab <?php if ( is_home() && @$_REQUEST['page']=='' && @$_REQUEST['ptype'] =='' ) { ?> current_page_item <?php } ?>"><a href="<?php echo home_url(); ?>/"><?php _e('Home'); ?></a></li>
-								<li class="<?php if($page =='page'){ echo 'current-page-item';}?>" >
-									<?php $page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts where post_title like 'Page Templates'");?>
-									<a href="<?php echo get_permalink($page_id); ?>"><?php _e('Page Templates','templatic'); ?></a>
-									<ul class="sub-menu">
-									<?php $page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts where post_title like 'Page Templates'");
-									wp_list_pages('title_li=&post_type=page&exclude=2,'.$page_id);?>
-									</ul>
-								</li>
-								</ul>
-								</div>
-					<?php		dynamic_sidebar('main_navigation');
-					}else if(is_active_widget(false, false, 'nav_menu', true ) && is_active_widget( false, false, 'widget_multi_city', true ) && is_active_widget( false, false, 'dc_jqmegamenu_widget', true ) ){
-							dynamic_sidebar('main_navigation');
-					}else if(is_active_widget(false, false, 'nav_menu', true ) && is_active_widget( false, false, 'widget_multi_city', true ) ){
-							dynamic_sidebar('main_navigation');
-					}else if(is_active_widget(false, false, 'dc_jqmegamenu_widget', true ) && !is_active_widget( false, false, 'widget_multi_city', true ) ){
-							dynamic_sidebar('main_navigation');
-					}else if(is_active_widget(false, false, 'dc_jqmegamenu_widget', true ) && is_active_widget( false, false, 'widget_multi_city', true ) ){
-							dynamic_sidebar('main_navigation');
-					}else if(!is_active_widget( false, false, 'widget_multi_city', true ) && !is_active_widget( false, false, 'nav_menu', true )){
-						//wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'secondary', 'items_wrap' => '<ul class="menu sf-js-enabled" id="menu-main">', ));
-						
-                         if($nav_menu['nav_menu_locations']['secondary'] == 0){
+				$theme_name = basename(get_template_directory());
+				$nav_menu = get_option('theme_mods_'.$theme_name);
+    				
+                if(strtolower(get_option('ptthemes_main_pages_nav_enable'))=='activate'){
 						global $wpdb; ?>
 						<div class="menu-header">
 						<ul class="menu sf-js-enabled" id="menu-main">
-						<li class="hometab <?php if ( is_home() && @$_REQUEST['page']=='' && @$_REQUEST['ptype'] =='' ) { ?> current_page_item <?php } ?>"><a href="<?php echo home_url(); ?>/"><?php _e('Home'); ?></a></li>
-						<li class="<?php if($page =='page'){ echo 'current-page-item';}?>" >
+						<li class="hometab <?php if ( is_home() && @$_REQUEST['page']=='' && @$_REQUEST['ptype'] =='' && is_stringonly() ) { ?> current_page_item <?php } ?>"><a href="<?php echo home_url(); ?>/"><?php _e('Home','templatic'); ?></a></li>
+						<li class="<?php if(@$page =='page'){ echo 'current-page-item';}?>" >
 							<?php $page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts where post_title like 'Page Templates'");?>
 							<a href="<?php echo get_permalink($page_id); ?>"><?php _e('Page Templates','templatic'); ?></a>
 							<ul class="sub-menu">
@@ -646,19 +637,17 @@ function templ_main_header_navigation_content()
 						</li>
 						</ul>
 						</div>
-						<?php }else{
+				<?php }else{
+							if($nav_menu['nav_menu_locations']['secondary'] != 0)
+							
 							wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'secondary' ));
-							dynamic_sidebar('main_navigation');
-						}
-					}else{
-						wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'secondary' ));
-						dynamic_sidebar('main_navigation');
-					}
-					apply_filters('templ_main_header_nav_below_filter',''); ?>
-        </div></div>
-
+				} 
+				dynamic_sidebar('main_navigation'); /* call below header widget area */
+					
+				apply_filters('templ_main_header_nav_below_filter',''); ?>
+				</div>
+		</div>
     <?php
-	}
 }
 add_action('templ_get_main_header_navigation','templ_main_header_navigation_content');
 
@@ -677,7 +666,8 @@ function templ_top_header_navigation_content()
 		
         <?php apply_filters('templ_top_header_nav_above_filter','');?>
        		   <?php if(!dynamic_sidebar('top_navigation')) {
-			    $nav_menu = get_option('theme_mods_GeoPlaces4');
+			    $theme_name = basename(get_template_directory());
+				$nav_menu = get_option('theme_mods_'.$theme_name);
 			   if(isset($nav_menu['nav_menu_locations']['primary']) && $nav_menu['nav_menu_locations']['primary'] != 0)
 			   {
 			    ?><div class="currentmenu"><span>Menu</span></div>
@@ -696,6 +686,26 @@ FUNCTION NAME : templ_show_facebook_button_action
 ARGUMENTS : None
 RETURNS : Facebook Button Detail page - Action Hook
 */
+add_action('init','templ_body_start_action');
+
+function templ_body_start_action(){
+add_action('templ_body_start','templ_body_start_facebook');
+}
+
+function templ_body_start_facebook(){?>
+
+	<div id="fb-root"></div>
+	<script type="text/javascript">(function(d, s, id) {
+	  var js = d.getElementsByTagName(s)[0];
+	  var fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&status=0";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	</script>
+<?php 
+}
 function templ_show_facebook_button_action()
 {
 	if(templ_is_facebook_button())
@@ -703,8 +713,15 @@ function templ_show_facebook_button_action()
 		if (apply_filters('templ_facebook_button_script', true))
 		{
 			global $post;
+			if (is_ssl()) {
+				$url =get_permalink($post->ID);
+			
+			}
+		$url =get_permalink($post->ID);	
 		?>
-     <div class="flike"> <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1" type="text/javascript"></script><fb:like href="" send="false" layout="button_count" width="50" show_faces="false" font="arial"></fb:like></div>
+
+	<div class="fb-like" data-href="<?php echo $url."?front_post_city_id=1"; ?>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+   
         <?php	
 		}
 	}
@@ -723,9 +740,16 @@ function templ_show_twitter_button_action()
 	{
 		if (apply_filters('templ_tweet_button_script', true))
 		{
+			if (is_ssl()) {
+				$t_url ="https://twitter.com/share";
+				$t2_ssl = "https://platform.twitter.com/widgets.js";
+			}else{
+				$t_url ="http://twitter.com/share";
+				$t2_ssl ="http://platform.twitter.com/widgets.js";
+			}
 		?>
-        <a href="http://twitter.com/share" class="twitter-share-button"><?php _e('Tweet','templatic');?></a>
-		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script> 
+        <a href="<?php echo $t_url; ?>" class="twitter-share-button"><?php _e('Tweet','templatic');?></a>
+		<script type="text/javascript" src="<?php echo $t2_ssl; ?>"></script> 
         <?php	
 		}
 	}
@@ -741,12 +765,13 @@ RETURNS : Text as site logo with description
 function templ_add_site_logo()
 {
 	if (templ_is_show_blog_title()) 
-	{ 
+	{  
+		global $site_url;
 		if ( is_home()){
-			echo apply_filters('templ_blog_title_text','<div class="site-title"><h1><a href="'.get_option('home').'/" style="display:block; color:black; text-decoration:none; font-weight:normal; font-size:40px;">'.get_bloginfo( 'name', 'display' ).'</a></h1> 
+			echo apply_filters('templ_blog_title_text','<div class="site-title"><h1><a href="'.$site_url.'" style="display:block; color:black; text-decoration:none; font-weight:normal; font-size:40px;">'.get_bloginfo( 'name', 'display' ).'</a></h1> 
 		<p class="site-description">'. get_bloginfo('description', 'display').'</p></div>');
 		}else{
-			echo apply_filters('templ_blog_title_text','<div class="site-title"><a href="'.get_option('home').'/">'.get_bloginfo( 'name', 'display' ).'</a> 
+			echo apply_filters('templ_blog_title_text','<div class="site-title"><a href="'.$site_url.'">'.get_bloginfo( 'name', 'display' ).'</a> 
 		<p class="site-description">'. get_bloginfo('description', 'display').'</p></div>');
 		}
 	}else
@@ -762,6 +787,7 @@ ARGUMENTS : None
 RETURNS : Site Header logo with Hyper link
 */
 function templ_get_site_logo() {
+	global $site_url;
 	if(get_option('ptthemes_logo_url'))
 	{
 		$logo_url = get_option('ptthemes_logo_url');	
@@ -771,15 +797,15 @@ function templ_get_site_logo() {
 	}
     if($logo_url)
 	{		
-		$return_str = '<a href="'.get_option('home').'/">';
+		$return_str = '<a href="'.$site_url.'">';
 		$return_str .= '<img src="'.apply_filters('templ_logo',$logo_url).'" alt="" />';
 		$return_str .= '</a>';
 		if (is_home() && get_option('ptthemes_show_blog_title') != 'No'){ 
-			$return_str .= apply_filters('templ_blog_title_text','<div class="site-title none"><h1><a href="'.get_option('home').'/">'.get_bloginfo( 'name', 'display' ).'</a></h1> 
+			$return_str .= apply_filters('templ_blog_title_text','<div class="site-title none"><h1><a href="'.$site_url.'">'.get_bloginfo( 'name', 'display' ).'</a></h1> 
 		<p class="site-description">'. get_bloginfo('description', 'display').'</p></div>');
 		}else{
 			if(get_option('ptthemes_show_blog_title') != 'No'){
-			$return_str .=apply_filters('templ_blog_title_text','<div class="site-title none" ><a href="'.get_option('home').'/">'.get_bloginfo( 'name', 'display' ).'</a>
+			$return_str .=apply_filters('templ_blog_title_text','<div class="site-title none" ><a href="'.$site_url.'">'.get_bloginfo( 'name', 'display' ).'</a>
 			<p class="site-description">'. get_bloginfo('description', 'display').'</p></div>');
 			}
 		}	
@@ -846,8 +872,14 @@ function bdw_get_images_with_info($iPostID,$img_size='thumb')
 {
     $arrImages =& get_children('order=ASC&orderby=menu_order ID&post_type=attachment&post_mime_type=image&post_parent=' . $iPostID );
 	$return_arr = array();
+	if (has_post_thumbnail( $iPostID )){
+		$img_arr = wp_get_attachment_image_src( get_post_thumbnail_id( $iPostID ), $img_size );
+		$imgarr['id'] = $id;
+		$imgarr['file'] = $img_arr[0];
+		$return_arr[] = $imgarr;
+	}
 	if($arrImages) 
-	{		
+	{
        foreach($arrImages as $key=>$val)
 	   {
 	   		$id = $val->ID;

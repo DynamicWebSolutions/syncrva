@@ -8,7 +8,7 @@ if($merchantid == '')
 $ipnfilepath = $paymentOpts['ipnfilepath'];
 if($ipnfilepath == '')
 {
-	$ipnfilepath = site_url("/?ptype=notifyurl&pmethod=2co");
+	$ipnfilepath = home_url("/?ptype=notifyurl&pmethod=2co");
 }
 global $payable_amount,$post_title,$last_postid,$current_user;
 $currency_code = get_option('currency_symbol');
@@ -41,7 +41,7 @@ $user_email = $current_user->user_email;
             	<center><h1 class="head2"><?php echo TWOCO_MSG;?></h1></center>
             </div>
 
-<script>
+<script type="text/javascript">
 setTimeout("document.frm_payment_method.submit()",50); 
 </script>     
 

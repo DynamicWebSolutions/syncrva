@@ -2,28 +2,48 @@
 if(!function_exists('get_cat_search_listing')) {
 function get_cat_search_listing()
 {
-	global $wpdb,$wp_query, $post;
+	global $wpdb,$wp_query, $post,$post_type;
 	$category_info_arr = array();
 	$post_content_info = array();
 	global $wp_query, $post;
 	$current_term = $wp_query->get_queried_object();	
+	$category_id = $current_term->term_id;	
+	$taxonomy = $current_term->taxonomy;
+	$post_type = get_post_type();
+	if(!$post_type){ $post_type = CUSTOM_POST_TYPE1; }
+	if(isset($post_type) && $post_type==CUSTOM_POST_TYPE1){
+		$type = CUSTOM_POST_TYPE1;
+	}elseif(isset($post_type) && $post_type==CUSTOM_POST_TYPE2){
+		$type = CUSTOM_POST_TYPE2;
+	}
+	$args = array();
+	if(strtolower(get_option('ptthemes_map_cotain_posts')) == strtolower('Yes')){
+		$args = array( 
+			'post_type' => $type,
+			'posts_per_page' => -1	,
+			'post_status' => array('publish'),
+			'tax_query' => array(
+				array(
+					'taxonomy' => $taxonomy,
+					'field' => 'id',
+					'terms' => $category_id,
+					'operator'  => 'IN'
+				)));
 
-			/* $term_id = $current_term->term_id;
-			if(trim($term_id))
-			{
-				$map_cat_ids = $map_cat_arr;
-				$catsql = "select c.term_icon from $wpdb->terms c  where c.term_id in ($term_id)";	
-			}
-			$term_icon = $wpdb->get_var($catsql);
-			if($term_icon == '')
-			{
-				$term_icon = get_bloginfo('template_directory').'/library/map/icons/pin.png';
-			} */
-
-	if ( have_posts() ) 
+		$post_query = null;
+		$post_query = new WP_Query($args);
+	}else{
+		$post_query = $wp_query;
+	}
+	
+	//echo get_post_type();
+	//echo $post_type.'type';
+	//echo "<pre>";print_r($post_query);echo "</pre>";
+	
+	if ( $post_query->have_posts() ) 
 	{
 		$srch_posts = array();
-		while ( have_posts() ){ the_post();
+		while ( $post_query->have_posts() ){ $post_query->the_post();
 			$srch_posts[] = $post->ID;
 			$args = wp_parse_args( $args, array('fields' => 'ids') );
 			if( $post->post_type==CUSTOM_POST_TYPE1)
@@ -44,8 +64,6 @@ function get_cat_search_listing()
 			
 			if(is_array($postinfo))
 			{
-				//$srcharr = array("'","/","-",'"','\\');
-				//$replarr = array("&prime;","&frasl;","&ndash;","&ldquo;",'');
 				$srcharr = array("'");
 				$replarr = array("\'");
 				for($p=0;$p<count($postinfo);$p++)
@@ -53,39 +71,42 @@ function get_cat_search_listing()
 					$postinfo_obj = $postinfo[$p];
 					$ID = $postinfo_obj->ID;
 					$post_content_info[] = $ID;
+					/* get posts categories */
 					if( $post->post_type==CUSTOM_POST_TYPE1){
-					$post_categories = wp_get_object_terms( $postinfo_obj->ID ,CUSTOM_CATEGORY_TYPE1);
+						$post_categories = wp_get_object_terms( $postinfo_obj->ID ,CUSTOM_CATEGORY_TYPE1);
 					}else if($post->post_type==CUSTOM_POST_TYPE2){
-					$post_categories = wp_get_object_terms( $postinfo_obj->ID ,CUSTOM_CATEGORY_TYPE2);
-					}
-					/*  for($ci=0; $ci <= count($post_categories); $ci++){
-						$sep =",";
-						if($ci == count($post_categories)){
-						$sep ="";
-						}
-						$post_term_ids .= $post_categories[$ci]->term_id.$sep;
-					} */
-					$post_term_id = $post_categories[0]->term_id;
-					
-					if($post_term_id)
-					{
-						$map_cat_ids = $map_cat_arr;
-						$catsql = "select c.term_icon from $wpdb->terms c  where c.term_id = $post_term_id ";	
+						$post_categories = wp_get_object_terms( $postinfo_obj->ID ,CUSTOM_CATEGORY_TYPE2);
 					}
 		
-					$term_icon = $wpdb->get_var($catsql);
-	
-					$cat_have_parent = 	 "select c.term_icon from $wpdb->terms c,$wpdb->term_taxonomy tt  where c.term_id = tt.term_id  and tt.parent = $post_term_id ";		
-					$cat_have_parent = $wpdb->get_var($cat_have_parent);
-					if($post_term_id != $current_term->term_id  && count($post_categories) >1){
-						$tid = $current_term->term_id;
-						$catsql = "select c.term_icon from $wpdb->terms c  where c.term_id = $tid ";	
-						$term_icon = $wpdb->get_var($catsql);;
+					$post_term_id = $post_categories[0]->term_id; /* get the term icon of current category */
+					
+					if($post_term_id && $post_term_id != '')
+					{
+						$catsql = "select c.term_icon from $wpdb->terms c  where c.term_id = $post_term_id ";
+						$term_icon = $wpdb->get_var($catsql);
 					}
-					if($term_icon == '')
+					if(!$term_icon ){
+						$term_icon = get_bloginfo('template_directory').'/library/map/icons/pin.png';
+					}
+					if($post_term_id != $current_term->term_id){ 
+						for($ci =0 ; $ci <= count($post_categories); $ci ++){
+							$post_term_id1 = @$post_categories[$ci]->term_id;
+							if($post_term_id1 && $post_term_id1 != '')
+							 {
+								$catsql = "select c.term_icon from $wpdb->terms c  where c.term_id = $post_term_id1 ";	 /* get the term icon of child category category */
+							 }
+							$term_icon = $wpdb->get_var($catsql);
+							if($term_icon !=''){
+								break;
+							}
+						}
+					}
+
+					if(!isset($term_icon) && $term_icon == '')
 					{
 						$term_icon = get_bloginfo('template_directory').'/library/map/icons/pin.png';
 					}
+					/* fetch post informations */
 					$title = str_replace($srcharr,$replarr,$postinfo_obj->post_title);
 					$plink = get_permalink($postinfo_obj->ID);
 					$lat = get_post_meta($ID,'geo_latitude',true);
@@ -111,7 +132,8 @@ function get_cat_search_listing()
 					$thumb = vt_resize($attachment_id,$pimg, 90,75, $crop = true );
 					$thumb = $thumb['url'];
 					}else{
-					$thumb = get_template_directory_uri()."/images/no-image.png";
+						$ititle = '';
+						$thumb = get_template_directory_uri()."/images/no-image.png";
 					}
 					if($lat && $lng)
 					{
@@ -174,10 +196,12 @@ function get_category_listing_map()
 }
 // =============================== Google Map V3 Listing page======================================
 	$catarr = get_category_listing_map();
+	//echo "<pre>";print_r($catarr);echo "</pre>";
 	$catinfo = $catarr[0];
 	$postinfo = $catarr[1];
+	
 	?>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markermanager.js"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markerclusterer_packed.js"></script>
 <script type="text/javascript">

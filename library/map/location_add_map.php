@@ -1,11 +1,11 @@
 <?php 
-if($zooming_factor != ''){
+if(@$zooming_factor != ''){
 	$zooming_factor = $zooming_factor;
 } else {
 	$zooming_factor = 13;
 } ?>
 
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false&libraries=places"></script>
 <script type="text/javascript">
 /* <![CDATA[ */
 var map;
@@ -75,7 +75,7 @@ if(CITY_MAP_CENTER_LAT!='' && CITY_MAP_CENTER_LNG!='' && CITY_MAP_ZOOMING_FACT!=
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     geocoder = new google.maps.Geocoder();
 	google.maps.event.addListener(map, 'zoom_changed', function() {
-		//document.getElementById("zooming_factor").value = map.getZoom();
+		document.getElementById("zooming_factor").value = map.getZoom();
 			
 		});
 	setupEvents();
@@ -243,6 +243,10 @@ google.maps.event.addListener(map, 'zoom_changed', function() {
 		draggable: true
 	  });
 		
+	google.maps.event.addListener(map, 'zoom_changed', function() {
+		document.getElementById("zooming_factor").value = map.getZoom();
+		});
+
 	updateMarkerAddress('Dragging...');
 	updateMarkerPosition(marker.getPosition());
 	geocodePosition(marker.getPosition());

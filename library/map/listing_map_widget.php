@@ -144,7 +144,7 @@ class googlemmap_listingpage extends WP_Widget {
 	$catinfo = $catarr[0];
 	$postinfo = $catarr[1];
 	?>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.5&sensor=false"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markermanager.js"></script>
 <script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/library/map/markerclusterer_packed.js"></script>
 <script type="text/javascript">

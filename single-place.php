@@ -37,20 +37,20 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
      
      <div class="post-meta single_meta">
         <?php 					if(templ_is_show_post_author()){?>
-        <span class="post-author"><label> <?php echo By ;?> </label> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="Posts by <?php the_author(); ?>">
+        <span class="post-author"><label> <?php _e('By','templatic'); ?> </label> <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" title="<?php _e(POST_BY) ;?> <?php the_author(); ?>">
         <?php the_author(); ?>
         </a> </span>
         <?php } ?>
         <?php if(templ_is_show_post_date()){?>
 		<span class="post-date">
-			<label> <?php echo on ;?></label>
+			<label> <?php _e('on','templatic'); ?></label>
 			<?php the_time(templ_get_date_format()) ?>
         </span>  
         <?php 	} 
 			if(templ_is_show_listing_views()){
-			echo '<span class="post-total-view">'.VIEW_LIST_TEXT .user_post_visit_count($post->ID).'</span>';
+			echo '<span class="post-total-view">'.__(VIEW_LIST_TEXT) .": ".user_post_visit_count($post->ID).'</span>';
 
-			echo '<span class="post-daily-view"> '. VIEW_LIST_TEXT_DAILY .user_post_visit_count_daily($post->ID).'</span>';
+			echo '<span class="post-daily-view"> '. __(VIEW_LIST_TEXT_DAILY).": ".user_post_visit_count_daily($post->ID).'</span>';
 			}
 		
 		
@@ -97,9 +97,10 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
       <?php }else{?>
       <div class="post-content">
 	    <!-- Image gallery start -->
-        <script src="<?php bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
+        
         <?php $post_images = bdw_get_images($post->ID,'large');
 		if(count($post_images) != '') { ?>
+		<script src="<?php echo get_bloginfo('template_directory'); ?>/js/galleria.js" type="text/javascript" ></script>
         <div id="galleria" style="overflow:hidden;">
           <?php
                 if(count($post_images)>0)
@@ -119,10 +120,15 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
 		$agent = $_SERVER['HTTP_USER_AGENT']; // Put browser name into local variable
 		$swidth = $_COOKIE['swidth'];
 		if(!$swidth){ $swidth = 1000; }
-		/* Check user agent */	
-		if (preg_match("/iPhone/", $agent) || preg_match("/iPad/", $agent) || preg_match("/Phone/", $agent) || preg_match("/Android/", $agent) || (intval($swidth) <= 497 && $swidth !=0)) {
-			templ_place_detail_sidebar($post,'sidebar right right_col','below_gallery_sidebar');	
-		}
+		/* Check user agent */
+		$_data = $post;
+		if (preg_match("/iPhone/", $agent) || (preg_match("/iPad/", $agent) && $swidth < 1024) || preg_match("/iPad/", $agent) || preg_match("/Phone/", $agent) || preg_match("/Android/", $agent) || (intval($swidth) <= 497 && $swidth !=0)) {
+			templ_place_detail_sidebar($post,'sidebar right right_col','below_gallery_sidebar',get_post_type());	
+			$post = $_data;
+			global $post;
+			setup_postdata($post);
+		}		
+		
 		the_content(); ?>
 		 <?php if(get_post_meta($post->ID,'video',true)){?>
             <div class="video_main">
@@ -168,6 +174,7 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
 			$taxonomy_category = str_replace(CUSTOM_MENU_CAT_TITLE.':','',$taxonomy_category);
 			$taxonomy_category = str_replace(', and',',',$taxonomy_category);
 			$taxonomy_category = str_replace(' and ',', ',$taxonomy_category);
+			$taxonomy_category = substr($taxonomy_category,1,-1);
 	
 			?>
         <?php _e('','templatic'); 
@@ -179,10 +186,11 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
        
         <?php if(templ_is_show_post_tags()){?>
          <?php $taxonomy_tags = get_the_taxonomies();
-		$taxonomy_tags = $taxonomy_tags[CUSTOM_TAG_TYPE1];
+		$taxonomy_tags = @$taxonomy_tags[CUSTOM_TAG_TYPE1];
 		$taxonomy_tags = str_replace(CUSTOM_MENU_TAG_LABEL.':','',$taxonomy_tags);
 		$taxonomy_tags = str_replace(', and',',',$taxonomy_tags);
-		$taxonomy_tags = str_replace(' and ',', ',$taxonomy_tags);?>
+		$taxonomy_tags = str_replace(' and ',', ',$taxonomy_tags);
+		$taxonomy_tags = substr($taxonomy_tags,1,-1);?>
         <?php if ($taxonomy_tags != ''){?>
     
         <span class="post-tags"><?php echo $taxonomy_tags; ?></span>
@@ -230,7 +238,7 @@ yoast_breadcrumb(' <div class="breadcrumb clearfix"><div class="breadcrumb_in">'
   <script type="text/javascript">
 var $cg = jQuery.noConflict();
 // Load theme
-Galleria.loadTheme('<?php bloginfo('template_directory'); ?>/js/galleria.classic.js');
+Galleria.loadTheme('<?php echo get_bloginfo('template_directory'); ?>/js/galleria.classic.js');
 // run galleria and add some options
     $cg('#galleria').galleria({
         image_crop: true, // crop all images to fit
@@ -258,5 +266,5 @@ Galleria.loadTheme('<?php bloginfo('template_directory'); ?>/js/galleria.classic
 </script>
   <!--  CONTENT AREA END -->
 </div>
-<?php include_once ('library/includes/sidebar_place_detail.php'); ?>
+<?php $post = $pdata; include_once ('library/includes/sidebar_place_detail.php'); ?>
 <?php get_footer(); ?>

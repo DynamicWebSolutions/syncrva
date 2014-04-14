@@ -1,6 +1,7 @@
 <?php
 ob_start();
-global $wpdb,$post;
+global $wpdb,$post,$site_url;
+if(strstr($site_url,'?') ){ $op= "&"; }else{ $op= "?"; }
 $current_user = wp_get_current_user(); 
 $payable_amount = 0;
 $cat_display = get_option('ptthemes_category_dislay');
@@ -19,7 +20,7 @@ $payable_amount = get_payable_amount_with_coupon($payable_amount,$_SESSION['plac
 }
 if($_REQUEST['pid']=='' && $payable_amount>0 && $_REQUEST['paymentmethod']=='')
 {
-	wp_redirect(site_url().'/?ptype=preview&msg=nopaymethod');
+	wp_redirect($site_url.$op.'ptype=preview&msg=nopaymethod');
 	exit;
 }
 
@@ -35,18 +36,19 @@ if($_POST) {
 	{
 		$place_info = $_SESSION['place_info'];
 		if($place_info){
-			if($place_info['website'] && !strstr($place_info['website'],'http://'))
+			if($place_info['website'] && (!strstr($place_info['website'],'http://') && !strstr($place_info['website'],'https://') ))
 			{
 				$place_info['website'] = 'http://'.$place_info['website'];
 			}
-			if($place_info['twitter'] && !strstr($place_info['twitter'],'http://'))
+			if($place_info['twitter'] && (!strstr($place_info['twitter'],'http://') && !strstr($place_info['twitter'],'https://')))
 			{
 				$place_info['twitter'] = 'http://'.$place_info['twitter'];
 			}
-			if($place_info['facebook'] && !strstr($place_info['facebook'],'http://'))
+			if($place_info['facebook'] && (!strstr($place_info['facebook'],'http://') && !strstr($place_info['facebook'],'https://')))
 			{
 				$place_info['facebook'] = 'http://'.$place_info['facebook'];
 			}
+			
 		}
 		
 		if(!$place_info['post_city_id'])
@@ -68,14 +70,10 @@ if($_POST) {
 						"facebook"		=> $place_info['facebook'],
 						"proprty_feature"=> $place_info['proprty_feature'],	
 						"post_city_id"	=> $place_info['post_city_id'],
+						"zooming_factor" => $place_info['zooming_factor'],
 					);
-		$category = str_replace('|',',',$_SESSION['place_info']['all_cta']);
-		$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE1,$category[0],'user_side');
-		foreach($custom_metaboxes as $key=>$val)
-		{
-			$name = $val['name'];
-			$custom[$name] = $place_info[$name];
-		}
+		$category = str_replace('|',',',$_SESSION['place_info']['all_cat']);
+		
 		$featured_type =$_SESSION['place_info']['featured_type'];
 		if($property_price_info['is_featured'] != "" && $property_price_info['is_featured'] == 1 && ($featured_type == "c" || $featured_type == "h" || $featured_type == "both"))
 		{
@@ -93,8 +91,7 @@ if($_POST) {
 		
 		$catids_arr = array();
 
-
-		if($place_info['category'])
+		if($place_info['category'] != '')
 		{
 			$catids_arr = $place_info['category'];
 		}else
@@ -144,10 +141,23 @@ if($_POST) {
 			//$post_category[] = $price_capable_cat;
 			$post_category = $place_info['category'];
 			}else{
-			$post_category = $property_price_info['cat'];
+			$post_category = $place_info['category'];
 			}
 		}
-	
+		/*
+			save custom fields category wise for checkbox and select box.
+		*/
+		if($cat_display == 'checkbox'){
+			$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE1,'0','user_side');
+		}else{
+			$custom_metaboxes = get_post_custom_fields_templ(CUSTOM_POST_TYPE1,$post_category,'user_side');
+		}
+		
+		foreach($custom_metaboxes as $key=>$val)
+		{
+			$name = $val['name'];
+			$custom[$name] = $place_info[$name];
+		}
 		$my_post['post_category'] = $post_category;
 		
 		if($place_info['kw_tags'])
@@ -165,7 +175,7 @@ if($_POST) {
 
 			if($place_info['renew'])
 			{
-				$post_status = get_option('ptthemes_listing_new_status');
+				$post_status = strtolower(get_option('ptthemes_listing_new_status'));
 				if($post_status == ''){
 				$post_status ='publish';
 				}
@@ -174,6 +184,8 @@ if($_POST) {
 				$custom['paid_amount'] = $payable_amount;
 				$custom['alive_days'] = $property_price_info['alive_days'];
 				$custom['paymentmethod'] = $_REQUEST['paymentmethod'];
+				$custom['featured_type'] = $_SESSION['place_info']['featured_type'];
+				
 				$my_post['ID'] = $_REQUEST['pid'];
 				$last_postid = wp_update_post($my_post);
 			}else
@@ -187,7 +199,10 @@ if($_POST) {
 			$wpdb->query($sql);
 			/*Finish the update place geo_latitude and geo_longitude in postcodes table */
 			
-			wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1);
+			$icl_table = $wpdb->prefix."icl_translations";
+			$language = ICL_LANGUAGE_CODE;
+			
+			wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1,true);
 		}else
 		{
 			$last_postid = wp_insert_post( $my_post ); //Insert the post into the database
@@ -196,12 +211,14 @@ if($_POST) {
 			$sql="insert into $postcode(post_id,post_type,latitude,longitude) values(".$last_postid.",'".CUSTOM_POST_TYPE1."','". $place_info['geo_latitude']."','". $place_info['geo_longitude']."')";
 			$wpdb->query($sql);
 			/* Finish the place geo_latitude and geo_longitude in postcodes table*/
+			if(is_plugin_active('wpml-string-translation/plugin.php')){
+				gp4_wpml_insert_templ_post($last_postid,CUSTOM_POST_TYPE1); /* insert post in language */
+			}
 			
-			wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1);
-
-		}
-		$custom["paid_amount"] = $payable_amount;
 		
+			
+		}$taxonomy='';
+		$custom["paid_amount"] = $payable_amount;
 		foreach($custom as $key=>$val)
 		{		
 			update_post_meta($last_postid, $key, $val);
@@ -247,48 +264,53 @@ if($_POST) {
 		$wpdb->query($transaction_insert);
 		$trans_id = mysql_insert_id();
 		global $trans_id;
-		//print_r($place_info['category']);
-		if($post_category != '' )
-		{
-			
-			$termtable = $wpdb->prefix."term_relationships";
-				$post_id = $last_postid;
-				if(is_array($post_category)) {
-					$cat = implode("-",$post_category);
-					
-				$category = explode("-",$cat);
-					for($cat_cnt =0 ; $cat_cnt <= count($category) ; $cat_cnt ++){						
-						if($category[$cat_cnt] != "" && $post_id != "")	{ 	
-							$mycat = explode(',',$category[$cat_cnt]);						
-							if($_REQUEST['pid']){							
-								if($place_info['renew']) {
-									$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-								} else {
-									$selobj = $wpdb->get_row("select * from " . $termtable . " where object_id = '".$post_id."' and term_taxonomy_id = '".$mycat[0]."'");
-									if(mysql_affected_rows() > 0){
-										$cat_cntcat = $wpdb->query("UPDATE " . $termtable . " set object_id = '".$post_id."',term_taxonomy_id = '".$mycat[0]."',term_order = '0')");
-									}else{
-										$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-									}
-								}
-							} else {
-								$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$mycat[0]."','0') ");
-							} 
-						}
-					}
-				} else {
-					if($_REQUEST['pid']){
-						if($place_info['renew']) {	
-							$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$place_info['category']."','0') ");
-						} else {
-							$cat_cntcat = $wpdb->query("UPDATE " . $termtable . " set object_id = '".$post_id."',term_taxonomy_id = '".$place_info['category']."',term_order = '0')");	
-						}
-					} else {
-						$cat_cntcat = $wpdb->query("INSERT INTO " . $termtable . "(object_id, term_taxonomy_id, term_order)VALUES ('".$post_id."','".$place_info['category']."','0') ");
-					}
-				}
+		$termtable = $wpdb->prefix."term_relationships";
+		$del_cat="";
+		if(is_array($post_category) && $post_category!=""){
+			$del_cat_id = implode($post_category,",");
+			$del_cat=$wpdb->query("delete from $termtable where object_id = '".$last_postid."' and term_taxonomy_id NOT IN ( $del_cat_id )");
+		}else{
+			if($post_category!=""){
+				$del_cat = $wpdb->query("delete from $termtable where object_id = '".$last_postid."' and term_taxonomy_id!=$post_category");
+			}
 		}
 		
+		if(is_array($post_category) && $post_category!="")
+		{
+			foreach($post_category as $_post_category)
+			{
+				wp_set_post_terms( $last_postid,$_post_category,'placecategory',true);
+			}
+		}
+		else
+		{
+			wp_set_post_terms( $last_postid,$post_category,'placecategory',true);
+		} 
+				
+		/* insert tags start */
+		$tagkw = explode(',',$place_info['kw_tags']);
+		
+			//wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1,true);
+
+			if(is_array($tagkw) && $tagkw!="")
+			{
+				foreach($tagkw as $_tagkw)
+				{
+					wp_set_post_terms( $last_postid,$_tagkw,$taxonomy = CUSTOM_TAG_TYPE1,true);
+					if(is_plugin_active('wpml-string-translation/plugin.php')){
+						$table = $wpdb->prefix."terms";
+						$icl_table = $wpdb->prefix."icl_translations";
+						$term_id = $wpdb->get_var("select term_id from $table order by term_id desc LIMIT 0,1");
+						$wpdb->query("insert into $icl_table (`translation_id`,`element_type`,`element_id`,`trid`,`language_code`,`source_language_code`)values('','tax_placetags','".$term_id."','','".ICL_LANGUAGE_CODE."','NULL')");
+						$wpdb->query("Update $icl_table set language_code = '".ICL_LANGUAGE_CODE."' where element_id = '".$term_id."'");
+					}
+				}
+			}else{
+					wp_set_post_terms($last_postid, $tagkw, $taxonomy = CUSTOM_TAG_TYPE1,true);
+			}
+
+		/* insert tags end */
+	
 		if($_SESSION["file_info"])
 		{
 			$menu_order = 0;
@@ -301,7 +323,7 @@ if($_POST) {
 			{
 				//$src = get_image_tmp_phy_path().$val;
 				
-				$src = TEMPLATEPATH."/images/tmp/".$val;
+				$src = get_template_directory()."/images/tmp/".$val;
 				if($val)
 				  {
 					if(file_exists($src))
@@ -313,7 +335,7 @@ if($_POST) {
 						$medium_info = image_resize_custom($src,$dest_path,get_option('medium_size_w'),get_option('medium_size_h'));
 						$post_img = move_original_image_file($src,$dest_path);
 	
-						$post_img['post_status'] = 'attachment';
+						$post_img['post_status'] = 'inherit';
 						$post_img['post_parent'] = $last_postid;
 						$post_img['post_type'] = 'attachment';
 						$post_img['post_mime_type'] = 'image/jpeg';
@@ -347,7 +369,6 @@ if($_POST) {
 							$hwstring_small = "height='".$original_size['height']."' width='".$original_size['width']."'";
 						}
 						
-	
 						//update_post_meta($last_postimage_id, '_wp_attached_file', get_attached_file_meta_path($post_img['guid']));
 						update_post_meta($last_postimage_id, '_wp_attached_file', get_image_new_destination_path().$val);
 						$post_attach_arr = array(
@@ -396,10 +417,10 @@ if($_POST) {
 			$email_content_user = get_option('post_submited_success_email_user_content');
 			$email_subject_user = get_option('post_submited_success_email_user_subject');
 			
-			if(!$email_subject)
+			if($email_subject =='')
 			{
 				$email_subject = __('New place listing of ID:#'.$last_postid);	
-			}
+			} 
 			if(!$email_content)
 			{
 				$email_content = __('<p>Dear [#to_name#],</p>
@@ -409,26 +430,34 @@ if($_POST) {
 				<p>[#site_name#]</p>');
 			}
 			
-			if(!$email_subject_user)
+			if($email_subject_user =='')
 			{
 				$email_subject_user = __(sprintf('New place listing of ID:#%s',$last_postid));	
 			}
 			if(!$email_content_user)
 			{
-				$email_content_user = __('<p>Dear [#to_name#],</p><p>A New place has been submitted by you . Here is the information about the Place:</p>[#information_details#]<br><p>[#site_name#]</p>');
+				$email_content_user = __('<p>Dear [#to_name#],</p><p>A New place has been submitted by you . Here is the information about the Place:</p>[#information_details#]<br><p>[#site_name#]</p>','templatic');
 			}
 			
 			$information_details = "<p>".__('ID')." : ".$last_postid."</p>";
 			$information_details .= '<p>'.__('View more detail from').' <a href="'.get_permalink($last_postid).'">'.$my_post['post_title'].'</a></p>';
 			
+			
+			$post_author1  = $wpdb->get_row("select * from $wpdb->posts where ID = '".$last_postid."'") ;
+			$post_author1  = $post_author1->post_author ;
+			
+			$uinfo1 = get_userdata($post_author1);
+			$user_fname = $uinfo1->display_name;
+			
 			$search_array = array('[#to_name#]','[#information_details#]','[#site_name#]');
-			$replace_array_admin = array($fromEmail,$information_details,$store_name);
-			$replace_array_client =  array($user_email,$information_details,$store_name);
+			$replace_array_admin = array($fromEmailName,$information_details,$store_name);
+			$replace_array_client =  array($user_fname,$information_details,$store_name);
 			$email_content_admin = str_replace($search_array,$replace_array_admin,$email_content);
 			$email_content_client = str_replace($search_array,$replace_array_client,$email_content_user);
-
-				templ_sendEmail($user_email,$user_fname,$fromEmail,$fromEmailName,$email_subject,$email_content_admin,$extra='');///To admin email
-				templ_sendEmail($fromEmail,$fromEmailName,$user_email,$user_fname,$email_subject_user,$email_content_client,$extra='');//to client email
+			$email_content_admin = stripslashes($email_content_admin);
+			$email_content_client = stripslashes($email_content_client);
+			templ_sendEmail($user_email,$user_fname,$fromEmail,$fromEmailName,$email_subject,$email_content_admin,$extra='');///To admin email
+			templ_sendEmail($fromEmail,$fromEmailName,$user_email,$user_fname,$email_subject_user,$email_content_client,$extra='');//to client email
 			//////ADMIN EMAIL END////////
 			if($payable_amount <= 0)
 			{
@@ -438,7 +467,7 @@ if($_POST) {
 					$suburl .= "&renew=1";
 				}
 
-				wp_redirect(site_url()."/?ptype=success$suburl");
+				wp_redirect($site_url.$op."ptype=success$suburl");
 				exit;
 			}else	{
 				$paymentmethod = $_REQUEST['paymentmethod'];
@@ -455,20 +484,18 @@ if($_POST) {
 						$suburl = "&renew=1";
 					}
 					$suburl .= "&pid=$last_postid&trans_id=$trans_id";
-					wp_redirect(site_url().'/?ptype=success&paydeltype='.$paymentmethod.$suburl);
+					wp_redirect($site_url.$op.'ptype=success&paydeltype='.$paymentmethod.$suburl);
 				}
 				else
 				{ 
-					if(file_exists( TEMPLATEPATH.'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php'))
+					if(file_exists( get_template_directory().'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php'))
 					{ 
-						include_once(TEMPLATEPATH.'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php');
+						include_once(get_template_directory().'/library/includes/payment/'.$paymentmethod.'/'.$paymentmethod.'_response.php');
 					}
 				}
 				exit;	
 			}
 		}
-	}
-
-	
+	}	
 }
 ?>

@@ -264,7 +264,9 @@ h5.form_title { border-bottom:1px solid #ddd; }
 .main_img { border:1px solid #ccc; background:#fff; }
 .date { color:#858585;  }
 .by { color:#858585; border-bottom:1px solid #e3e3e3; }
-.category { color:#858585; background:url(../images/i_category.png) no-repeat left 0px; }
+.category { color:#858585; background-image:url(../images/i_category.png);
+	background-repeat: no-repeat;
+	background-position:left 0px; }
 
 .tags { color:#858585;  background:url(../images/i_tags.png) no-repeat left 2px; }
 .post_left a { color:#000; }
@@ -452,9 +454,9 @@ ul.menu li ul, div.menu li ul  { background:#fff; background:#fff; box-shadow: 2
 
 
 #comments .comment .meta-left { color:#aaaaaa }
-#comments .comment .text-right {   background:#fff;   /* background:#e9e7e7 url(4-orange/commentbg.png) no-repeat center left;*/ }
+#comments .comment .text-right {   background:#fff;   }
 
-#comments .comment .authcomment{   background:#fff;  /* background:#ebebeb url(4-orange/commentbg_author.png) no-repeat center left;*/   }
+#comments .comment .authcomment{   background:#fff;   }
 #comments .comment .authcomment p { color:#555; }
 #comments .comment .text-right p a { color:#d37200; text-decoration:none; }
 #comments .comment .text-right p a:hover { color:#000; }

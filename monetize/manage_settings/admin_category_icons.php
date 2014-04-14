@@ -1,5 +1,5 @@
 <?php
-include(TEMPLATEPATH."/monetize/custom_post_type/custom_post_type_lang.php");
+include(get_template_directory()."/monetize/custom_post_type/custom_post_type_lang.php");
 global $wpdb;
 
 if(isset($_POST['save_icons']) && $_POST['save_icons'] != ""){
@@ -40,10 +40,10 @@ if($_POST['save_icons'])
 		$wpdb->query("update $wpdb->terms set term_icon=\"$cat_icon\" where term_id=\"$term_id\"");
 		}
 	}
-	$location = site_url()."/wp-admin/admin.php";
+	$location = home_url()."/wp-admin/admin.php";
 		echo '<form action="'.$location.'#option_display_icons" method=get name="icon_success">
 		<input type=hidden name="page" value="manage_settings"><input type=hidden name="msg" value="icon_success"></form>';
-		echo '<script>document.icon_success.submit();</script>';
+		echo '<script type="text/javascript">document.icon_success.submit();</script>';
 		exit;
 	
 }
@@ -145,7 +145,7 @@ function show_categories()
 
 </script>
 
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_display_icons" method="post" name="payoptsetting_frm">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_display_icons" method="post" name="payoptsetting_frm">
  <input type="submit" name="submit" class="button-framework-imp right position_top" value="<?php _e('Save all changes');?>">
 
 <h4><?php echo MANAGE_CAT_SET_TEXT; ?></h4>
@@ -183,7 +183,7 @@ function show_categories()
  <input type="hidden" name="save_icons" value="1">
  <div id="categories_icon">
   <table  style=" width:100%" cellpadding="5" class="widefat post sub_table" id="category_list_icon">
-	<script>
+	<script type="text/javascript">
 	//call after page loaded
 	//window.onload = show_categories ; 
 	</script> 

@@ -9,6 +9,7 @@ if(templ_is_layout('full_width'))  //Sidebar Full width page
 {
 	
 }else{
+	global $post;
 	if(templ_is_layout('2_col_right'))  //Sidebar 2 column right
 	{	
 		templ_event_detail_sidebar($post,'sidebar right right_col','detail_page_sidebar');	

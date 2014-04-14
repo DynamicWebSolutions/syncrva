@@ -10,6 +10,7 @@ if($post_meta_info){
 }
 if($_POST)
 {
+	$context = get_option('blogname');
 	$ctype = $_POST['ctype'];
 	$admin_title = $_POST['admin_title'];
 	if($ctype == 'head')
@@ -19,9 +20,41 @@ if($_POST)
 	if($_POST['category'] !=''){
 	$cat_array1 = implode(",",$_POST['category']) ; }
 	$field_cat = $cat_array1 ;
-	$site_title = $_POST['site_title'];
+	if($_POST['selectall'] !=''){
+		$field_cat = $cat_array1.",all" ;	
+	}
+	if(function_exists('icl_register_string')){
+		$name = $_REQUEST['site_title'];
+		$value = $_REQUEST['site_title'];
+		icl_register_string($context,$name,$value);
+		$site_title = $_POST['site_title'];
+		
+	}else{
+		$site_title = $_POST['site_title'];
+	}
+	
+	if(function_exists('icl_register_string')){
+		$name = $_REQUEST['admin_desc'];
+		$value = $_REQUEST['admin_desc'];
+		icl_register_string($context,$name,$value);
+		$admin_desc = $_POST['admin_desc'];
+		
+	}else{
+		$admin_desc = $_POST['admin_desc'];
+	}	
+	if(function_exists('icl_register_string')){
+		$name = $_REQUEST['field_require_desc'];
+		$value = $_REQUEST['field_require_desc'];
+		icl_register_string($context,$name,$value);
+		$field_require_desc = $_POST['field_require_desc'];
+		$field_require_desc = stripslashes($field_require_desc);
+		
+	}else{
+		$field_require_desc = $_POST['field_require_desc'];
+		$field_require_desc = stripslashes($field_require_desc);
+	}	
 	$htmlvar_name = $_POST['htmlvar_name'];
-	$admin_desc = $_POST['admin_desc'];
+
 	$clabels = $_POST['clabels'];
 	$default_value = $_POST['default_value'];
 	$sort_order = $_POST['sort_order'];
@@ -38,7 +71,14 @@ if($_POST)
 	$is_require = $_POST['is_require'];
 	$extra_parameter = $_POST['extra_parameter'];
 	$validation_type = $_POST['validation_type'];
-	$field_require_desc = stripslashes($_POST['field_require_desc']);
+	
+	/* for transaltion */
+	$opt_val = explode(',',$option_values);
+	for($o=0 ; $o <= count($opt_val) ; $o++){
+		if(function_exists('icl_register_string')){
+			icl_register_string($context,$opt_val[$o],$opt_val[$o]);
+		}
+	}
 	$style_class = $_POST['style_class'];
 	$custom_field_check = $wpdb->get_var("SHOW COLUMNS FROM $custom_post_meta_db_table_name LIKE 'field_category'");
 	if('field_category' != $custom_field_check)	{
@@ -65,23 +105,21 @@ if($_POST)
 	}else
 	{
 		$sql = "insert into $custom_post_meta_db_table_name (admin_title,field_category,post_type,site_title,ctype,htmlvar_name,admin_desc,clabels,default_value,sort_order,is_active,is_delete,is_edit,is_require,is_search,show_on_listing,show_on_detail,show_on_page,option_values,field_require_desc,style_class,extra_parameter,validation_type) values ('".$admin_title."','".$field_cat."','".$my_post_type."','".$site_title."','".$ctype."','".$htmlvar_name."','".$admin_desc."','".$clabels."','".$default_value."','".$sort_order."','".$is_active."','".$is_delete."','".$is_edit."','".$is_require."','".$is_search."','".$show_on_listing."','".$show_on_detail."','".$show_on_page."','".$option_values."','".addslashes($field_require_desc)."','".$style_class."','".$extra_parameter."','".$validation_type."')";
-
 		$wpdb->query($sql);
 		$field_id = $wpdb->get_var("select max(cid) from $custom_post_meta_db_table_name");
-		$msgtype = 'add';
-		
+		$msgtype = 'add';		
 	}
 	
-	$location = site_url().'/wp-admin/admin.php';
+	$location = home_url().'/wp-admin/admin.php';
 	echo '<form action="'.$location.'#option_display_custom_fields" method="get" id="frm_edit_custom_fields" name="frm_edit_custom_fields">
 	<input type="hidden" value="manage_settings" name="page"><input type="hidden" value="success" name="custom_field_msg"><input type="hidden" value="'.$msgtype.'" name="custom_msg_type">
 	</form>
-	<script>document.frm_edit_custom_fields.submit();</script>
+	<script type="text/javascript">document.frm_edit_custom_fields.submit();</script>
 	';exit;
 }
 ?>
 <!-- Function to fetch categories -->
-<script>
+<script type="text/javascript">
 function showcat(str)
 {  	
 	if (str=="")
@@ -108,7 +146,7 @@ function showcat(str)
 		document.getElementById("field_category").innerHTML=xmlhttp.responseText;
 		}
 	  } 
-	  url = "<?php echo get_template_directory_uri(); ?>/monetize/manage_settings/ajax_custom_taxonomy.php?post_type="+str
+	  url = "<?php echo get_template_directory_uri(); ?>/monetize/manage_settings/ajax_custom_taxonomy.php?post_type="+str+"&mod=custom_fields";
 	  xmlhttp.open("GET",url,true);
 	  xmlhttp.send();
 } 
@@ -129,23 +167,23 @@ function get_html_var(){
 	xmlhttp.send();
 }
 </script>
-<form action="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings&mod=custom_fields&act=addedit#option_display_custom_fields" method="post" name="custom_fields_frm" onsubmit="return chk_field_form();">
+<form action="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings&mod=custom_fields&act=addedit#option_display_custom_fields" method="post" name="custom_fields_frm" onsubmit="return chk_field_form();">
 <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp right position_top">
 <h4><?php if($_REQUEST['field_id']){  _e('Edit - '.$post_val->admin_title,'templatic'); 
-	$custom_msg = 'Here you can edit custom field detail.'; }else { _e('Add a new field','templatic'); $custom_msg = 'Here you can add a new custom field. Specify all details to ensure the custom field works as it should.';}?> 
+	$custom_msg = 'Here you can edit custom field detail.'; }else { _e('Add custom field','templatic'); $custom_msg = 'Here you can add a new custom field. Specify all details to ensure the custom field works as it should.';}?> 
     
-    <a href="<?php echo site_url();?>/wp-admin/admin.php?page=manage_settings#option_display_custom_fields" name="btnviewlisting" class="l_back" title="<?php _e('Back to manage custom field list','templatic');?>"/><?php _e('&laquo; Back to manage custom field list','templatic'); ?></a>
+    <a href="<?php echo home_url();?>/wp-admin/admin.php?page=manage_settings#option_display_custom_fields" name="btnviewlisting" class="l_back" title="<?php _e('Back to manage custom field list','templatic');?>"/><?php _e('&laquo; Back to manage custom field list','templatic'); ?></a>
     </h4>
     
     <p class="notes_spec"><?php _e($custom_msg,'templatic');?></p>
 
-<input type="hidden" name="save" value="1" /> <input type="hidden" name="is_delete" value="<?php echo $post_val->is_delete;?>" />
+<input type="hidden" name="save" value="1" /> 
 <?php if($_REQUEST['field_id']){?>
 <input type="hidden" name="field_id" value="<?php echo $_REQUEST['field_id'];?>" />
 <?php }?>
 
 <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Show for post-type: ','templatic');?></h3>
+    <h3><?php _e('Assigned Post Type: ','templatic');?></h3>
     <div class="section">
       <div class="element">
 	  <?php
@@ -164,31 +202,34 @@ function get_html_var(){
 				<option value="both"<?php if($post_val->post_type=='both') { echo 'selected="selected"'; }else{ if(!$post_val->post_type){ echo 'selected=selected'; } } ?>><?php _e('Both','templatic'); ?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Select the post-type for which this field will be displayed.','templatic');?></div>
+      <div class="description"><?php _e('A field assigned to show for places for example will only appear on the submission form when a user is submitting a place and not an event.','templatic');?></div>
     </div>
   </div> <!-- #end -->
     
   
   <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Show for categories: ','templatic');?></h3>
+    <h3><?php _e('Field categories: ','templatic');?></h3>
     <div class="section">
       <div class="element" id="field_category" style="height:120px;overflow-y: scroll; margin-bottom:5px;">
 	     <?php 
 		$pctype = $post_val->post_type;
 		if($pctype == "both")
 		{
-			get_wp_category_checklist('',$post_val->field_category); 
+			//get_wp_category_checklist('',$post_val->field_category,'','select_all'); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$post_val->field_category,'','select_all'); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$post_val->field_category,'','select_all');
 		}elseif($pctype == CUSTOM_POST_TYPE1){
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$post_val->field_category); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,$post_val->field_category,'','select_all'); 
 		}elseif($pctype == CUSTOM_POST_TYPE2){
-			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$post_val->field_category);
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,$post_val->field_category,'','select_all');
 		}else{ 
-			get_wp_category_checklist('',''); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE1,'','','select_all'); 
+			get_wp_category_checklist(CUSTOM_CATEGORY_TYPE2,'');
 		}
 		?>  
       </div>
 	  <span id='process' style='display:none;'><img src="<?php echo get_template_directory_uri()."/images/process.gif"; ?>" alt='Processing..' /></span>
-      <div class="description"><?php _e('Select the categories for which this field will be displayed.','templatic');?></div>
+      <div class="description"><?php _e('Select the categories for which this field should appear in on the place or event submission form.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
@@ -211,7 +252,6 @@ function get_html_var(){
                       <option value="geo_map" <?php if($post_val->ctype=='geo_map'){ echo 'selected="selected"';}?>><?php _e('Geo Map','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Select the type of this custom field.','templatic');?></div>
     </div>
   </div> <!-- #end -->
 
@@ -229,7 +269,7 @@ function get_html_var(){
     <h3><?php _e('Title : ','templatic');?></h3>
     <div class="section">
       <div class="element"><input type="text" name="admin_title" id="admin_title" value="<?php echo $post_val->admin_title;?>" size="50" /></div>
-      <div class="description"><?php _e('Custom field title which will appear in manage cutom fields area. ','templatic');?></div>
+      <div class="description"><?php _e('Enter a title to display in the admin manage custom fields table.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
@@ -240,18 +280,18 @@ function get_html_var(){
       <div class="element">
                    <input type="text" name="site_title" id="site_title" value="<?php echo $post_val->site_title;?>" size="50"  />
       	   </div>
-      <div class="description"><?php _e('The name you provide here will be displayed as the field&rsquo;s name (label) in the front-end.','templatic');?></div>
+      <div class="description"><?php _e('Enter a title to display on the frontend which will be seen by users.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
 
   <div class="option option-select" >
-    <h3><?php _e('Field label (for back-end): ','templatic');?></h3>
+    <h3><?php _e('Admin Field Label: ','templatic');?></h3>
     <div class="section">
       <div class="element">
                    <input type="text" name="clabels" id="clabels" value="<?php echo $post_val->clabels;?>" size="50" />
       	   </div>
-      <div class="description"><?php _e('The field label for the custom field displayed in the back-end.','templatic');?></div>
+      <div class="description"><?php _e('Enter a label to display on the backend which will viewable by admin when adding a place or an event.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
@@ -262,7 +302,7 @@ function get_html_var(){
       <div class="element">
                    <input type="text" name="htmlvar_name" id="htmlvar_name" value="<?php echo $post_val->htmlvar_name;?>" size="50"  <?php if($_REQUEST['field_id'] !="") { ?>readonly=readonly style="pointer-events: none;"<?php } ?>/>
       	   </div>
-      <div class="description"><?php _e('This must be a unique name! If your field has more than 1 word you must connect them with an underscore (_). This field won&rsquo;t be editable later. ','templatic');?></div>
+      <div class="description"><?php _e('Enter a unique name in small letters and without spaces. To use more than one word, you must separate words by an underscore ( _ ) You will not be able to edit this name later, so please choose the correct name now.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
@@ -273,7 +313,7 @@ function get_html_var(){
       <div class="element">
                    <input type="text" name="admin_desc" id="admin_desc" value="<?php echo $post_val->admin_desc;?>" size="50" />
       	   </div>
-      <div class="description"><?php _e('Describe this field in a few words. It will appear in beside the field.','templatic');?></div>
+      <div class="description"><?php _e('Enter the field description to provide some tips under the field for users when submitting a place or an event.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
@@ -284,13 +324,13 @@ function get_html_var(){
       <div class="element">
                    <input type="text" name="default_value" id="default_value" value="<?php echo $post_val->default_value;?>" size="50" />
       	   </div>
-      <div class="description"><?php _e('Enter the default value of the custom field.','templatic');?></div>
+      <div class="description"><?php _e('Enter or select a default value to show as the a pre-selected or pre-populated for the field. (optional)','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
   
   <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Position (Display order): ','templatic');?></h3>
+    <h3><?php _e('Display order: ','templatic');?></h3>
     <div class="section">
       <div class="element">
                    <input type="text" name="sort_order" id="sort_order"  value="<?php echo $post_val->sort_order;?>" size="50" />
@@ -300,34 +340,34 @@ function get_html_var(){
   </div> <!-- #end -->
   
   <div class="option option-select" >
-    <h3><?php _e('Active?: ','templatic');?></h3>
+    <h3><?php _e('Field status: ','templatic');?></h3>
     <div class="section">
       <div class="element">
                    <select name="is_active" id="is_active">
-                  <option value="1" <?php if($post_val->is_active=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->is_active=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
+                  <option value="1" <?php if($post_val->is_active=='1'){ echo 'selected="selected"';}?>><?php _e('Activate','templatic');?></option>
+                  <option value="0" <?php if($post_val->is_active=='0'){ echo 'selected="selected"';}?>><?php _e('Deactivate','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('This setting activates/de-activates the custom field in the front-end and the back-end.','templatic');?></div>
+      <div class="description"><?php _e('Choose activate to show this field or deactivate instead of deleting it so you can use it in future if the need arises.','templatic');?></div>
     </div>
   </div> <!-- #end -->
   
   
    <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Compulsory?: ','templatic');?></h3>
+    <h3><?php _e('Required: ','templatic');?></h3>
     <div class="section">
       <div class="element">
                     <select name="is_require" id="is_require" >
-                  <option value="1" <?php if($post_val->is_require=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->is_require=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
+                  <option value="1" <?php if($post_val->is_require=='1'){ echo 'selected="selected"';}?>><?php _e('Activate','templatic');?></option>
+                  <option value="0" <?php if($post_val->is_require=='0'){ echo 'selected="selected"';}?>><?php _e('Deactivate','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Specify whether or not this field is required to be filled in compulsarily by users.','templatic');?></div>
+      <div class="description"><?php _e("Choose Activate if you wish to force a user to fill or select an option for this field when submitting a place or an event. (don't forget to select one of the options in validation types below)",'templatic');?></div>
     </div>
   </div> <!-- #end -->
   
   <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?><?php }?> >
-    <h3><?php _e('Display location: ','templatic');?></h3>
+    <h3><?php _e('Display location ','templatic');?></h3>
     <div class="section">
       <div class="element">
                     <select name="show_on_page" id="show_on_page" >
@@ -336,66 +376,54 @@ function get_html_var(){
 					  <option value="both_side" <?php if($post_val->show_on_page=='both_side'){ echo 'selected="selected"';}?>><?php _e('Both','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Specify whether this field will display in the front-end, back-end or both.','templatic');?></div>
     </div>
   </div> <!-- #end -->
  
    <div class="option option-select" <?php if($post_val->is_edit == '0' && is_super_admin($current_user->ID) != '1'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Is editable?: ','templatic');?></h3>
+    <h3><?php _e('Editable field ','templatic');?></h3>
     <div class="section">
       <div class="element">
                    <select name="is_edit" id="is_edit">
-                  <option value="1" <?php if($post_val->is_edit=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->is_edit=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
+                  <option value="1" <?php if($post_val->is_edit=='1'){ echo 'selected="selected"';}?>><?php _e('Activate','templatic');?></option>
+                  <option value="0" <?php if($post_val->is_edit=='0'){ echo 'selected="selected"';}?>><?php _e('Deactivate','templatic');?></option>
                   </select>
       	   </div>
       <div class="description"><?php _e('Specify whether or not this field is editable.','templatic');?></div>
     </div>
   </div> <!-- #end -->
  
- <div class="option option-select" <?php if($post_val->is_edit == '0' && is_super_admin($current_user->ID) != '1'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Is deletable? : ','templatic');?></h3>
-    <div class="section">
-      <div class="element">
-                   <select name="is_delete" id="is_edit">
-                  <option value="1" <?php if($post_val->is_delete=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->is_delete=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
-                  </select>
-      	   </div>
-      <div class="description"><?php _e('Specify whether or not this field is deletable.','templatic');?></div>
-    </div>
-  </div> <!-- #end -->
+ 
    <div class="option option-select" <?php if($post_val->is_edit == '0' && is_super_admin($current_user->ID) != '1'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Is search?: ','templatic');?></h3>
+    <h3><?php _e('Searchable ','templatic');?></h3>
     <div class="section">
       <div class="element">
                    <select name="is_search" id="is_search">
-                  <option value="1" <?php if($post_val->is_search=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->is_search=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
+                  <option value="1" <?php if($post_val->is_search=='1'){ echo 'selected="selected"';}?>><?php _e('Activate','templatic');?></option>
+                  <option value="0" <?php if($post_val->is_search=='0'){ echo 'selected="selected"';}?>><?php _e('Deactivate','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Specify whether or not this field is in place in advanced search.','templatic');?></div>
+      <div class="description"><?php _e("Choosing Activate will make it possible for users to filter results with this field's options or entry when using advanced search.",'templatic');?></div>
     </div>
   </div> <!-- #end -->	
  <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?> >
-    <h3><?php _e('Show on detail page?: ','templatic');?></h3>
+    <h3><?php _e('Show on detail page','templatic');?></h3>
     <div class="section">
       <div class="element">
                     <select name="show_on_detail" id="show_on_detail">
-                  <option value="1" <?php if($post_val->show_on_detail=='1'){ echo 'selected="selected"';}?>><?php _e('Yes','templatic');?></option>
-                  <option value="0" <?php if($post_val->show_on_detail=='0'){ echo 'selected="selected"';}?>><?php _e('No','templatic');?></option>
+                  <option value="1" <?php if($post_val->show_on_detail=='1'){ echo 'selected="selected"';}?>><?php _e('Activate','templatic');?></option>
+                  <option value="0" <?php if($post_val->show_on_detail=='0'){ echo 'selected="selected"';}?>><?php _e('Deactivate','templatic');?></option>
                   </select>
       	   </div>
-      <div class="description"><?php _e('Specify whether or not this field be shown on the &lsquo;Detail page&rsquo;','templatic');?></div>
+      <div class="description"><?php _e("Choosing Deactivate will not show the field on place or event detail page but it will appear in all other places.",'templatic');?></div>
     </div>
   </div>
   
  <div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('Required field warning message: ','templatic');?></h3>
+    <h3><?php _e('Required field warning message','templatic');?></h3>
     <div class="section">
       <div class="element">
-			<textarea name="field_require_desc" id="field_require_desc"><?php echo $post_val->field_require_desc;?></textarea></div>
-      <div class="description"><?php _e('This message is displayed if this field is mandatory and the user leaves it un-filled.','templatic');?></div>
+			<textarea name="field_require_desc" id="field_require_desc"><?php echo stripslashes($post_val->field_require_desc);?></textarea></div>
+      <div class="description"><?php _e('Enter the alert message to be displayed to user if this field is not filled in or an option not selected.','templatic');?></div>
     </div>
   </div>
 	<div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
@@ -403,28 +431,30 @@ function get_html_var(){
     <div class="section">
       <div class="element">
 			<select name="validation_type" id="validation_type"><?php echo validation_type_cmb($post_val->validation_type);?></select></div>
-			<div class="description"><?php _e('Validation helps avoid invalid information entered by the user. Optional.<small><br/><br/><b>Require</b> means this field cannot be left blank.<br/><b>Phone No.</b> means this field requires numeric values in phone number format.<br/><b>Digit</b> means this field requires numeric values.<br/><b>Email</b> means this field is required in a valid email format.</small>','templatic');?></div>
+			<div class="description"><?php _e('Choose a validation type to force user to enter the expected value or select an option.<small><br/><br/><b>Require</b> field cannot be left blank.<br/><b>Phone No.</b> numeric values in phone number format must be entered.<br/><b>Digit</b> numeric values must be entered.<br/><b>Email</b> a valid email must be entered.</small>','templatic');?></div>
 		</div>
 	</div>
 	
 	<div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
-    <h3><?php _e('CSS class : ','templatic');?></h3>
+    <h3><?php _e('CSS class','templatic');?></h3>
     <div class="section">
       <div class="element"><input type="text" name="style_class" id="style_class" value="<?php echo $post_val->style_class; ?>"></div>
-			<div class="description"><?php _e('You might want to style this field differently. Mention a class name here and add its properties in your CSS files.','templatic');?></div>
+			<div class="description"><?php _e("Enter a class name here and add its properties in CSS files. (class only applied to field's backend style)",'templatic');?></div>
 		</div>
 	</div>
 	<div class="option option-select" <?php if($post_val->is_edit == '0'){?> style="display:none;" <?php }else{?> style="display:block;" <?php }?>>
     <h3><?php _e('Extra parameter : ','templatic');?></h3>
     <div class="section">
       <div class="element"><input type="text" name="extra_parameter" id="extra_parameter" value="<?php echo $post_val->extra_parameter; ?>"></div>
-			<div class="description"><?php _e('You can pass an extra parameter with this field (like maxlength, onchange etc.) to enhance functionality. Optional.','templatic');?></p></div>
+			<div class="description"><?php _e("Pass an extra parameter for this field for example, maxlength, onchange etc (optional)",'templatic');?></p></div>
 		</div>
 	</div>
   
   
   <input type="submit" name="submit" value="<?php _e('Save all changes','templatic');?>" class="button-framework-imp right position_bottom"> 
-
+<?php if($post_val->is_delete || $field_id =='' ) { ?>
+	<input type="hidden" name="is_delete" id="is_delete" value="1"/>
+	<?php } ?>
 
 </form>
 <script type="text/javascript">

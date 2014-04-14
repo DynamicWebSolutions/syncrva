@@ -12,6 +12,7 @@
       setTimeout(func,time);
     });
   };
+  jQuery("html, body").animate({scrollTop:0}, "slow");
 })(jQuery);
 
 /**
